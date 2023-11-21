@@ -8,7 +8,7 @@ import 'views/home/home.dart';
 void main() {
   runApp(
     DevicePreview(
-      enabled: !kReleaseMode,
+      enabled: false,
       tools: [
         ...DevicePreview.defaultTools,
      
@@ -28,11 +28,11 @@ class MyApp extends StatelessWidget {
 
   //   getPages: [
 
-  // //outes();
+  // //routes();
   //   ],
     debugShowCheckedModeBanner: false,
       theme: ThemeData(
-
+fontFamily:  'Poppins',
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),

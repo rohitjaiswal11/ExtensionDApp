@@ -33,30 +33,34 @@ class _SendState extends State<Send> {
           SizedBox(
             height: Get.height * 0.01,
           ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Spacer(),
-              Text(
-                "Send to",
-                style: TextStyle(fontSize: 20, color: Colors.white),
-              ),
-              Spacer(),
-              TextButton(
-                onPressed: () {
-                  Get.back();
-                },
-                child: Text(
-                  'Cancel',
-                  style: TextStyle(color: Colors.blue),
+          Padding(
+                   padding: EdgeInsets.symmetric(horizontal: Get.width/30),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Spacer(),
+                Text(
+                  "Send to",
+                  style: TextStyle(fontSize: 20, color: Colors.white),
                 ),
-              )
-            ],
+                Spacer(),
+                TextButton(
+                  onPressed: () {
+                    Get.back();
+                  },
+                  child: Text(
+                    'Cancel',
+                    style: TextStyle(color: Colors.blue),
+                  ),
+                )
+              ],
+            ),
           ),
           SizedBox(
             height: Get.height * 0.01,
           ),
           Container(
+                            padding:  EdgeInsets.symmetric(horizontal: Get.width/30),
               child: TextField(
             decoration: InputDecoration(
               hintText: 'Enter public address(0x) or ENS name',
@@ -78,14 +82,17 @@ class _SendState extends State<Send> {
           SizedBox(
             height: Get.height * 0.03,
           ),
-          Align(
-            alignment: Alignment.topLeft,
-            child: Text(
-              'Your accounts',
-              style: TextStyle(
-                  fontWeight: FontWeight.w500,
-                  fontSize: 17,
-                  color: Colors.grey),
+          Padding(
+                           padding:  EdgeInsets.symmetric(horizontal: Get.width/30),
+            child: Align(
+              alignment: Alignment.topLeft,
+              child: Text(
+                'Your accounts',
+                style: TextStyle(
+                    fontWeight: FontWeight.w500,
+                    fontSize: 17,
+                    color: Colors.grey),
+              ),
             ),
           ),
           SizedBox(
@@ -96,7 +103,14 @@ class _SendState extends State<Send> {
             child: ListView.separated(
                 shrinkWrap: true,
                 itemBuilder: (context, Index) {
-                  return InkWell(onTap: () {}, child: Account());
+                  return InkWell(onTap: () {}, child: 
+                  Container(
+              padding: const EdgeInsets.symmetric(horizontal: 10),
+
+                    child:Account() ,
+                  )
+                  
+                );
                 },
                 separatorBuilder: ((context, index) {
                   return SizedBox(
@@ -109,140 +123,8 @@ class _SendState extends State<Send> {
       ),
     );
   }
-}
+ 
 
-// On tap of add
-Future<dynamic> DialogBox(BuildContext context) {
-  return showDialog(
-      context: context,
-      builder: (context) {
-        return StatefulBuilder(builder: (context, setState) {
-          return Dialog(
-              alignment: Alignment.topCenter,
-              child: Container(
-                  color: Colors.black87,
-                  height: Get.height * 0.8,
-                  width: Get.width / 0.7,
-                  child: Padding(
-                      padding: const EdgeInsets.all(20.0),
-                      child: SingleChildScrollView(
-                        child: Column(
-                            //  mainAxisAlignment:MainAxisAlignment.,
-                            children: [
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  IconButton(
-                                    onPressed: () {
-                                      Get.back();
-                                    },
-                                    icon: Icon(Icons.arrow_back_ios,
-                                        color: Colors.white),
-                                  ),
-                                  Spacer(),
-                                  Text(
-                                    "Add account",
-                                    style: TextStyle(
-                                        fontSize: 20, color: Colors.white),
-                                  ),
-                                  Spacer(),
-                                  IconButton(
-                                    onPressed: () {
-                                      Get.back();
-                                    },
-                                    icon:
-                                        Icon(Icons.close, color: Colors.white),
-                                  )
-                                ],
-                              ),
-                              SizedBox(
-                                height: Get.height / 20,
-                              ),
-                              icon_txt_btn(
-                                btn_icon: Icons.add,
-                                btn_name: "Add an account ",
-                                ontap: () {
-                                  //  backbool=!backbool;
-                                  //  Get.back();
-                                  showDialog(
-                                      context: context,
-                                      builder: (BuildContext context) {
-                                        return DialogCustom(
-                                          hnttxt: 'Account',
-                                          txtfieldname: 'Account',
-                                          w1: Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceAround,
-                                            children: [
-                                              btncustom(
-                                                  btncolor: Colors.white,
-                                                  btntxt: 'cancel',
-                                                  btntxtclr: Colors.blue,
-                                                  BtnPressed: () {
-                                                    Get.to(MyHomePage);
-
-// Get.to();
-                                                  }),
-                                              btncustom(
-                                                  btncolor: Colors.blue,
-                                                  btntxt: 'create',
-                                                  BtnPressed: () {saveaccount();
-                                                    Wallet().generateMnemonic();
-                                                    Wallet().walletaddress();
-
-                                                   
-                                                  }),
-                                            ],
-                                          ),
-                                          titletxt: "Add account",
-                                          cheight: Get.height * 0.4,
-                                          cwidth: null,
-                                        );
-                                      });
-                                },
-                              ),
-                              SizedBox(
-                                height: Get.height / 40,
-                              ),
-                              icon_txt_btn(
-                                ontap: () {
-                                  showDialog(
-                                      context: context,
-                                      builder: (BuildContext context) {
-                                        return DialogCustom(
-                                          impvalue: 1,
-                                          titletxt: "Import Account",
-                                          cheight: Get.height * 0.4,
-                                          cwidth: null,
-                                          txtfieldname:
-                                              "Enter your private key string here:",
-                                          hnttxt: 'Enter Private key',
-                                        );
-                                      });
-                                },
-                                btn_icon: Icons.download,
-                                btn_name: "Import account",
-                              ),
-                              SizedBox(
-                                height: Get.height / 50,
-                              ),
-                              icon_txt_btn(
-                                ontap: () {
-                                  print("gggggggg");
-                                },
-                                btn_icon: Icons.badge_rounded,
-                                btn_name: "Add hardware wallet ",
-                              ),
-                            ]),
-                      ))));
-        });
-      });
-}
-
- saveaccount() async {
-  SharedPreferencesManager().writeString('account',   Common.txtaccountglobal.toString());
-
-  print('printing writestring  ${Common.txtaccountglobal}');
 }
 
 class icon_txt_btn extends StatelessWidget {

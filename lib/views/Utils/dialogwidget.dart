@@ -20,6 +20,7 @@ class DialogCustom extends StatefulWidget {
   Color? btncolor;
   int? impvalue;
   Widget? w1;
+
 //  GestureTapCallback? BtnPressed;
 
   // TextEditingController mytextController;
@@ -51,11 +52,12 @@ class _DialogCustomState extends State<DialogCustom> {
     // super.dispose();
   }
 
+  var items = ["Private key", "Json File"];
+  String dropdownvalue = "Private key";
+
   @override
   Widget build(BuildContext context) {
     return StatefulBuilder(builder: (context, setState) {
-      String dropdownvalue = "";
-
       return Dialog(
           alignment: Alignment.topCenter,
           child: Container(
@@ -82,7 +84,7 @@ class _DialogCustomState extends State<DialogCustom> {
                           Text(
                             widget.titletxt,
                             style: TextStyle(
-                              fontSize: 18,
+                              fontSize: 17,
                               color: Colors.white,
                             ),
                           ),
@@ -90,6 +92,7 @@ class _DialogCustomState extends State<DialogCustom> {
                           IconButton(
                             onPressed: () {
                               Get.back();
+                              Get.to(MyHomePage());
                             },
                             icon: Icon(
                               Icons.close,
@@ -118,42 +121,51 @@ class _DialogCustomState extends State<DialogCustom> {
                               height: Get.height / 20,
                             ),
                             Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Text(
                                   'Select Type',
                                   style: TextStyle(
                                       color: Colors.white, fontSize: 15),
                                 ),
-                                Spacer(),
+                                //   Spacer(),
                                 Container(
-                                    width: Get.width / 5,
-                                    decoration: BoxDecoration(
-                                        border: Border.all(color: Colors.white),
-                                        borderRadius:
-                                            BorderRadius.circular(10)),
-                                    child: DropdownButton<String>(
-                                      items: <String>[
-                                        'Private key',
-                                        'Json File'
-                                      ].map((String value) {
-                                        return DropdownMenuItem<String>(
-                                          value: value,
-                                          child: Text(value),
-                                        );
-                                      }).toList(),
-                                      onChanged: (_) {},
-                                    )
+                                  width: Get.width / 4,
+                                  decoration: BoxDecoration(
+                                      border: Border.all(color: Colors.white),
+                                      borderRadius: BorderRadius.circular(10)),
+                                  child:
+                                  
+                                  
+                                  
+                                  
+                                   DropdownButton(
+                                    // Initial Value
+                                    value: dropdownvalue,
+                           // Down Arrow Icon
+                                    icon: const Icon(Icons.keyboard_arrow_down),
 
-                                    //                                 child: DropdownButton(items:            ,
+                                    // Array list of items
+                                    items: items.map((String items) {
+                                 
+                                      return DropdownMenuItem(
+                                        value: items,
+                                        child: Text(items),
+                                      );
 
-                                    //                                     icon: const Icon(Icons.keyboard_arrow_down),
-                                    //                                 onChanged:  (String? newValue){
-                                    //   setState(() {
-                                    //     selectedValue = newValue!;
-                                    //   });
-                                    // },value: selectedValue,)
-                                    )
+                                    }).toList(),
+
+                                    
+                                    // After selecting the desired option,it will
+                                    // change button value to selected value
+                                    onChanged: (String? newValue) {
+                                      setState(() {
+                                        dropdownvalue = newValue!;
+                                      });
+                                    },
+                                  ),
+
+                                )
                               ],
                             ),
                             // Sizeconst dBox(
@@ -162,37 +174,61 @@ class _DialogCustomState extends State<DialogCustom> {
                           ],
                         ),
 
+                      SizedBox(
+                        height: 5,
+                      ),
                       Align(
                           alignment: Alignment.topLeft,
                           child: Text(
                             widget.txtfieldname.toString(),
-                            style: TextStyle(color: Colors.white, fontSize: 15),
+                            style: TextStyle(color: Colors.white, fontSize: 13),
                           )),
-                      TextField(
-                        onChanged: (value) {
-                          print("import wallet $value");
-                          setState(
-                            () {
-                        Common.txtaccountglobal = value;
-                            },
-                          );
-                        },
-                        style: TextStyle(color: Colors.amber),
-                        controller: mytextController,
-                        decoration: InputDecoration(
-                          hintText: widget.hnttxt,
-                          //   suffixIcon: Icon(Icons.qr_code),
-                          suffixIconColor: Colors.blue,
-                          hintStyle: TextStyle(color: Colors.grey.shade400),
-                          enabledBorder: OutlineInputBorder(
-                            borderSide: BorderSide(
-                                width: 1, color: Colors.grey), //<-- SEE HERE
-                            borderRadius: BorderRadius.circular(10.0),
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                            borderSide: BorderSide(
-                                width: 1, color: Colors.grey), //<-- SEE HERE
-                            borderRadius: BorderRadius.circular(10.0),
+                      SizedBox(
+                        height: 5,
+                      ),
+                      SizedBox(
+                        height: Get.height / 12,
+                        child: TextField(
+                          onChanged: (value) {
+                            value;
+                            if (widget.impvalue == 1) {
+                              Common.privatekeytxt = value;
+                              print("private key name $value");
+                              setState(
+                                () {
+                                  Common.privatekeytxt = value;
+                                  print(
+                                      " Common.privatekeytxt  ${Common.privatekeytxt} ");
+                                },
+                              );
+                            }
+                            print("import wallet account name $value");
+                            setState(
+                              () {
+                                Common.txtaccountglobal = value;
+                                print(
+                                    "import wallet  Common.txtaccountglobal  ${Common.txtaccountglobal} ");
+                              },
+                            );
+                          },
+                          style: TextStyle(color: Colors.amber),
+                          controller: mytextController,
+                          decoration: InputDecoration(
+                            hintText: widget.hnttxt,
+                            //   suffixIcon: Icon(Icons.qr_code),
+                            suffixIconColor: Colors.blue,
+                            hintStyle: TextStyle(
+                                fontSize: 14, color: Colors.grey.shade400),
+                            enabledBorder: OutlineInputBorder(
+                              borderSide: BorderSide(
+                                  width: 1, color: Colors.grey), //<-- SEE HERE
+                              borderRadius: BorderRadius.circular(10.0),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderSide: BorderSide(
+                                  width: 1, color: Colors.grey), //<-- SEE HERE
+                              borderRadius: BorderRadius.circular(10.0),
+                            ),
                           ),
                         ),
                       ),
@@ -205,26 +241,13 @@ class _DialogCustomState extends State<DialogCustom> {
                             btncolor: Colors.blue,
                             BtnPressed: () {
                               savedprivate();
+                              // Get.back();
 
-                            //  Wallet().getpublic(mytextController.toString());
+                              Wallet().getpublic(mytextController.toString());
                             }),
                       SizedBox(
                         child: widget.w1,
                       )
-                      //  for(int i=0;i<i;i++)
-                      // Row(
-                      //   mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      //   children: [
-                      //     btncustom(
-                      //         btncolor: btncolor,
-                      //         btntxt: 'cancel',
-                      //         BtnPressed: null),
-                      //     btncustom(
-                      //         btncolor: Colors.blue,
-                      //         btntxt: 'create',
-                      //         BtnPressed: null),
-                      //   ],
-                      // )
                     ],
                   )))));
     });
@@ -235,7 +258,7 @@ void savedprivate() {
   SharedPreferencesManager()
       .writeString('importprivate', Common.privatekeytxt.toString());
 
-  print('printing writestring  ${Common.privatekeytxt}');
+  print('printing private writestring  ${Common.privatekeytxt}');
 }
 
 Widget btncustom({

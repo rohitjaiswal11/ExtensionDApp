@@ -20,16 +20,11 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage>
     with SingleTickerProviderStateMixin {
-
- String cliptext='account';
- getcliptext()async{
-  cliptext=  await SharedPreferencesManager().readString('publickey');
-  setState(() {
-    
-  });
-
-}
-
+  String cliptext = 'account';
+  getcliptext() async {
+    cliptext = await SharedPreferencesManager().readString('publickey');
+    setState(() {});
+  }
 
   late TabController _tabController;
   // int _counter = 0;
@@ -80,12 +75,11 @@ class _MyHomePageState extends State<MyHomePage>
   //     img=img2;
   //   });
   //    Get.back();
-  
+
   // }
-  
+
   @override
   Widget build(BuildContext context) {
- 
     return Scaffold(
       backgroundColor: Colors.black87,
       body: SingleChildScrollView(
@@ -93,12 +87,13 @@ class _MyHomePageState extends State<MyHomePage>
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.start,
           children: <Widget>[
-           const Topbar(),
+            const Topbar(),
             SizedBox(
               height: 20,
             ),
             GestureDetector(
-              onTap: () {Clipboard.setData(ClipboardData(text: cliptext));
+              onTap: () {
+                Clipboard.setData(ClipboardData(text: cliptext));
                 Fluttertoast.showToast(
                     msg: 'Copied',
                     toastLength: Toast.LENGTH_SHORT,
@@ -111,29 +106,29 @@ class _MyHomePageState extends State<MyHomePage>
               },
               child: Container(
                   decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(30),
-                    color: Colors.blue.shade400,
-                  ),
+                      borderRadius: BorderRadius.circular(30),
+                      color: Color.fromRGBO(38, 123, 235, 0.3)),
                   height: Get.height / 20,
-                  width: Get.width / 4,
+                  width: Get.width / 2.7,
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      SizedBox(width: Get.width / 6,
-                        child: Text( 
-                                   cliptext,
-                                  
+                      SizedBox(
+                        width: Get.width / 5,
+                        child: Text(
+                          cliptext,
                           style: TextStyle(
-                              color: Colors.blue.shade900, fontSize: 13, fontWeight: FontWeight.w300),
+                              color: Colors.blue,
+                              fontSize: 13,
+                              fontWeight: FontWeight.w300),
                           overflow: TextOverflow.ellipsis,
                         ),
                       ),
-                      Padding(
-                        padding:
-                            EdgeInsets.symmetric(vertical: 15, horizontal: 5),
-                        child: Image.asset(
-                          'assets/images/copy.png',
-                        ),
+                      Image.asset(
+                        'assets/images/copy.png',
+                        color: Colors.blue,
+                        width: 20,
+                        height: 15,
                       ),
                     ],
                   )),
@@ -141,7 +136,11 @@ class _MyHomePageState extends State<MyHomePage>
             SizedBox(
               height: 20,
             ),
-            Text('0 ETH', style: TextStyle(color: Colors.white, fontSize: 35)),
+            Text('0 ETH',
+                style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 32,
+                    fontWeight: FontWeight.w400)),
             SizedBox(
               height: 5,
             ),
@@ -157,33 +156,37 @@ class _MyHomePageState extends State<MyHomePage>
                 //     itemCount: ButtonTabs.btntaps.length,
                 //     itemBuilder: (context, index) {
                 //       return
-          
+
                 for (int i = 0; i < ButtonTabs.btntaps.length; ++i)
                   Column(
                     children: [
                       InkWell(
-
                         onTap: () {
-
                           Get.to(Send());
                           //Get.toNamed(ButtonTabs.btntaps[i].nav.toString());
                         },
                         child: Container(
-                        //   height: Get.height / 8,
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 10, vertical: 20),
-                          width: Get.width / 9,
-                          decoration: BoxDecoration(
-                              color: Colors.blue, shape: BoxShape.circle),
-                          child: Padding(
-                              padding: EdgeInsets.all(2),
-                              child: Image.asset(ButtonTabs.btntaps[i].img,
-                                  fit: BoxFit.contain)),
-                        ),
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 10, vertical: 20),
+                            width: Get.width / 9,
+                            decoration: BoxDecoration(
+                                color: Colors.blue, shape: BoxShape.circle),
+                            child: i == 1
+                                ? Padding(
+                                    padding: const EdgeInsets.all(3.0),
+                                    child: Image.asset(
+                                        ButtonTabs.btntaps[1].img,
+                                        fit: BoxFit.contain),
+                                  )
+                                : Image.asset(ButtonTabs.btntaps[i].img,
+                                    fit: BoxFit.contain)),
                       ),
                       Text(
                         ButtonTabs.btntaps[i].btntapname,
-                        style: TextStyle(color: Colors.white),
+                        style: TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w400,
+                            color: Colors.white),
                       ),
                       SizedBox(
                         height: Get.height / 30,
@@ -194,14 +197,18 @@ class _MyHomePageState extends State<MyHomePage>
               ],
             ),
             Container(
+              padding: EdgeInsets.symmetric(horizontal: Get.width / 25),
               //color: Colors.blueAccent,
               height: Get.height / 20,
               child: TabBar(
                   controller: _tabController,
+                  indicatorPadding: EdgeInsets.only(top: Get.height * 0.05),
+
+                  //indicatorPadding: EdgeInsets.only(top: 20),
                   dividerColor: Colors.transparent,
-                  indicatorSize: TabBarIndicatorSize.label,
-                  unselectedLabelColor: Colors.grey,
-                  indicatorColor: Colors.blue.shade900,
+                  indicatorSize: TabBarIndicatorSize.tab,
+                  unselectedLabelColor: Colors.white,
+                  indicatorColor: Colors.blue,
                   labelColor: Colors.blue,
                   labelStyle: const TextStyle(
                     fontSize: 15.0,
@@ -210,7 +217,7 @@ class _MyHomePageState extends State<MyHomePage>
                   unselectedLabelStyle: const TextStyle(
                     color: Colors.white,
                     fontSize: 15.0,
-                    fontWeight: FontWeight.w700,
+                    fontWeight: FontWeight.w400,
                   ),
                   tabs: [
                     Text('Token'),
@@ -228,41 +235,57 @@ class _MyHomePageState extends State<MyHomePage>
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Container(
-                          padding: EdgeInsets.all(20),
+
+                          padding: EdgeInsets.only(bottom:Get.height/70),
                           child: ListView.builder(
                               shrinkWrap: true,
                               itemCount: 7,
                               itemBuilder: (context, index) {
                                 return Container(
+                                  padding: EdgeInsets.symmetric(horizontal: 10),
+                                  //   color: Colors.pink,
                                   margin: EdgeInsets.all(10),
                                   height: Get.height / 17,
-                                  child: Row(
+                                  child: Row(crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
-                                      Image.asset('assets/images/ethlogo.png'),
-                                      SizedBox(
-                                        width: 5,
+                                      Image.asset(
+                                        'assets/images/ethlogo.png',
+                                        height: Get.height / 25,
                                       ),
+                                      SizedBox(
+                                        width: Get.width / 35,
+                                      ),
+
                                       Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
                                         children: [
                                           Text(
-                                            "Etherium",
+                                            "Ethereum",
                                             style: TextStyle(
                                               color: Colors.white,
                                             ),
+                                          ),
+                                          SizedBox(
+                                            height: 3,
                                           ),
                                           Text("0 ETH",
                                               style: TextStyle(
                                                   color: Colors.white,
                                                   fontWeight: FontWeight.w100,
-                                                  fontSize: 13))
+                                                  fontSize: 13)),
                                         ],
                                       ),
                                       Spacer(),
-                                      Text("\$0.00",
-                                          style: TextStyle(
-                                              color: Colors.white,
-                                              fontWeight: FontWeight.w100,
-                                              fontSize: 13))
+
+                                          Text("\$0.00 USD",
+                                              style: TextStyle(
+                                                  color: Colors.white,
+                                                  fontWeight: FontWeight.w500,
+                                                  fontSize: 14))
+                                    
                                     ],
                                   ),
                                 );
@@ -280,6 +303,9 @@ class _MyHomePageState extends State<MyHomePage>
                             label: Text(
                               'Import Token',
                             )),
+                            SizedBox(
+                              height: Get.height/70,
+                            ),
                         TextButton.icon(
                             style: ButtonStyle(
                                 padding: MaterialStatePropertyAll(
@@ -289,7 +315,9 @@ class _MyHomePageState extends State<MyHomePage>
                                     MaterialStatePropertyAll(Colors.blue)),
                             onPressed: () {},
                             icon: Icon(Icons.refresh),
-                            label: Text('Refresh list')),
+                            label: Text('Refresh list')),   SizedBox(
+                              height: Get.height/70,
+                            ),
                         TextButton.icon(
                             style: ButtonStyle(
                                 padding: MaterialStatePropertyAll(
@@ -303,7 +331,7 @@ class _MyHomePageState extends State<MyHomePage>
                       ],
                     ),
                   ),
-          
+
                   isdata
                       ? SingleChildScrollView(
                           child: Column(
@@ -316,7 +344,8 @@ class _MyHomePageState extends State<MyHomePage>
                                       height: Get.height / 20,
                                       child: Row(
                                         children: [
-                                          Image.asset('assets/images/ethlogo.png')
+                                          Image.asset(
+                                              'assets/images/ethlogo.png')
                                         ],
                                       ),
                                     );
@@ -347,7 +376,7 @@ class _MyHomePageState extends State<MyHomePage>
                             )
                           ],
                         ),
-          
+
                   isdata
                       ? SingleChildScrollView(
                           child: Column(
@@ -360,7 +389,8 @@ class _MyHomePageState extends State<MyHomePage>
                                       height: Get.height / 20,
                                       child: Row(
                                         children: [
-                                          Image.asset('assets/images/ethlogo.png')
+                                          Image.asset(
+                                              'assets/images/ethlogo.png')
                                         ],
                                       ),
                                     );
@@ -393,7 +423,7 @@ class _MyHomePageState extends State<MyHomePage>
                                 ))
                           ],
                         ),
-          
+
                   // ListView.builder( itemCount: 20,itemBuilder: (context, index) {
                   //   return Container(
                   //     height: Get.height / 20,
@@ -410,18 +440,23 @@ class _MyHomePageState extends State<MyHomePage>
       ),
     );
   }
-
- 
-
-
-
 }
 
-List<String> mainnet = [
-  'assets/images/ethlogo.png',
-  'assets/images/linealogo.jpg'
-];
 
+
+class MainNet {
+  final String coinname;
+  final String coinimage;
+
+  MainNet({required this.coinimage, required this.coinname});
+
+  static List<MainNet> mainnetworklist = [
+    MainNet(coinimage:  'assets/images/ethlogo.png', coinname: 'Etherium'),
+    MainNet(
+        coinimage: 'assets/images/linealogo.jpg', coinname: 'Linea'),
+   
+  ];
+}
 class TestNetwork {
   final String coinname;
   final String coinimage;
@@ -442,13 +477,19 @@ class TestNetwork {
 class ButtonTabs {
   final String img;
   final String btntapname;
-final String ?nav;
+  final String? nav;
 
-  ButtonTabs({required this.img, required this.btntapname, this.nav, });
+  ButtonTabs({
+    required this.img,
+    required this.btntapname,
+    this.nav,
+  });
 
   static List<ButtonTabs> btntaps = [
-    ButtonTabs(img: 'assets/icons/plus-minus.png', btntapname: 'Buy & Sell', nav:""),
-    ButtonTabs(img: 'assets/icons/send.png', btntapname: 'Send', nav:"/Send()"),
+    ButtonTabs(
+        img: 'assets/icons/plus-minus.png', btntapname: 'Buy & Sell', nav: ""),
+    ButtonTabs(
+        img: 'assets/icons/send.png', btntapname: 'Send', nav: "/Send()"),
     ButtonTabs(img: 'assets/icons/exchange.png', btntapname: 'Swap'),
     ButtonTabs(img: 'assets/icons/bridge.png', btntapname: 'Bridge'),
     ButtonTabs(img: 'assets/icons/stock.png', btntapname: 'Portfolio'),
@@ -484,4 +525,3 @@ List menutxt = [
     style: TextStyle(color: Colors.white),
   ),
 ];
-
