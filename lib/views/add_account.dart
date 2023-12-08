@@ -1,4 +1,4 @@
-import 'package:extensionapp/views/Utils/dialogwidget.dart';
+import 'package:extensionapp/Utils/dialogwidget.dart';
 import 'package:extensionapp/views/send/send.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get_core/src/get_main.dart';

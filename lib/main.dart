@@ -1,20 +1,21 @@
 import 'package:device_preview/device_preview.dart';
+import 'package:extensionapp/views/Importwallet.dart/import.dart';
+import 'package:extensionapp/views/Register/Register.dart';
+
+import 'package:extensionapp/Utils/AppTheme.dart';
+import 'package:extensionapp/views/swap/swap.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:get/get_navigation/src/root/get_material_app.dart';
 
+import 'Controller/themeMode.dart';
 import 'views/home/home.dart';
 
 void main() {
+  //initalize();
   runApp(
-    DevicePreview(
-      enabled: false,
-      tools: [
-        ...DevicePreview.defaultTools,
-     
-      ],
-      builder: (context) => const MyApp(),
-    ),
+    const MyApp(),
   );
 }
 
@@ -24,19 +25,29 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return GetMaterialApp(initialRoute: '/',
+    return
+        //   GetBuilder<themedata>(builder: (child) {
+        //  return
 
-  //   getPages: [
+        GetMaterialApp(
+            //   initialRoute: '/',
+            // theme: AppThemedata.light,
+            //   getPages: [
 
-  // //routes();
-  //   ],
-    debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-fontFamily:  'Poppins',
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
-      ),
-      home: const MyHomePage(),
-    );
+            // //routes();
+            //   ],
+            themeMode: ThemeMode.light,
+            // darkTheme: AppThemedata.dark,
+            debugShowCheckedModeBanner: false,
+            theme: ThemeData(
+
+              bottomSheetTheme: BottomSheetThemeData(backgroundColor: Colors.black54),
+              fontFamily: 'Poppins',
+              colorScheme: ColorScheme.fromSeed(seedColor: Colors.grey),
+              useMaterial3: true,
+            ),
+            home: const ImportWalletPage());
+    //  }
+    // );
   }
 }

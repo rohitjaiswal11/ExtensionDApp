@@ -1,6 +1,6 @@
 import 'package:extensionapp/export.dart';
-import 'package:extensionapp/utils/common.dart';
-import 'package:extensionapp/views/Utils/sharedpref.dart';
+import 'package:extensionapp/Utils/common.dart';
+import 'package:extensionapp/Utils/sharedpref.dart';
 import 'package:flutter/material.dart';
 
 class Account extends StatefulWidget {

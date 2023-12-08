@@ -1,7 +1,7 @@
 import 'package:bip39/bip39.dart' as bip39;
 import 'package:extensionapp/export.dart';
-import 'package:extensionapp/utils/common.dart';
-import 'package:extensionapp/views/Utils/sharedpref.dart';
+import 'package:extensionapp/Utils/common.dart';
+import 'package:extensionapp/Utils/sharedpref.dart';
 
 import "package:hex/hex.dart";
 import 'package:wallet/wallet.dart' as wallet;
@@ -18,19 +18,19 @@ class Wallet {
     return mnemonic;
   }
 
-  walletaddress(String mnemonicsprovided)async {
+       walletaddress(String mnemonicsprovided) {
    
     final passphrase = '';
     try{
       
       final seed =
-        await  wallet.mnemonicToSeed(mnemonicsprovided.split(" "), passphrase: passphrase);
+          wallet.mnemonicToSeed(mnemonicsprovided.split(" "), passphrase: passphrase);
     final master = wallet.ExtendedPrivateKey.master(seed, wallet.xprv);
     final root = master.forPath("m/44'/195'/0'/0/0");
 
     final privateKey =
-        await wallet.PrivateKey((root as wallet.ExtendedPrivateKey).key);
-    final publicKey =await  wallet.tron.createPublicKey(privateKey);
+         wallet.PrivateKey((root as wallet.ExtendedPrivateKey).key);
+    final publicKey =  wallet.tron.createPublicKey(privateKey);
     final address = wallet.tron.createAddress(publicKey);
 
     final encodepublicKey = HEX.encode(publicKey.value);
@@ -42,7 +42,7 @@ class Wallet {
     print('Public Key $encodepublicKey');
 
     SharedPreferencesManager().writeString('publickey', address.toString());
-    return;
+
     }catch(e){
       print(e);
     }
@@ -62,3 +62,6 @@ Common.publicgenerated=encodegenPublic;
   //  return encodegenPublic;
   }
 }
+
+
+

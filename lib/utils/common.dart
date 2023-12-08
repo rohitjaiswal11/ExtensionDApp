@@ -6,7 +6,7 @@ import 'package:toast/toast.dart';
 class Common{
 
 
- static List<String> accountsCreated = [];
+static List<String> accountsCreated = [];
 
  static List<String> walletcreated=[];
 static String ? txtaccountglobal;

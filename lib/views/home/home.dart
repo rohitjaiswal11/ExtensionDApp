@@ -1,8 +1,9 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
-import 'package:extensionapp/views/Utils/sharedpref.dart';
-import 'package:extensionapp/views/home/home_const.dart';
+import 'package:extensionapp/Utils/sharedpref.dart';
+
 import 'package:extensionapp/views/send/send.dart';
-import 'package:extensionapp/views/topbar.dart';
+import 'package:extensionapp/views/home/topbar.dart';
+import 'package:extensionapp/views/swap/swap.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -81,6 +82,9 @@ class _MyHomePageState extends State<MyHomePage>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+
+
+
       backgroundColor: Colors.black87,
       body: SingleChildScrollView(
         child: Column(
@@ -152,6 +156,15 @@ class _MyHomePageState extends State<MyHomePage>
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
+
+//                 ListView.builder(itemBuilder: (context,index)
+                
+//                 {
+// return 
+
+
+//                 }
+             //   )
                 // ListView.builder(shrinkWrap: true,
                 //     itemCount: ButtonTabs.btntaps.length,
                 //     itemBuilder: (context, index) {
@@ -161,9 +174,12 @@ class _MyHomePageState extends State<MyHomePage>
                   Column(
                     children: [
                       InkWell(
-                        onTap: () {
-                          Get.to(Send());
-                          //Get.toNamed(ButtonTabs.btntaps[i].nav.toString());
+
+
+                        onTap: (){
+
+
+                         ButtonTabs.btntaps[i].Pressed?.call();
                         },
                         child: Container(
                             padding: const EdgeInsets.symmetric(
@@ -451,9 +467,9 @@ class MainNet {
   MainNet({required this.coinimage, required this.coinname});
 
   static List<MainNet> mainnetworklist = [
-    MainNet(coinimage:  'assets/images/ethlogo.png', coinname: 'Etherium'),
+    MainNet(coinimage:  'assets/images/ethlogo.png', coinname: 'Etherium  Mainnet'),
     MainNet(
-        coinimage: 'assets/images/linealogo.jpg', coinname: 'Linea'),
+        coinimage: 'assets/images/linealogo.jpg', coinname: ' Linea  Mainnet'),
    
   ];
 }
@@ -479,7 +495,11 @@ class ButtonTabs {
   final String btntapname;
   final String? nav;
 
+  void Function()? Pressed;
+
+
   ButtonTabs({
+ this.Pressed,
     required this.img,
     required this.btntapname,
     this.nav,
@@ -487,10 +507,16 @@ class ButtonTabs {
 
   static List<ButtonTabs> btntaps = [
     ButtonTabs(
-        img: 'assets/icons/plus-minus.png', btntapname: 'Buy & Sell', nav: ""),
+        img: 'assets/icons/plus-minus.png', btntapname: 'Buy & Sell', nav: "",
+        ),
     ButtonTabs(
-        img: 'assets/icons/send.png', btntapname: 'Send', nav: "/Send()"),
-    ButtonTabs(img: 'assets/icons/exchange.png', btntapname: 'Swap'),
+        img: 'assets/icons/send.png', btntapname: 'Send', nav: "/Send()",Pressed:(){
+print("dfbnihbsighhfg");
+Get.to(Send());
+
+
+        }),
+    ButtonTabs(img: 'assets/icons/exchange.png', btntapname: 'Swap', Pressed: ()=> Get.to(Swap())),
     ButtonTabs(img: 'assets/icons/bridge.png', btntapname: 'Bridge'),
     ButtonTabs(img: 'assets/icons/stock.png', btntapname: 'Portfolio'),
   ];

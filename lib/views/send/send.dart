@@ -1,12 +1,12 @@
 import 'package:extensionapp/Blockchain/blockchain%20.dart';
 import 'package:extensionapp/Controller/controller.dart';
-import 'package:extensionapp/utils/common.dart';
-import 'package:extensionapp/views/Utils/common_Acc.dart';
-import 'package:extensionapp/views/Utils/dialogwidget.dart';
-import 'package:extensionapp/views/Utils/sharedpref.dart';
+import 'package:extensionapp/Utils/common.dart';
+import 'package:extensionapp/Utils/common_Acc.dart';
+import 'package:extensionapp/Utils/dialogwidget.dart';
+import 'package:extensionapp/Utils/sharedpref.dart';
 import 'package:extensionapp/views/add_account.dart';
 import 'package:extensionapp/views/home/home.dart';
-import 'package:extensionapp/views/topbar.dart';
+import 'package:extensionapp/views/home/topbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get_core/src/get_main.dart';

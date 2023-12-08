@@ -3,8 +3,8 @@
 import 'dart:js_interop_unsafe';
 
 import 'package:extensionapp/Blockchain/blockchain%20.dart';
-import 'package:extensionapp/utils/common.dart';
-import 'package:extensionapp/views/Utils/sharedpref.dart';
+import 'package:extensionapp/Utils/common.dart';
+import 'package:extensionapp/Utils/sharedpref.dart';
 import 'package:flutter/material.dart';
 
 import 'package:extensionapp/export.dart';
@@ -261,11 +261,11 @@ void savedprivate() {
   print('printing private writestring  ${Common.privatekeytxt}');
 }
 
-Widget btncustom({
+InkWell btncustom({
   btncolor,
   btntxtclr,
   required btntxt,
-  required GestureTapCallback BtnPressed,
+  BtnPressed,
 }) {
   return InkWell(
     onTap: BtnPressed,
