@@ -22,7 +22,12 @@ class ImportSuccess extends StatelessWidget {
         )),
         CustomFonts.heading18("Success", Colors.black26),
         Spacer(),
-        CustomButton(btnname: "Import", pressed: () {}),
+        CustomButton(btnname: "Import", pressed: () {
+
+
+
+          Get.to(MyHomePage());
+        }),
         SizedBox(
           height: Get.height * 0.05,
         )

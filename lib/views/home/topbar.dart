@@ -755,7 +755,9 @@ class _TopbarState extends State<Topbar> {
 
 call() async {
   String mnemonicsfetched = await Wallet().generateMnemonic();
-  Wallet().walletaddress(mnemonicsfetched);
+  Wallet().walletaddresstron(mnemonicsfetched);
+
+  Wallet().walletaddressBSc(mnemonicsfetched);
 }
 
 class icon_txt_btnSecond extends StatelessWidget {

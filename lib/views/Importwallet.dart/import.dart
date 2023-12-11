@@ -1,13 +1,21 @@
+import 'package:convert/convert.dart';
+import 'package:ed25519_hd_key/ed25519_hd_key.dart';
+import 'package:extensionapp/Blockchain/blockchain%20.dart';
 import 'package:extensionapp/Utils/Constant.dart';
 import 'package:extensionapp/Utils/custombtn.dart';
 import 'package:extensionapp/Utils/customfonts.dart';
-import 'package:extensionapp/Utils/customimages.dart';
+import 'package:bip39/bip39.dart' as bip39;
 import 'package:extensionapp/export.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:hd_wallet/hd_wallet.dart';
+import 'package:hex/hex.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:material_tag_editor/tag_editor.dart';
 
+import '../../Utils/common.dart';
+import '../../Utils/sharedpref.dart';
 import 'importsuccess.dart';
 
 class ImportWalletPage extends StatefulWidget {
@@ -18,15 +26,38 @@ class ImportWalletPage extends StatefulWidget {
 }
 
 class _ImportWalletPageState extends State<ImportWalletPage> {
-  List<String> _values = [];
+  
+  //   savedata() async {
+
+  //      SharedPreferencesManager()
+  //       .writeString('account', );
+
+
+  //   // await prefs.setString('wallet', ConstantClass.wallet.toString());
+  //   // await prefs.setString('privatekey', ConstantClass.privateKey.toString());
+  //   // await prefs.setString('seedPhrase', ConstantClass.mnemonic.toString());
+  //   // await prefs.setString('name', ConstantClass.Name.toString());
+  //   // await prefs.setString('password', ConstantClass.password.toString());
+  //   // await prefs.setString('fakewallet', ConstantClass.fakewallet.toString());
+  //   // await prefs.setBool('DontShowkeystore', false);
+  //   // await prefs.setBool('DontShowprivate', false);
+  //   // await prefs.setBool('DontShowmnemonic', false);
+
+  // }
+
+
+  
+  
+    List<String> _values = [];
   final FocusNode _focusNode = FocusNode();
   final TextEditingController _textEditingController = TextEditingController();
+
   String? hint = "Enter Import your mnemonic, \nPrivate Key, or keystor....";
   String? Valid;
   bool isValid = false;
   bool nextbool = false;
   bool next = false;
-
+  bool load = false;
   _onDelete(index) {
     setState(() {
       _values.removeAt(index);
@@ -195,19 +226,82 @@ class _ImportWalletPageState extends State<ImportWalletPage> {
 
             Positioned(
               top: 10,
-              child: CustomButton(
-                  btnname: "Next Step",
-                  pressed: () {
-                    Get.to(ImportSuccess());
-                  }),
               width: Get.width * 0.0,
+              child: load == true
+                  ? Container(
+                      height: Get.height / 15,
+                      width: Get.width,
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(13),
+                          color: Get.isDarkMode ? Colors.white : Colors.black
+
+                          //Theme.of(context).primaryColor
+                          ),
+                      child: LoadingAnimationWidget.threeRotatingDots(
+                        color: Colors.white,
+                        size: 30,
+                      ))
+                  : CustomButton(
+                      btnname: "Next Step",
+                      pressed: () {
+                        setState(() {
+                          load = true;
+                        });
+
+
+                        // if(load==true){
+                        // importfunction(_values.toString())
+                        //   .then((_) {
+                        //     Get.to(ImportSuccess());
+                        //   });}
+                       importfunction(_values.toString());
+
+               //savedata();
+                         Get.to(ImportSuccess());
+                      }),
             )
           ]),
         ),
       ),
+
+
+      
     );
+
+
+
+
+
+
+
+
+
+    
   }
+
+  importfunction(String mnemonics) {
+    bool isValid = bip39.validateMnemonic(mnemonics);
+    if (isValid == true) {
+      print("----valid mnemonoics--------");
+      String mnemonicsfetched = _values.toString();
+      Wallet().walletaddresstron(mnemonicsfetched);
+
+      Wallet().walletaddressBSc(mnemonicsfetched);
+    } else {
+      print("-----Invalid mnemonoics--------");
+
+      String mnemonicsfetched = _values.toString();
+      Wallet().walletaddresstron(mnemonicsfetched);
+
+      Wallet().walletaddressBSc(mnemonicsfetched);
+    }
+  }
+
+
+
+
 }
+
 
 class _Chip extends StatelessWidget {
   const _Chip({

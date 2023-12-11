@@ -14,7 +14,7 @@ import 'package:http/http.dart' as http;
 
 
 
-import 'package:ed25519_hd_key/ed25519_hd_key.dart';
+
 import 'package:extensionapp/Utils/Constant.dart';
 
 import 'package:logger/logger.dart';

@@ -55,6 +55,8 @@ dependencies:
   trust_wallet_core_lib: ^0.0.7+3.0.4
   tron: ^0.0.2
   fixnum: ^1.1.0
+  loading_animation_widget: ^1.2.0+4
+  qr_flutter:
 #   ## Adiition Dapp setup
 
 #   shared_preferences: ^2.2.2
@@ -119,6 +121,7 @@ dependencies:
   crypto: ^3.0.3
   http: ^1.1.0
   protobuf_google: ^0.0.1
+  bs58: ^1.0.2
   
 #   numeric_keyboard: ^1.1.0
 #   local_auth: ^2.1.7

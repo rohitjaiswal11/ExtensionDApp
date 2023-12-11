@@ -1,4 +1,4 @@
-
+import 'package:shared_preferences/shared_preferences.dart';
 class ConstantClass {
 
 
@@ -8,10 +8,41 @@ class ConstantClass {
  static var Imported_mnemonic;
  static var Scaned_wallet;
  static String? wallet;
+  static String? walletTron;
  static String? FixedWallet = "TUPxRRwjzPtLpbHYY21CLCCoPZ4eaynKm5";
  static String? privateKey;
  static String? fakewallet;
- static String? USDPbalance="0.0";}
+ static String? USDPbalance="0.0";
+ 
+ static String? Walletname;
+ 
+  static bool? imported;
+
+
+
+
+
+
+
+
+
+ static Future<void> getWallet() async {
+  final SharedPreferences prefs = await SharedPreferences.getInstance();
+  ConstantClass.wallet = prefs.getString('wallet');
+  ConstantClass.privateKey = prefs.getString('privatekey');
+  ConstantClass.Name = prefs.getString('name');
+  ConstantClass.mnemonic = prefs.getString('seedPhrase');
+  ConstantClass.password = prefs.getString('password');
+  ConstantClass.fakewallet = prefs.getString('fakewallet');
+  // ConstantClass.Network = prefs.getString('Network') ?? "Pox Testnet";
+
+ }
+
+
+
+
+
+ }
 
 
 

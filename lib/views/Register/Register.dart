@@ -7,6 +7,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../CreationWallet/create.dart';
+
 class Register extends StatelessWidget {
   const Register({super.key});
 
@@ -34,7 +36,12 @@ class Register extends StatelessWidget {
               child:CustomImages.setAssetImage(CustomImages.intro , fit: BoxFit.contain)),
           CustomButton(
             btnname: "Create Account",
-            pressed: () {},
+            pressed: () {
+
+
+
+             Get.to(Create_Wallet());
+            },
             width: Get.height * 0.5,
           ),
           SizedBox(

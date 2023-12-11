@@ -27,9 +27,9 @@ class CustomImages {
       color: color,
     );
   }
-
+ static String splash ="assets/images/letter-l.png";
   static String intro = "assets/images/intro.png";
-
+  static String idea="assets/images/idea.png";
   static String successgreen = "assets/images/checked.png";
 
   /// HOME ...........................................................

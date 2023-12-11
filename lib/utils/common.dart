@@ -13,7 +13,7 @@ static String ? txtaccountglobal;
 static String ?privatekeytxt;
 static String ?publicgenerated;
 
-
+ static List<String> walletimported=[];
 
   
 
