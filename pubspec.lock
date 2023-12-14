@@ -899,7 +899,7 @@ packages:
     source: hosted
     version: "0.1.4-beta"
   web3dart:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: web3dart
       sha256: bebbea9278723cef51d21caf65668860e7547f59114fe9f8af01b873a72ba0e6

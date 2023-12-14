@@ -1,57 +1,63 @@
+import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
 class ConstantClass {
+  static String? Name;
+  static String? password;
+  static var mnemonic;
+  static var Imported_mnemonic;
+  static var Scaned_wallet;
 
+// For DashBoard
+  static String? wallet;
+  static String? privateKey;
+  static String? publicKey;
 
- static String? Name;
- static String? password;
- static var mnemonic;
- static var Imported_mnemonic;
- static var Scaned_wallet;
- static String? wallet;
+  static String? walletBsc;
   static String? walletTron;
- static String? FixedWallet = "TUPxRRwjzPtLpbHYY21CLCCoPZ4eaynKm5";
- static String? privateKey;
- static String? fakewallet;
- static String? USDPbalance="0.0";
- 
- static String? Walletname;
- 
+  static String? walletimport;
+
+  static String? publicKeyBsc;
+  static String? publicKeyTron;
+
+  static String? privateKeyBsc;
+  static String? privateKeyTron;
+
+  static String? fakewallet;
+  static String? USDPbalance = "0.0";
+
+  static String? Walletname;
+
   static bool? imported;
 
+  static String? FixedWallet = "TUPxRRwjzPtLpbHYY21CLCCoPZ4eaynKm5";
 
+  static String? publicgenerated;
 
+  static int currentIndex = 0;
 
+  static bool network0 = true;
+  static bool network1 = false;
 
+  static Future<void> getWallet() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    ConstantClass.walletBsc = prefs.getString('walletBsc');
+    ConstantClass.walletTron = prefs.getString('walletTron');
+    ConstantClass.privateKeyBsc = prefs.getString('privatekeyBsc');
+    ConstantClass.privateKeyTron = prefs.getString('privatekeyTron');
+    ConstantClass.publicKeyBsc = prefs.getString('publickeyBsc');
+    ConstantClass.publicKeyTron = prefs.getString('publickeyTron');
+    ConstantClass.Name = prefs.getString('name');
+    ConstantClass.mnemonic = prefs.getString('seedPhrase');
+    ConstantClass.password = prefs.getString('password');
+    ConstantClass.fakewallet = prefs.getString('fakewallet');
 
+    print("Text in " + "${ConstantClass.walletBsc}");
+    print("Get Wallet Constanrt class executed");
 
-
-
- static Future<void> getWallet() async {
-  final SharedPreferences prefs = await SharedPreferences.getInstance();
-  ConstantClass.wallet = prefs.getString('wallet');
-  ConstantClass.privateKey = prefs.getString('privatekey');
-  ConstantClass.Name = prefs.getString('name');
-  ConstantClass.mnemonic = prefs.getString('seedPhrase');
-  ConstantClass.password = prefs.getString('password');
-  ConstantClass.fakewallet = prefs.getString('fakewallet');
-  // ConstantClass.Network = prefs.getString('Network') ?? "Pox Testnet";
-
- }
-
-
-
-
-
- }
-
-
-
-
-
-
-
-
-
+    // ConstantClass.Network = prefs.getString('Network') ?? "Pox Testnet";
+  }
+}
 
 class AppContant {
 //Shared Perfarnce Key
@@ -164,7 +170,7 @@ String walletadddres = "";
 
 //  static Future<void> getWallet() async {
 //   final SharedPreferences prefs = await SharedPreferences.getInstance();
-//   ConstantClass.wallet = prefs.getString('wallet');
+//   ConstantClass.walletBsc = prefs.getString('wallet');
 //   ConstantClass.privateKey = prefs.getString('privatekey');
 //   ConstantClass.Name = prefs.getString('name');
 //   ConstantClass.mnemonic = prefs.getString('seedPhrase');

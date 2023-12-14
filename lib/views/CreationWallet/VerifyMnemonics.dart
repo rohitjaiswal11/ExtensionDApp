@@ -4,7 +4,7 @@ import 'package:extensionapp/Utils/Constant.dart';
 import 'package:extensionapp/Utils/Dimensions.dart';
 import 'package:extensionapp/export.dart';
 import 'package:flutter/material.dart';
-
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../Blockchain/blockchain .dart';
 import '../../Utils/Colors copy.dart';
 import '../../Utils/customfonts.dart';
@@ -24,9 +24,9 @@ class mylist_data {
 }
 
 class _Verify_MnemonicState extends State<Verify_Mnemonic> {
-  bool  visibilitycol1= true;
-    bool  visibilitycol2= true;
-        bool  visibilitycol3=true;
+  bool visibilitycol1 = true;
+  bool visibilitycol2 = true;
+  bool visibilitycol3 = true;
   List<int> selectedIndices = [];
   List<String> selectedItems = [];
   List<String> mimonic = ConstantClass.mnemonic.split(" ");
@@ -45,15 +45,41 @@ class _Verify_MnemonicState extends State<Verify_Mnemonic> {
   List<mylist_data> mylist = [];
   List other = ConstantClass.mnemonic.split(" ");
 
-  CreateWallet()async{
-
-
-   await Wallet().walletaddressBSc(ConstantClass.mnemonic);
+  Future<bool> CreateWallet() async {
+    await Wallet().walletaddressBSc(ConstantClass.mnemonic);
     await Wallet().walletaddresstron(ConstantClass.mnemonic);
+    return true;
   }
 
+  savedata() async {
 
+print('(((((((((((((((==PRINTING  Before SAVE DATA==)))))))))))))))');
+print('seedPhrase'+ ConstantClass.mnemonic.toString());
+print("ConstantClass.walletBsc"+ConstantClass.walletBsc.toString());
+print('walletTron'+ConstantClass.walletTron.toString());
+print('walletBsc'+ConstantClass.walletBsc.toString());
+print('privatekeyTron'+ ConstantClass.privateKeyTron.toString());
+print('privatekeyBsc'+ ConstantClass.privateKeyBsc.toString());
+print('name'+ ConstantClass.Name.toString());
+print('password'+ ConstantClass.password.toString());
+
+
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+        await prefs.setString('seedPhrase', ConstantClass.mnemonic.toString());
+    await prefs.setString('walletBsc', ConstantClass.walletBsc.toString());
+    await prefs.setString('walletTron', ConstantClass.walletTron.toString());
+    await prefs.setString('privatekeyBsc', ConstantClass.privateKeyBsc.toString());
+    await prefs.setString('privatekeyTron', ConstantClass.privateKeyTron.toString());
+    await prefs.setString('publickeyBsc', ConstantClass.publicKeyBsc.toString());
+    await prefs.setString('publickeyTron', ConstantClass.publicKeyTron.toString());
+    await prefs.setString('name', ConstantClass.Name.toString());
+    await prefs.setString('password', ConstantClass.password.toString());
+    // await prefs.setString('fakewallet', ConstantClass.fakewallet.toString());
+    // await prefs.setBool('DontShowkeystore', false);
+    // await prefs.setBool('DontShowprivate', false);
+    // await prefs.setBool('DontShowmnemonic', false);
   
+  }
 
   @override
   void initState() {
@@ -168,325 +194,340 @@ class _Verify_MnemonicState extends State<Verify_Mnemonic> {
               SizedBox(
                 height: CustomDimension.myheight(context) / 35,
               ),
-              Visibility(visible: visibilitycol1,
+              Visibility(
+                  visible: visibilitycol1,
                   child: Column(
-                children: [
+                    children: [
 // ListTile(
 
 //   trailing: CustomFonts.Text12("1/3", Colors.black.withOpacity(0.4)),
 // ),
-                  CustomFonts.text14(
-                      "Choose the ${selectedIndices[0].toString()} No. word",
-                      ColorsCustom.black),
-                  SizedBox(
-                    height: CustomDimension.myheight(context) / 55,
-                  ),
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      InkWell(
-                        onTap: () {
-                          setState(() {
-                            completea = true;
-                            complete1 = true;
-                            complete2 = false;
-                            complete3 = false;
-                          });
-                        },
-                        child: Container(
-                            height: CustomDimension.myheight(context) / 20,
-                            width: CustomDimension.mywidth(context) / 3.5,
-                            padding: EdgeInsets.all(5),
-                            decoration: BoxDecoration(
-                              color: complete1 == true
-                                  ? Colors.black
-                                  : ColorsCustom.transparent,
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(10)),
-                              border: Border.all(color: ColorsCustom.black12),
-                            ),
-                            child: Center(
-                                child: CustomFonts.text14(
-                              mylist[selectedIndices[0] - 1]
-                                  .mimonic_string
-                                  .toString(),
-                              complete1 == true
-                                  ? ColorsCustom.white
-                                  : ColorsCustom.black,
-                            ))),
+                      CustomFonts.text14(
+                          "Choose the ${selectedIndices[0].toString()} No. word",
+                          ColorsCustom.black),
+                      SizedBox(
+                        height: CustomDimension.myheight(context) / 55,
                       ),
-                      InkWell(
-                        onTap: () {
-                          setState(() {
-                            completea = false;
-                            complete1 = false;
-                            complete2 = true;
-                            complete3 = false;
-                          });
-                        },
-                        child: Container(
-                            height: CustomDimension.myheight(context) / 20,
-                            width: CustomDimension.mywidth(context) / 4,
-                            padding: EdgeInsets.all(5),
-                            decoration: BoxDecoration(
-                              color: complete2 == true
-                                  ? Colors.black
-                                  : ColorsCustom.transparent,
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(10)),
-                              border: Border.all(color: ColorsCustom.black12),
-                            ),
-                            child: Center(
-                                child: CustomFonts.text14(
-                                    other[3].toString(),
-                                    complete2 == true
-                                        ? ColorsCustom.white
-                                        : ColorsCustom.black))),
-                      ),
-                      InkWell(
-                        onTap: () {
-                          setState(() {
-                            completea = false;
-                            complete1 = false;
-                            complete2 = false;
-                            complete3 = true;
-                          });
-                        },
-                        child: Container(
-                            height: CustomDimension.myheight(context) / 20,
-                            width: CustomDimension.mywidth(context) / 4,
-                            padding: EdgeInsets.all(5),
-                            decoration: BoxDecoration(
-                              color: complete3 == true
-                                  ? Colors.black
-                                  : ColorsCustom.transparent,
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(10)),
-                              border: Border.all(color: ColorsCustom.black12),
-                            ),
-                            child: Center(
-                                child: CustomFonts.text14(
-                                    other[5].toString(),
-                                    complete3 == true
-                                        ? ColorsCustom.white
-                                        : ColorsCustom.black))),
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          InkWell(
+                            onTap: () {
+                              setState(() {
+                                completea = true;
+                                complete1 = true;
+                                complete2 = false;
+                                complete3 = false;
+                              });
+                            },
+                            child: Container(
+                                height: CustomDimension.myheight(context) / 20,
+                                width: CustomDimension.mywidth(context) / 3.5,
+                                padding: EdgeInsets.all(5),
+                                decoration: BoxDecoration(
+                                  color: complete1 == true
+                                      ? Colors.black
+                                      : ColorsCustom.transparent,
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(10)),
+                                  border:
+                                      Border.all(color: ColorsCustom.black12),
+                                ),
+                                child: Center(
+                                    child: CustomFonts.text14(
+                                  mylist[selectedIndices[0] - 1]
+                                      .mimonic_string
+                                      .toString(),
+                                  complete1 == true
+                                      ? ColorsCustom.white
+                                      : ColorsCustom.black,
+                                ))),
+                          ),
+                          InkWell(
+                            onTap: () {
+                              setState(() {
+                                completea = false;
+                                complete1 = false;
+                                complete2 = true;
+                                complete3 = false;
+                              });
+                            },
+                            child: Container(
+                                height: CustomDimension.myheight(context) / 20,
+                                width: CustomDimension.mywidth(context) / 4,
+                                padding: EdgeInsets.all(5),
+                                decoration: BoxDecoration(
+                                  color: complete2 == true
+                                      ? Colors.black
+                                      : ColorsCustom.transparent,
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(10)),
+                                  border:
+                                      Border.all(color: ColorsCustom.black12),
+                                ),
+                                child: Center(
+                                    child: CustomFonts.text14(
+                                        other[3].toString(),
+                                        complete2 == true
+                                            ? ColorsCustom.white
+                                            : ColorsCustom.black))),
+                          ),
+                          InkWell(
+                            onTap: () {
+                              setState(() {
+                                completea = false;
+                                complete1 = false;
+                                complete2 = false;
+                                complete3 = true;
+                              });
+                            },
+                            child: Container(
+                                height: CustomDimension.myheight(context) / 20,
+                                width: CustomDimension.mywidth(context) / 4,
+                                padding: EdgeInsets.all(5),
+                                decoration: BoxDecoration(
+                                  color: complete3 == true
+                                      ? Colors.black
+                                      : ColorsCustom.transparent,
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(10)),
+                                  border:
+                                      Border.all(color: ColorsCustom.black12),
+                                ),
+                                child: Center(
+                                    child: CustomFonts.text14(
+                                        other[5].toString(),
+                                        complete3 == true
+                                            ? ColorsCustom.white
+                                            : ColorsCustom.black))),
+                          ),
+                        ],
                       ),
                     ],
-                  ),
-                ],
-              )),
-
-               SizedBox(height: CustomDimension.myheight(context) / 35,),
-
-              Visibility(visible: visibilitycol2,
+                  )),
+              SizedBox(
+                height: CustomDimension.myheight(context) / 35,
+              ),
+              Visibility(
+                  visible: visibilitycol2,
                   child: Column(
-                children: [
-                  CustomFonts.text14(
-                      "Choose the ${selectedIndices[1].toString()} No. word",
-                      ColorsCustom.black),
-                  SizedBox(
-                    height: CustomDimension.myheight(context) / 55,
-                  ),
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      InkWell(
-                        onTap: () {
-                          setState(() {
-                            completeb = false;
-                            complete21 = true;
-                            complete22 = false;
-                            complete23 = false;
-                          });
-                        },
-                        child: Container(
-                            height: CustomDimension.myheight(context) / 20,
-                            width: CustomDimension.mywidth(context) / 4,
-                            padding: EdgeInsets.all(5),
-                            decoration: BoxDecoration(
-                              color: complete21 == true
-                                  ? Colors.black
-                                  : ColorsCustom.transparent,
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(10)),
-                              border: Border.all(color: ColorsCustom.black12),
-                            ),
-                            child: Center(
-                                child: CustomFonts.text14(
-                                    other[2].toString(),
-                                    complete21 == true
-                                        ? ColorsCustom.white
-                                        : ColorsCustom.black))),
+                      CustomFonts.text14(
+                          "Choose the ${selectedIndices[1].toString()} No. word",
+                          ColorsCustom.black),
+                      SizedBox(
+                        height: CustomDimension.myheight(context) / 55,
                       ),
-                      InkWell(
-                        onTap: () {
-                          setState(() {
-                            completeb = true;
-                            complete21 = false;
-                            complete22 = true;
-                            complete23 = false;
-                          });
-                        },
-                        child: Container(
-                            height: CustomDimension.myheight(context) / 20,
-                            width: CustomDimension.mywidth(context) / 4,
-                            padding: EdgeInsets.all(5),
-                            decoration: BoxDecoration(
-                              color: complete22 == true
-                                  ? Colors.black
-                                  : ColorsCustom.transparent,
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(10)),
-                              border: Border.all(color: ColorsCustom.black12),
-                            ),
-                            child: Center(
-                                child: CustomFonts.text14(
-                                    mylist[selectedIndices[1] - 1]
-                                        .mimonic_string
-                                        .toString(),
-                                    complete22 == true
-                                        ? ColorsCustom.white
-                                        : ColorsCustom.black))),
-                      ),
-                      InkWell(
-                        onTap: () {
-                          setState(() {
-                            completeb = false;
-                            complete21 = false;
-                            complete22 = false;
-                            complete23 = true;
-                          });
-                        },
-                        child: Container(
-                            height: CustomDimension.myheight(context) / 20,
-                            width: CustomDimension.mywidth(context) / 4,
-                            padding: EdgeInsets.all(5),
-                            decoration: BoxDecoration(
-                              color: complete23 == true
-                                  ? Colors.black
-                                  : ColorsCustom.transparent,
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(10)),
-                              border: Border.all(color: ColorsCustom.black12),
-                            ),
-                            child: Center(
-                                child: CustomFonts.text14(
-                                    other[8].toString(),
-                                    complete23 == true
-                                        ? ColorsCustom.white
-                                        : ColorsCustom.black))),
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          InkWell(
+                            onTap: () {
+                              setState(() {
+                                completeb = false;
+                                complete21 = true;
+                                complete22 = false;
+                                complete23 = false;
+                              });
+                            },
+                            child: Container(
+                                height: CustomDimension.myheight(context) / 20,
+                                width: CustomDimension.mywidth(context) / 4,
+                                padding: EdgeInsets.all(5),
+                                decoration: BoxDecoration(
+                                  color: complete21 == true
+                                      ? Colors.black
+                                      : ColorsCustom.transparent,
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(10)),
+                                  border:
+                                      Border.all(color: ColorsCustom.black12),
+                                ),
+                                child: Center(
+                                    child: CustomFonts.text14(
+                                        other[2].toString(),
+                                        complete21 == true
+                                            ? ColorsCustom.white
+                                            : ColorsCustom.black))),
+                          ),
+                          InkWell(
+                            onTap: () {
+                              setState(() {
+                                completeb = true;
+                                complete21 = false;
+                                complete22 = true;
+                                complete23 = false;
+                              });
+                            },
+                            child: Container(
+                                height: CustomDimension.myheight(context) / 20,
+                                width: CustomDimension.mywidth(context) / 4,
+                                padding: EdgeInsets.all(5),
+                                decoration: BoxDecoration(
+                                  color: complete22 == true
+                                      ? Colors.black
+                                      : ColorsCustom.transparent,
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(10)),
+                                  border:
+                                      Border.all(color: ColorsCustom.black12),
+                                ),
+                                child: Center(
+                                    child: CustomFonts.text14(
+                                        mylist[selectedIndices[1] - 1]
+                                            .mimonic_string
+                                            .toString(),
+                                        complete22 == true
+                                            ? ColorsCustom.white
+                                            : ColorsCustom.black))),
+                          ),
+                          InkWell(
+                            onTap: () {
+                              setState(() {
+                                completeb = false;
+                                complete21 = false;
+                                complete22 = false;
+                                complete23 = true;
+                              });
+                            },
+                            child: Container(
+                                height: CustomDimension.myheight(context) / 20,
+                                width: CustomDimension.mywidth(context) / 4,
+                                padding: EdgeInsets.all(5),
+                                decoration: BoxDecoration(
+                                  color: complete23 == true
+                                      ? Colors.black
+                                      : ColorsCustom.transparent,
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(10)),
+                                  border:
+                                      Border.all(color: ColorsCustom.black12),
+                                ),
+                                child: Center(
+                                    child: CustomFonts.text14(
+                                        other[8].toString(),
+                                        complete23 == true
+                                            ? ColorsCustom.white
+                                            : ColorsCustom.black))),
+                          ),
+                        ],
                       ),
                     ],
-                  ),
-                ],
-              )),
-
-               SizedBox(height: CustomDimension.myheight(context) / 35,),
-              Visibility(visible: visibilitycol3,
+                  )),
+              SizedBox(
+                height: CustomDimension.myheight(context) / 35,
+              ),
+              Visibility(
+                  visible: visibilitycol3,
                   child: Column(
-                children: [
-                  CustomFonts.text14(
-                      "Choose the ${selectedIndices[2].toString()} No. word",
-                      ColorsCustom.black),
-                  SizedBox(
-                    height: CustomDimension.myheight(context) / 55,
-                  ),
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      InkWell(
-                        onTap: () {
-                          setState(() {
-                            completec = false;
-                            complete31 = true;
-                            complete32 = false;
-                            complete33 = false;
-                          });
-                        },
-                        child: Container(
-                            height: CustomDimension.myheight(context) / 20,
-                            width: CustomDimension.mywidth(context) / 4,
-                            padding: EdgeInsets.all(5),
-                            decoration: BoxDecoration(
-                              color: complete31 == true
-                                  ? Colors.black
-                                  : ColorsCustom.transparent,
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(10)),
-                              border: Border.all(color: ColorsCustom.black12),
-                            ),
-                            child: Center(
-                                child: CustomFonts.text14(
-                                    other[4].toString(),
-                                    complete31 == true
-                                        ? ColorsCustom.white
-                                        : ColorsCustom.black))),
+                      CustomFonts.text14(
+                          "Choose the ${selectedIndices[2].toString()} No. word",
+                          ColorsCustom.black),
+                      SizedBox(
+                        height: CustomDimension.myheight(context) / 55,
                       ),
-                      InkWell(
-                        onTap: () {
-                          setState(() {
-                            completec = false;
-                            complete31 = false;
-                            complete32 = true;
-                            complete33 = false;
-                          });
-                        },
-                        child: Container(
-                            height: CustomDimension.myheight(context) / 20,
-                            width: CustomDimension.mywidth(context) / 4,
-                            padding: EdgeInsets.all(5),
-                            decoration: BoxDecoration(
-                              color: complete32 == true
-                                  ? Colors.black
-                                  : ColorsCustom.transparent,
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(10)),
-                              border: Border.all(color: ColorsCustom.black12),
-                            ),
-                            child: Center(
-                                child: CustomFonts.text14(
-                                    other[6].toString(),
-                                    complete32 == true
-                                        ? ColorsCustom.white
-                                        : ColorsCustom.black))),
-                      ),
-                      InkWell(
-                        onTap: () {
-                          setState(() {
-                            completec = true;
-                            complete31 = false;
-                            complete32 = false;
-                            complete33 = true;
-                          });
-                        },
-                        child: Container(
-                            height: CustomDimension.myheight(context) / 20,
-                            width: CustomDimension.mywidth(context) / 4,
-                            decoration: BoxDecoration(
-                              color: complete33 == true
-                                  ? Colors.black
-                                  : ColorsCustom.transparent,
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(10)),
-                              border: Border.all(color: ColorsCustom.black12),
-                            ),
-                            child: Center(
-                                child: CustomFonts.text14(
-                                    mylist[selectedIndices[2] - 1]
-                                        .mimonic_string
-                                        .toString(),
-                                    complete33 == true
-                                        ? ColorsCustom.white
-                                        : ColorsCustom.black))),
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          InkWell(
+                            onTap: () {
+                              setState(() {
+                                completec = false;
+                                complete31 = true;
+                                complete32 = false;
+                                complete33 = false;
+                              });
+                            },
+                            child: Container(
+                                height: CustomDimension.myheight(context) / 20,
+                                width: CustomDimension.mywidth(context) / 4,
+                                padding: EdgeInsets.all(5),
+                                decoration: BoxDecoration(
+                                  color: complete31 == true
+                                      ? Colors.black
+                                      : ColorsCustom.transparent,
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(10)),
+                                  border:
+                                      Border.all(color: ColorsCustom.black12),
+                                ),
+                                child: Center(
+                                    child: CustomFonts.text14(
+                                        other[4].toString(),
+                                        complete31 == true
+                                            ? ColorsCustom.white
+                                            : ColorsCustom.black))),
+                          ),
+                          InkWell(
+                            onTap: () {
+                              setState(() {
+                                completec = false;
+                                complete31 = false;
+                                complete32 = true;
+                                complete33 = false;
+                              });
+                            },
+                            child: Container(
+                                height: CustomDimension.myheight(context) / 20,
+                                width: CustomDimension.mywidth(context) / 4,
+                                padding: EdgeInsets.all(5),
+                                decoration: BoxDecoration(
+                                  color: complete32 == true
+                                      ? Colors.black
+                                      : ColorsCustom.transparent,
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(10)),
+                                  border:
+                                      Border.all(color: ColorsCustom.black12),
+                                ),
+                                child: Center(
+                                    child: CustomFonts.text14(
+                                        other[6].toString(),
+                                        complete32 == true
+                                            ? ColorsCustom.white
+                                            : ColorsCustom.black))),
+                          ),
+                          InkWell(
+                            onTap: () {
+                              setState(() {
+                                completec = true;
+                                complete31 = false;
+                                complete32 = false;
+                                complete33 = true;
+                              });
+                            },
+                            child: Container(
+                                height: CustomDimension.myheight(context) / 20,
+                                width: CustomDimension.mywidth(context) / 4,
+                                decoration: BoxDecoration(
+                                  color: complete33 == true
+                                      ? Colors.black
+                                      : ColorsCustom.transparent,
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(10)),
+                                  border:
+                                      Border.all(color: ColorsCustom.black12),
+                                ),
+                                child: Center(
+                                    child: CustomFonts.text14(
+                                        mylist[selectedIndices[2] - 1]
+                                            .mimonic_string
+                                            .toString(),
+                                        complete33 == true
+                                            ? ColorsCustom.white
+                                            : ColorsCustom.black))),
+                          ),
+                        ],
                       ),
                     ],
-                  ),
-                ],
-              )),
-                SizedBox(height: CustomDimension.myheight(context) / 35,),
+                  )),
+              SizedBox(
+                height: CustomDimension.myheight(context) / 35,
+              ),
             ],
           ),
         ),
@@ -495,7 +536,7 @@ class _Verify_MnemonicState extends State<Verify_Mnemonic> {
         color: Theme.of(context).scaffoldBackgroundColor,
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
         child: InkWell(
-          onTap: () {
+          onTap: () async {
             print("????????????    " +
                 completea.toString() +
                 "    " +
@@ -504,9 +545,10 @@ class _Verify_MnemonicState extends State<Verify_Mnemonic> {
                 completec.toString());
 
             if (completea == true && completeb == true && completec == true) {
-
-
-              CreateWallet();
+              bool isWalletCreated = await CreateWallet();
+              if (isWalletCreated == true) {
+                await savedata();
+              }
               Get.to(MyHomePage());
               // Navigator.of(context).push(MaterialPageRoute(builder: (context) => BottomNavigation(index: 0,)));
               //  Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) => BottomNavigation(index: 0)),(Route route) => false);

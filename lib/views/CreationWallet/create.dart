@@ -36,23 +36,23 @@ class _Create_WalletState extends State<Create_Wallet> {
   bool? complete = false;
   bool? load = false;
 
-  createMnemonics() async {
-    ConstantClass.mnemonic = Wallet().generateMnemonic();
+  createMnemonics() {
+    ConstantClass.mnemonic =        bip39.generateMnemonic();
+        //  Wallet().generateMnemonic();
+
+
 
     print("12-word mnemonic phrase: ${ConstantClass.mnemonic}");
 
-
     setState(() {
-
-      load=false;
+      load = false;
     });
 
-    savedata();
+      //  savedata(); 
   }
 
   @override
   void initState() {
-
     super.initState();
   }
 
@@ -62,7 +62,7 @@ class _Create_WalletState extends State<Create_Wallet> {
   //   return base58Address;
   // }
   // void ChangeToPoxx(){
-  //   String base58Address =  ConstantClass.wallet.toString();
+  //   String base58Address =  ConstantClass.walletBsc.toString();
   //   final Uint8List decodedBase58 = bs58check.decode(base58Address);
   //   final String encodedHex = HEX.encode(decodedBase58);
   //   print("===> $encodedHex");
@@ -130,7 +130,7 @@ class _Create_WalletState extends State<Create_Wallet> {
                   ),
                   Container(
                       padding: EdgeInsets.only(
-                       // top: CustomDimension.myheight(context) / 120,
+                        // top: CustomDimension.myheight(context) / 120,
                         left: CustomDimension.myheight(context) / 35,
                       ),
                       decoration: BoxDecoration(
@@ -187,7 +187,6 @@ class _Create_WalletState extends State<Create_Wallet> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                       
                           TextFormField(
                               validator: (val) {
                                 if (val!.isEmpty) return 'Enter Password';
@@ -339,9 +338,11 @@ class _Create_WalletState extends State<Create_Wallet> {
                     height: 15,
                   ),
                   Container(
-                     // height: CustomDimension.myheight(context) / 15,
+                      // height: CustomDimension.myheight(context) / 15,
                       width: CustomDimension.myheight(context),
-                      padding: EdgeInsets.only( left: CustomDimension.myheight(context) / 35,),
+                      padding: EdgeInsets.only(
+                        left: CustomDimension.myheight(context) / 35,
+                      ),
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.all(Radius.circular(10)),
                         border: Border.all(
@@ -388,6 +389,8 @@ class _Create_WalletState extends State<Create_Wallet> {
         padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
         child: InkWell(
           onTap: () {
+            Get.to(BackUp_Mnemonic());
+            createMnemonics();
             // Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) => Wallet_Created()),(Route route) => false);
             setState(() {
               ConstantClass.Name = wallet_Controller.text.toString();
@@ -397,9 +400,7 @@ class _Create_WalletState extends State<Create_Wallet> {
             if (ConstantClass.imported == true) {
               //  ChangeToPoxx();
             } else {
-              setState(() {
-              
-              });
+              setState(() {});
             }
 
             if (_formKey.currentState!.validate() &&
@@ -407,10 +408,10 @@ class _Create_WalletState extends State<Create_Wallet> {
                 upper == true &&
                 complete == true &&
                 number == true) {
-       
-              Future.delayed(Duration(seconds: 5), () {  createMnemonics();
-              Get.to(BackUp_Mnemonic());
-                
+              Future.delayed(Duration(seconds: 2), () {
+                createMnemonics();
+                // Get.to( BackUp_Mnemonic());
+
                 //    Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) =>ConstantClass.imported==true?BottomNavBar(): Wallet_Created()),(Route route) => false);
               });
             } else {
@@ -422,7 +423,7 @@ class _Create_WalletState extends State<Create_Wallet> {
           child: Container(
             height: CustomDimension.myheight(context) / 15,
             width: CustomDimension.myheight(context),
-            padding: EdgeInsets.only( left: 10),
+            padding: EdgeInsets.only(left: 10),
             decoration: BoxDecoration(
               color: Get.isDarkMode ? Colors.white : Colors.black,
               borderRadius: BorderRadius.all(Radius.circular(10)),
@@ -449,14 +450,14 @@ class _Create_WalletState extends State<Create_Wallet> {
 
   savedata() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.setString('Accountname', ConstantClass.Walletname.toString());
-    await prefs.setString('privatekey', ConstantClass.privateKey.toString());
+
+    // await prefs.setString('privatekey', ConstantClass.privateKey.toString());
     await prefs.setString('seedPhrase', ConstantClass.mnemonic.toString());
     await prefs.setString('name', ConstantClass.Name.toString());
     await prefs.setString('password', ConstantClass.password.toString());
-    await prefs.setString('fakewallet', ConstantClass.fakewallet.toString());
-    await prefs.setBool('DontShowkeystore', false);
-    await prefs.setBool('DontShowprivate', false);
-    await prefs.setBool('DontShowmnemonic', false);
+    // await prefs.setString('fakewallet', ConstantClass.fakewallet.toString());
+    // await prefs.setBool('DontShowkeystore', false);
+    // await prefs.setBool('DontShowprivate', false);
+    // await prefs.setBool('DontShowmnemonic', false);
   }
 }

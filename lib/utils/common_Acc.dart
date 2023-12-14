@@ -1,10 +1,11 @@
+import 'package:extensionapp/Utils/customfonts.dart';
 import 'package:extensionapp/export.dart';
 import 'package:extensionapp/Utils/common.dart';
 import 'package:extensionapp/Utils/sharedpref.dart';
 import 'package:flutter/material.dart';
 
 class Account extends StatefulWidget {
-  const Account({super.key});
+  const Account(BuildContext context, {super.key});
 
   @override
   State<Account> createState() => _AccountState();
@@ -26,12 +27,11 @@ class _AccountState extends State<Account> {
     print('Account name==== $accountname');
     cliptext = await SharedPreferencesManager().readString('publickey');
 
-    addEntry(accountname!,cliptext);
+    addEntry(accountname!, cliptext);
     print('Cliptext  ' + cliptext);
 
     setState(() {});
-    return (accountname,cliptext);
-    
+    return (accountname, cliptext);
   }
 
 //
@@ -67,10 +67,8 @@ class _AccountState extends State<Account> {
       if (hasDuplicates == false) {
         Common.walletcreated.add(cliptext);
         Common.accountsCreated.add(accountname!);
-       
       }
       print("List ii   ${Common.accountsCreated}");
-
 
       print("txtaccountglobal  ${Common.txtaccountglobal}");
       print("Account___ name  ${accountname!}");
@@ -79,24 +77,24 @@ class _AccountState extends State<Account> {
     //   dupicatecheck(Common.walletcreated);
     // setState(() {
     //   if (hasDuplicates == false) {
-        
-        Common.walletcreated.add(cliptext);
-  //     }
-  
-  //     //Common.txtaccountglobal=null;
-   
-  //     print("wallet add name  ${cliptext}");
-  //   });
+
+    Common.walletcreated.add(cliptext);
+    //     }
+
+    //     //Common.txtaccountglobal=null;
+
+    //     print("wallet add name  ${cliptext}");
+    //   });
   }
 
   @override
   Widget build(BuildContext context) {
     return Container(
       //   height: Get.height/2,
-      child: Common.accountsCreated!.isNotEmpty
+      child: Common.accountsCreated.isNotEmpty
           ? ListView.builder(
               shrinkWrap: true,
-              itemCount: Common.accountsCreated!.length,
+              itemCount: Common.accountsCreated.length,
               itemBuilder: (context, index) {
                 return SizedBox(
                   height: Get.height / 12,
@@ -124,7 +122,7 @@ class _AccountState extends State<Account> {
                               child: Text(
                                 "   ${Common.walletcreated[index]}",
                                 style: TextStyle(
-                                  fontSize: 13,
+                                    fontSize: 13,
                                     color: Colors.grey,
                                     overflow: TextOverflow.ellipsis),
                               ),
@@ -142,99 +140,84 @@ class _AccountState extends State<Account> {
                             ),
                             Text(
                               '\$ 0.00 USD',
-                              style: TextStyle(   fontSize: 13,color: Colors.grey),
+                              style:
+                                  TextStyle(fontSize: 13, color: Colors.grey),
                             )
                           ],
                         ),
                       ),
-                      InkWell(
-                        onTap: () {
-                                        
-                          print("dfdffd");
-PopupMenuButton<int>(
-                    onSelected: (int value) {
-                      // Handle the item selection here
-                      switch (value) {
-                        case 0:
-                         print(value);
-                          break;
-                        case 1:
-                     print(value);
-                          // Navigate to a new screen or perform an action for item 1
-                
-                          break;
-                        case 2:
-                          // Navigate to a different screen or perform an action for item 2
-                            print(value);
-                          break;
-                    
-                      }
-                    },
-                    itemBuilder: (context) => [
-                      // popupmenu item 1
-                
-                      for (int i = 0; i < 2; i++)
-                        PopupMenuItem(
-                          value: i,
-                          // row has two child icon and text
-                          child: Row(
-                            children: [
-                              menuicon[i],
-                              //  Icon(Icons.settings, color: Colors.white),
-                              SizedBox(
-                                // sized box with width 10
-                                width: 10,
+                      
+                        PopupMenuButton<int>(
+                            onSelected: (int value) {
+                              // Handle the item selection here
+                              switch (value) {
+                                case 0:
+                                  print(value);
+                                  break;
+                                case 1:
+                                  print(value);
+                                  // Navigate to a new screen or perform an action for item 1
+
+                                  break;
+                                case 2:
+                                  // Navigate to a different screen or perform an action for item 2
+
+                                  print(value);
+                                  break;
+                              }
+                            },
+                            itemBuilder: (context) => [
+                              PopupMenuItem<int>(
+                                value: 0,
+                                child: Row(
+                                  children: [
+                                    Icon(Icons.short_text_sharp, color: Colors.white),
+                                    SizedBox(width: 10),
+                                   CustomFonts.text12("Rename", Colors.white)
+                                  ],
+                                ),
                               ),
-                              menutxt[i],
+                              PopupMenuItem<int>(
+                                  value: 1,
+                                  child: Row(children: [
+                                    Icon(Icons.clear, color: Colors.white),
+                                    SizedBox(width: 10),
+                                     CustomFonts.text12("Delete", Colors.white)
+                                  ]))
+
+                              // popupmenu item 1
+
+                              // for (int i = 0; i < 2; i++)
+                              //   PopupMenuItem(
+                              //     value: i,
+                              //     // row has two child icon and text
+                              //     child: Row(
+                              //       children: [
+                              //         menuicon[i],
+                              //         //  Icon(Icons.settings, color: Colors.white),
+                              //         SizedBox(
+                              //           // sized box with width 10
+                              //           width: 10,
+                              //         ),
+                              //         menutxt[i],
+                              //       ],
+                              //     ),
+                              //   ),
                             ],
+                            // offset: Offset(25, 50),
+
+                            color: Colors.black.withOpacity(0.7),
+                            //   elevation: 2,
+
+                            icon: Image.asset(
+                              'assets/images/more.png',
+                              height: 20,
+                              fit: BoxFit.fitHeight,
+                            ),
+                            padding: EdgeInsets.zero,
                           ),
-                        ),
-                    ],
-                   // offset: Offset(25, 50),
-                
-                    color: Colors.black,
-                    //   elevation: 2,
-                
-                    icon:Image.asset(
-                      'assets/images/more.png',
-                    height: 20,
-                      fit: BoxFit.fitHeight,
-                    ),
-                  padding: EdgeInsets.zero,
+
                     
-                  );
-
-
-// PopupMenuButton(
-//           onSelected: (value) {
-//             // your logic
-//           },
-//           itemBuilder: (BuildContext bc) {
-//             return const [
-//               PopupMenuItem(
-//                 child: Text("Hello"),
-//                 value: '/hello',
-//               ),
-//               PopupMenuItem(
-//                 child: Text("About"),
-//                 value: '/about',
-//               ),
-//               PopupMenuItem(
-//                 child: Text("Contact"),
-//                 value: '/contact',
-//               )
-//             ];
-//           },
-//         );
-
-
-                        },
-                        child: Container(
-                          alignment: Alignment.topCenter,
-                          height: 20,
-                          child: Image.asset('assets/images/more.png'),
-                        ),
-                      )
                     ],
                   ),
                 );

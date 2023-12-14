@@ -17,37 +17,24 @@ class Splash extends StatefulWidget {
 }
 
 class _SplashState extends State<Splash> {
- late var  _controller;
+//  late var  _controller;
 
   @override
   void initState() {
-    var widtg = CustomDimension.mywidth(context);
-    print(":::::::::::::::::::::::::      " + widtg.toString());
-    pref();
-
-    ConstantClass.wallet != null ? ConstantClass.getWallet() : "";
+  
+    getdata();
 
 
-    // _controller = Image.asset(CustomImages.splash);
-    // _controller.initialize().then((_) {
-    //   _controller.setLooping(false);
-    //   setState(() {
-    //     _controller.play();
-    //   });
-    // }
-    // );
+    print("wallet Tron splash   " + ConstantClass.walletTron.toString());
 
     Timer(
-      Duration(seconds: 6),
+      Duration(seconds: 4),
       () => Navigator.pushReplacement(
         context,
         MaterialPageRoute(
-          builder: (context) =>
-              //BottomNavigation(index: 0),
-              ConstantClass.wallet == null
-                  ? Register()
-                  : MyHomePage()
-        ),
+            builder: (context) =>
+                //BottomNavigation(index: 0),
+                ConstantClass.walletBsc == null ? Register() : MyHomePage()),
       ),
     );
 
@@ -55,42 +42,52 @@ class _SplashState extends State<Splash> {
     super.initState();
   }
 
-  Future<void> pref() async {
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-    ConstantClass.wallet = prefs.getString('wallet');
-    ConstantClass.Name = prefs.getString('name');
-    ConstantClass.mnemonic = prefs.getString('seedPhrase');
-    ConstantClass.password = prefs.getString('password');
-    ConstantClass.fakewallet = prefs.getString('fakewallet');
-    // ConstantClass.Network = prefs.getString('Network') ??"Pox Testnet";
+
+
+  getdata() async {
+    if (await paastoprint()) {
+      setState(() {});
+
+      printfun();
+    }
+  }  Future<bool> paastoprint() async {
+    await ConstantClass.getWallet();
+    print("paastoprint Executed");
+    return true;
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: ColorsCustom.black,
-      body: 
-      
-
-      
-      Center(
+      body: Center(
         child: Container(
             width: CustomDimension.mywidth(context),
             height: CustomDimension.myheight(context) / 1.2,
             child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Image.asset(
                   CustomImages.splash,
                   height: Get.height * 0.3,
                   width: Get.height * 0.3,
                 ),
-                SizedBox(height: Get.height*0.09,)
-                ,
-
-               CircularProgressIndicator(color: Colors.green,)
+                SizedBox(
+                  height: Get.height * 0.09,
+                ),
+                CircularProgressIndicator(
+                  color: Colors.green,
+                )
               ],
             )),
       ),
     );
+  }
+
+  void printfun() {
+    print(" ConstantClass.name   ${ConstantClass.Name}");
+    print(" ConstantClass.walletBsc   ${ConstantClass.walletBsc}");
+    print(" ConstantClass.walletTron   ${ConstantClass.walletTron}");
+    print(" ConstantClass.walletBsc   ${ConstantClass.walletBsc}");
   }
 }

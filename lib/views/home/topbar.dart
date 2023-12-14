@@ -9,7 +9,9 @@ import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_navigation/get_navigation.dart';
 import 'package:toast/toast.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../Utils/Constant.dart';
 import '../../Utils/dialogwidget.dart';
 
 class Topbar extends StatefulWidget {
@@ -27,13 +29,62 @@ class _TopbarState extends State<Topbar> {
     }
   }
 
-  String img = 'assets/images/ethlogo.png';
-  toptaphandler(String img2) {
-    print(img2);
-    setState(() {
-      img = img2;
-    });
-    Get.back();
+  String img = 'assets/images/bsc.png';
+  int networkchange(int indexNetwork) {
+//     setState(() {
+//       print("Before Index ${indexNetwork}");
+// indexNetwork==0?indexNetwork++:indexNetwork--;
+
+// print("After Index ${indexNetwork}");
+
+//     });
+
+    // For BSC
+    if (indexNetwork == 0) {
+      print("network1 --------------BSC");
+      setState(() {
+        ConstantClass.network0 = false;
+        ConstantClass.network1 = true;
+      });
+      print("Network0  ${ConstantClass.network0}");
+      print("Network1  ${ConstantClass.network1}");
+
+      setState(() {
+        ConstantClass.currentIndex = indexNetwork;
+      });
+      Future<void> pref() async {
+        final SharedPreferences prefs = await SharedPreferences.getInstance();
+        ConstantClass.wallet = prefs.getString('walletBsc');
+        ConstantClass.publicKey = prefs.getString('publickeyBsc');
+        ConstantClass.privateKey = prefs.getString('privatekeyBsc');
+
+        ConstantClass.Name = prefs.getString('name');
+        ConstantClass.mnemonic = prefs.getString('seedPhrase');
+
+        await prefs.setInt('currentIndex', ConstantClass.currentIndex);
+      }
+    }
+
+    //for Tron
+    if (indexNetwork == 1) {
+      print("Network1-----------------Tron");
+      ConstantClass.network0 = false;
+      Future<void> pref() async {
+        final SharedPreferences prefs = await SharedPreferences.getInstance();
+
+        ConstantClass.wallet = prefs.getString('walletTron');
+        ConstantClass.publicKey = prefs.getString('publickeyTron');
+        ConstantClass.privateKey = prefs.getString('privatekeyTron');
+        ConstantClass.Name = prefs.getString('name');
+        ConstantClass.mnemonic = prefs.getString('seedPhrase');
+        ConstantClass.password = prefs.getString('password');
+        ConstantClass.fakewallet = prefs.getString('fakewallet');
+      }
+
+      setState(() {});
+    }
+
+    return indexNetwork;
   }
 
   bool isSwitched = false;
@@ -112,11 +163,28 @@ class _TopbarState extends State<Topbar> {
                                                   .mainnetworklist.length,
                                               itemBuilder: (context, index) {
                                                 return InkWell(
-                                                  onTap: () {
-                                                    toptaphandler(MainNet
-                                                        .mainnetworklist[index]
-                                                        .coinimage);
+                                                  onTap: () async {
+                                                    // print(  "index $index_network");
+                                                    setState(
+                                                      () {
+                                                        ConstantClass
+                                                                .currentIndex =
+                                                            networkchange(
+                                                                index);
+
+                                                        print(
+                                                            "ConstantClass.currentIndex       -----${ConstantClass.currentIndex}");
+                                                      },
+                                                    );
+
+
                                                     Get.back();
+                                                 
+// Get.to(const MyHomePage())?.then((value) {
+
+//   Get.back();
+// });
+
                                                   },
                                                   child: Padding(
                                                     padding:
@@ -191,10 +259,10 @@ class _TopbarState extends State<Topbar> {
                                                       (context, index) {
                                                     return InkWell(
                                                       onTap: () {
-                                                        toptaphandler(TestNetwork
-                                                            .testnetworklist[
-                                                                index]
-                                                            .coinimage);
+                                                        // networkchange(TestNetwork
+                                                        //     .testnetworklist[
+                                                        //         index]
+                                                        //     .coinimage);
                                                       },
                                                       child: Row(
                                                         children: [
@@ -259,6 +327,10 @@ class _TopbarState extends State<Topbar> {
                     }).then((value) {
                   print("tap");
                   setState(() {});
+                }).whenComplete(() {
+                  setState(() {
+                    print("Executindfkgndindfkynjdlg");
+                  });
                 });
               },
               child: Container(
@@ -275,7 +347,9 @@ class _TopbarState extends State<Topbar> {
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
                     Image.asset(
-                      img,
+                      MainNet.mainnetworklist[ConstantClass.currentIndex]
+                              .coinimage ??
+                          img,
                       fit: BoxFit.fitHeight,
                     ),
                     Image.asset(
@@ -327,7 +401,7 @@ class _TopbarState extends State<Topbar> {
                                                 )
                                               ],
                                             ),
-                                            Account(),
+                                            Account(context),
                                             SizedBox(
                                               height: Get.height / 40,
                                             ),

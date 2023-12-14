@@ -9,6 +9,7 @@ import 'package:extensionapp/views/home/home.dart';
 import 'package:extensionapp/views/home/topbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_navigation/get_navigation.dart';
 
@@ -21,6 +22,8 @@ class Send extends StatefulWidget {
 
 bool backbool = false;
 
+TextEditingController _textFieldController = TextEditingController();
+
 class _SendState extends State<Send> {
   @override
   Widget build(BuildContext context) {
@@ -29,72 +32,88 @@ class _SendState extends State<Send> {
       body: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
-          Topbar(),
+          //     Topbar(),
           SizedBox(
             height: Get.height * 0.01,
           ),
           Padding(
-                   padding: EdgeInsets.symmetric(horizontal: Get.width/30),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Spacer(),
-                Text(
+            padding: EdgeInsets.symmetric(
+                horizontal: Get.width / 30, vertical: Get.height / 40),
+            child: Stack(children: [
+              Align(
+                alignment: Alignment.centerLeft,
+                child: IconButton(
+                    onPressed: () {
+                      Get.back();
+                    },
+                    icon: Icon(Icons.arrow_back,color: Colors.white)),
+              ),
+              Center(
+                child: Text(
                   "Send to",
                   style: TextStyle(fontSize: 20, color: Colors.white),
                 ),
-                Spacer(),
-                TextButton(
+              ),
+              Align(
+                alignment: Alignment.centerRight,
+                child: TextButton(
                   onPressed: () {
-                    Get.back();
+                  Get.to(MyHomePage());
                   },
                   child: Text(
                     'Cancel',
                     style: TextStyle(color: Colors.blue),
                   ),
-                )
-              ],
-            ),
+                ),
+              )
+            ]),
           ),
           SizedBox(
             height: Get.height * 0.01,
           ),
           Container(
-                            padding:  EdgeInsets.symmetric(horizontal: Get.width/30),
+              padding: EdgeInsets.symmetric(horizontal: Get.width / 30),
               child: TextField(
-            decoration: InputDecoration(
-              hintText: 'Enter public address(0x) or ENS name',
-              suffixIcon: Icon(Icons.qr_code),
-              suffixIconColor: Colors.blue,
-              hintStyle: TextStyle(color: Colors.grey),
-              enabledBorder: OutlineInputBorder(
-                borderSide:
-                    BorderSide(width: 1, color: Colors.grey), //<-- SEE HERE
-                borderRadius: BorderRadius.circular(10.0),
-              ),
-              focusedBorder: OutlineInputBorder(
-                borderSide:
-                    BorderSide(width: 1, color: Colors.grey), //<-- SEE HERE
-                borderRadius: BorderRadius.circular(10.0),
-              ),
-            ),
-          )),
+                controller: _textFieldController,
+                style: TextStyle(color: Colors.white),
+                decoration: InputDecoration(
+                  hintText: 'Enter public address(0x) or ENS name',
+                  suffixIcon: IconButton(
+                    onPressed: () {
+                      _getClipboardText();
+                    },
+                    icon: Icon(Icons.paste),
+                  ),
+                  suffixIconColor: Colors.blue,
+                  hintStyle: TextStyle(color: Colors.grey),
+                  enabledBorder: OutlineInputBorder(
+                    borderSide:
+                        BorderSide(width: 1, color: Colors.grey), //<-- SEE HERE
+                    borderRadius: BorderRadius.circular(10.0),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide:
+                        BorderSide(width: 1, color: Colors.grey), //<-- SEE HERE
+                    borderRadius: BorderRadius.circular(10.0),
+                  ),
+                ),
+              )),
           SizedBox(
             height: Get.height * 0.03,
           ),
-          Padding(
-                           padding:  EdgeInsets.symmetric(horizontal: Get.width/30),
-            child: Align(
-              alignment: Alignment.topLeft,
-              child: Text(
-                'Your accounts',
-                style: TextStyle(
-                    fontWeight: FontWeight.w500,
-                    fontSize: 17,
-                    color: Colors.grey),
-              ),
-            ),
-          ),
+          // Padding(
+          //   padding: EdgeInsets.symmetric(horizontal: Get.width / 30),
+          //   child: Align(
+          //     alignment: Alignment.topLeft,
+          //     child: Text(
+          //       'Your accounts',
+          //       style: TextStyle(
+          //           fontWeight: FontWeight.w500,
+          //           fontSize: 17,
+          //           color: Colors.grey),
+          //     ),
+          //   ),
+          // ),
           SizedBox(
             height: Get.height * 0.03,
           ),
@@ -103,14 +122,12 @@ class _SendState extends State<Send> {
             child: ListView.separated(
                 shrinkWrap: true,
                 itemBuilder: (context, Index) {
-                  return InkWell(onTap: () {}, child: 
-                  Container(
-              padding: const EdgeInsets.symmetric(horizontal: 10),
-
-                    child:Account() ,
-                  )
-                  
-                );
+                  return InkWell(
+                      onTap: () {},
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 10),
+                        child: Account(context),
+                      ));
                 },
                 separatorBuilder: ((context, index) {
                   return SizedBox(
@@ -123,8 +140,16 @@ class _SendState extends State<Send> {
       ),
     );
   }
- 
 
+  void _getClipboardText() async {
+    final clipboardData = await Clipboard.getData(Clipboard.kTextPlain);
+
+    if (clipboardData != null && clipboardData.text != null) {
+      setState(() {
+        _textFieldController.text = clipboardData.text!;
+      });
+    }
+  }
 }
 
 class icon_txt_btn extends StatelessWidget {

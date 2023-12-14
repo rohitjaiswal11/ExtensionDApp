@@ -10,6 +10,7 @@ import 'package:get/get.dart';
 import 'package:get/get_navigation/src/root/get_material_app.dart';
 
 import 'Controller/themeMode.dart';
+import 'views/Splash/splash.dart';
 import 'views/home/home.dart';
 
 void main() {
@@ -46,7 +47,7 @@ class MyApp extends StatelessWidget {
               colorScheme: ColorScheme.fromSeed(seedColor: Colors.grey),
               useMaterial3: true,
             ),
-            home: const Register());
+            home: Splash());
     //  }
     // );
   }

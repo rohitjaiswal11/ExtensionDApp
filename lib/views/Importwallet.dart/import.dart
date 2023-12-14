@@ -13,7 +13,8 @@ import 'package:hd_wallet/hd_wallet.dart';
 import 'package:hex/hex.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:material_tag_editor/tag_editor.dart';
-
+import 'package:shared_preferences/shared_preferences.dart';
+import '../../Utils/Dimensions.dart';
 import '../../Utils/common.dart';
 import '../../Utils/sharedpref.dart';
 import 'importsuccess.dart';
@@ -26,29 +27,24 @@ class ImportWalletPage extends StatefulWidget {
 }
 
 class _ImportWalletPageState extends State<ImportWalletPage> {
-  
-  //   savedata() async {
+    savedata() async {
 
-  //      SharedPreferencesManager()
-  //       .writeString('account', );
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+     
 
+    await prefs.setString('wallet', ConstantClass.walletBsc.toString());
+    await prefs.setString('privatekeyBsc', ConstantClass.privateKeyBsc.toString());
+    await prefs.setString('seedPhrase', ConstantClass.mnemonic.toString());
+    await prefs.setString('name', ConstantClass.Name.toString());
+    await prefs.setString('password', ConstantClass.password.toString());
+    await prefs.setString('fakewallet', ConstantClass.fakewallet.toString());
+    await prefs.setBool('DontShowkeystore', false);
+    await prefs.setBool('DontShowprivate', false);
+    await prefs.setBool('DontShowmnemonic', false);
 
-  //   // await prefs.setString('wallet', ConstantClass.wallet.toString());
-  //   // await prefs.setString('privatekey', ConstantClass.privateKey.toString());
-  //   // await prefs.setString('seedPhrase', ConstantClass.mnemonic.toString());
-  //   // await prefs.setString('name', ConstantClass.Name.toString());
-  //   // await prefs.setString('password', ConstantClass.password.toString());
-  //   // await prefs.setString('fakewallet', ConstantClass.fakewallet.toString());
-  //   // await prefs.setBool('DontShowkeystore', false);
-  //   // await prefs.setBool('DontShowprivate', false);
-  //   // await prefs.setBool('DontShowmnemonic', false);
+  }
 
-  // }
-
-
-  
-  
-    List<String> _values = [];
+  List<String> _values = [];
   final FocusNode _focusNode = FocusNode();
   final TextEditingController _textEditingController = TextEditingController();
 
@@ -73,14 +69,17 @@ class _ImportWalletPageState extends State<ImportWalletPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        automaticallyImplyLeading: false,
-        leading: IconButton(
-            onPressed: () {
-              Get.back();
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+        toolbarHeight: CustomDimension.myheight(context) / 9,
+        leading: InkWell(
+            onTap: () {
+              Navigator.pop(context);
             },
-            icon: Icon(Icons.arrow_back)),
-        title: CustomFonts.heading18("Import Wallet", Colors.black),
+            child: Icon(Icons.arrow_back,
+                size: 32, color: Get.isDarkMode ? Colors.white : Colors.black)),
         centerTitle: true,
+        title: CustomFonts.heading20(
+            'Import Wallet', Get.isDarkMode ? Colors.white : Colors.black),
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -248,35 +247,21 @@ class _ImportWalletPageState extends State<ImportWalletPage> {
                           load = true;
                         });
 
-
                         // if(load==true){
                         // importfunction(_values.toString())
                         //   .then((_) {
                         //     Get.to(ImportSuccess());
                         //   });}
-                       importfunction(_values.toString());
+                        importfunction(_values.toString());
 
-               //savedata();
-                         Get.to(ImportSuccess());
+                        savedata();
+                        Get.to(ImportSuccess());
                       }),
             )
           ]),
         ),
       ),
-
-
-      
     );
-
-
-
-
-
-
-
-
-
-    
   }
 
   importfunction(String mnemonics) {
@@ -286,7 +271,7 @@ class _ImportWalletPageState extends State<ImportWalletPage> {
       String mnemonicsfetched = _values.toString();
       Wallet().walletaddresstron(mnemonicsfetched);
 
-      Wallet().walletaddressBSc(mnemonicsfetched);
+      // Wallet().walletaddressBSc(mnemonicsfetched);
     } else {
       print("-----Invalid mnemonoics--------");
 
@@ -296,12 +281,7 @@ class _ImportWalletPageState extends State<ImportWalletPage> {
       Wallet().walletaddressBSc(mnemonicsfetched);
     }
   }
-
-
-
-
 }
-
 
 class _Chip extends StatelessWidget {
   const _Chip({

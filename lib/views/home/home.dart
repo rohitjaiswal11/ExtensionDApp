@@ -1,5 +1,9 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
+
+import 'package:extensionapp/Utils/Constant.dart';
 import 'package:extensionapp/Utils/sharedpref.dart';
+import 'package:protobuf_google/protobuf_google.dart';
+
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:extensionapp/views/send/send.dart';
 import 'package:extensionapp/views/home/topbar.dart';
@@ -9,6 +13,9 @@ import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:url_launcher/url_launcher.dart';
+
+import '../../Blockchain/DataExtension/Api.dart';
+import 'tokenItem.dart';
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({
@@ -21,44 +28,54 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage>
     with SingleTickerProviderStateMixin {
-  String cliptext = 'account';
-  getcliptext() async {
-    cliptext = await SharedPreferencesManager().readString('publickey');
-    setState(() {});
-  }
+
+
+
+  List<Token_Item>currentlist=[];
+
+  
+  String? walletaddress= ConstantClass.currentIndex==0?ConstantClass.walletBsc:ConstantClass.walletTron;
+  
+  //'loading';
+// getaddress()  {
+
+
+//   print(
+//       "{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{walet}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}");
+//   print("Wallet Address${ConstantClass.walletTron}");
+ 
+//   return walletaddress;
+  
+// }
+
+
+
+  // getcliptext() async {
+  //   cliptext = await SharedPreferencesManager().readString('publickey');
+  //   setState(() {});
+  // }
 
   late TabController _tabController;
-  // int _counter = 0;
 
-  // void _incrementCounter() {
-  //   setState(() {
-
-  //     _counter++;
-  //   });
-  // }
   @override
   void initState() {
-    super.initState();
-    getcliptext();
+
 
     _tabController = TabController(length: 3, vsync: this);
+    changetroken();
+APIClass().fetchPrice();
+    super.initState();
   }
 
-  // bool isSwitched = false;
+changetroken(){
+  currentlist =
+      ConstantClass.currentIndex == 0 ? [...Token_Item.Bsclist] : [...Token_Item.Tronlist];
+  setState(() {});
+print("object---------------------");
+return currentlist;
+}
 
-  // void toggleSwitch(bool value) {
-  //   if (isSwitched == false) {
-  //     setState(() {
-  //       isSwitched = true;
-  //     });
-  //     print('Switch Button is $isSwitched');
-  //   } else {
-  //     setState(() {
-  //       isSwitched = false;
-  //     });
-  //     print('Switch Button is OFF');
-  //   }
-  // }
+
 
   bool isdata = false;
   var selectedItem = '';
@@ -69,22 +86,12 @@ class _MyHomePageState extends State<MyHomePage>
     }
   }
 
-  // String img = 'assets/images/ethlogo.png';
-  // toptaphandler(String img2) {
-  //   print(img2);
-  //   setState(() {
-  //     img=img2;
-  //   });
-  //    Get.back();
-
-  // }
 
   @override
   Widget build(BuildContext context) {
+print(ConstantClass.currentIndex);
+    print("Home55555555555555555555555");
     return Scaffold(
-
-
-
       backgroundColor: Colors.black87,
       body: SingleChildScrollView(
         child: Column(
@@ -97,7 +104,7 @@ class _MyHomePageState extends State<MyHomePage>
             ),
             GestureDetector(
               onTap: () {
-                Clipboard.setData(ClipboardData(text: cliptext));
+                Clipboard.setData(ClipboardData(text: walletaddress??"loading"));
                 Fluttertoast.showToast(
                     msg: 'Copied',
                     toastLength: Toast.LENGTH_SHORT,
@@ -117,10 +124,26 @@ class _MyHomePageState extends State<MyHomePage>
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
+
                       SizedBox(
                         width: Get.width / 5,
                         child: Text(
-                          cliptext,
+
+//ConstantClass.wallet??"loading",
+
+
+
+  ConstantClass.currentIndex==0? ConstantClass.walletBsc!:ConstantClass.walletTron!,
+
+ 
+ //??ConstantClass.walletTron!,
+ //??
+//  walletaddress ,
+
+
+
+
+                         // walletaddress,
                           style: TextStyle(
                               color: Colors.blue,
                               fontSize: 13,
@@ -156,15 +179,13 @@ class _MyHomePageState extends State<MyHomePage>
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-
 //                 ListView.builder(itemBuilder: (context,index)
-                
-//                 {
-// return 
 
+//                 {
+// return
 
 //                 }
-             //   )
+                //   )
                 // ListView.builder(shrinkWrap: true,
                 //     itemCount: ButtonTabs.btntaps.length,
                 //     itemBuilder: (context, index) {
@@ -174,12 +195,8 @@ class _MyHomePageState extends State<MyHomePage>
                   Column(
                     children: [
                       InkWell(
-
-
-                        onTap: (){
-
-
-                         ButtonTabs.btntaps[i].Pressed?.call();
+                        onTap: () {
+                          ButtonTabs.btntaps[i].Pressed?.call();
                         },
                         child: Container(
                             padding: const EdgeInsets.symmetric(
@@ -251,27 +268,34 @@ class _MyHomePageState extends State<MyHomePage>
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Container(
-
-                          padding: EdgeInsets.only(bottom:Get.height/70),
-                          child: ListView.builder(
+                          padding: EdgeInsets.only(bottom: Get.height / 70),
+                          child: 
+                          
+                          currentlist.length==0?Center(child: CircularProgressIndicator()): ListView.builder(
                               shrinkWrap: true,
-                              itemCount: 7,
+                              itemCount: currentlist.length,
                               itemBuilder: (context, index) {
+
+
+
                                 return Container(
                                   padding: EdgeInsets.symmetric(horizontal: 10),
                                   //   color: Colors.pink,
                                   margin: EdgeInsets.all(10),
                                   height: Get.height / 17,
-                                  child: Row(crossAxisAlignment: CrossAxisAlignment.start,
+                                  child: Row(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
                                       Image.asset(
-                                        'assets/images/ethlogo.png',
+
+                           currentlist[index].coinimage, 
+                                    
                                         height: Get.height / 25,
                                       ),
                                       SizedBox(
                                         width: Get.width / 35,
                                       ),
-
                                       Column(
                                         crossAxisAlignment:
                                             CrossAxisAlignment.start,
@@ -279,7 +303,7 @@ class _MyHomePageState extends State<MyHomePage>
                                             MainAxisAlignment.center,
                                         children: [
                                           Text(
-                                            "Ethereum",
+                                         currentlist[index].coinname,     
                                             style: TextStyle(
                                               color: Colors.white,
                                             ),
@@ -295,13 +319,11 @@ class _MyHomePageState extends State<MyHomePage>
                                         ],
                                       ),
                                       Spacer(),
-
-                                          Text("\$0.00 USD",
-                                              style: TextStyle(
-                                                  color: Colors.white,
-                                                  fontWeight: FontWeight.w500,
-                                                  fontSize: 14))
-                                    
+                                      Text("\$0.00 USD",
+                                          style: TextStyle(
+                                              color: Colors.white,
+                                              fontWeight: FontWeight.w500,
+                                              fontSize: 14))
                                     ],
                                   ),
                                 );
@@ -319,9 +341,9 @@ class _MyHomePageState extends State<MyHomePage>
                             label: Text(
                               'Import Token',
                             )),
-                            SizedBox(
-                              height: Get.height/70,
-                            ),
+                        SizedBox(
+                          height: Get.height / 70,
+                        ),
                         TextButton.icon(
                             style: ButtonStyle(
                                 padding: MaterialStatePropertyAll(
@@ -331,9 +353,10 @@ class _MyHomePageState extends State<MyHomePage>
                                     MaterialStatePropertyAll(Colors.blue)),
                             onPressed: () {},
                             icon: Icon(Icons.refresh),
-                            label: Text('Refresh list')),   SizedBox(
-                              height: Get.height/70,
-                            ),
+                            label: Text('Refresh list')),
+                        SizedBox(
+                          height: Get.height / 70,
+                        ),
                         TextButton.icon(
                             style: ButtonStyle(
                                 padding: MaterialStatePropertyAll(
@@ -458,32 +481,46 @@ class _MyHomePageState extends State<MyHomePage>
   }
 }
 
-
-
 class MainNet {
+  final int networkindex;
   final String coinname;
   final String coinimage;
 
-  MainNet({required this.coinimage, required this.coinname});
+  MainNet({ required this.networkindex,  required this.coinimage, required this.coinname});
 
   static List<MainNet> mainnetworklist = [
-    MainNet(coinimage:  'assets/images/ethlogo.png', coinname: 'Etherium  Mainnet'),
-    MainNet(
-        coinimage: 'assets/images/linealogo.jpg', coinname: ' Linea  Mainnet'),
-   
+    MainNet(networkindex: 0,
+        coinimage: 'assets/images/bsc.png', coinname: 'Binance  Mainnet'),
+    MainNet(networkindex: 1,
+        coinimage: 'assets/images/tron.png', coinname: 'Tron  Mainnet'),
   ];
 }
+
+
+
+
+
+
+
+
+
+
 class TestNetwork {
+  final int testnetworkindex;
   final String coinname;
   final String coinimage;
 
-  TestNetwork({required this.coinimage, required this.coinname});
+  TestNetwork({
+    required this.testnetworkindex,
+    required this.coinimage, required this.coinname});
 
   static List<TestNetwork> testnetworklist = [
-    TestNetwork(coinimage: 'assets/images/letter-g.png', coinname: 'Georila'),
-    TestNetwork(
+    TestNetwork(testnetworkindex: 0, coinimage: 'assets/images/letter-g.png', coinname: 'Georila'),
+    TestNetwork(testnetworkindex: 1,
         coinimage: 'assets/images/letter-l.png', coinname: 'Linea Georila'),
-    TestNetwork(coinimage: 'assets/images/letter-s.png', coinname: 'Sepolia'),
+    TestNetwork(
+      testnetworkindex: 2,
+      coinimage: 'assets/images/letter-s.png', coinname: 'Sepolia'),
   ];
 }
 
@@ -497,9 +534,8 @@ class ButtonTabs {
 
   void Function()? Pressed;
 
-
   ButtonTabs({
- this.Pressed,
+    this.Pressed,
     required this.img,
     required this.btntapname,
     this.nav,
@@ -507,16 +543,22 @@ class ButtonTabs {
 
   static List<ButtonTabs> btntaps = [
     ButtonTabs(
-        img: 'assets/icons/plus-minus.png', btntapname: 'Buy & Sell', nav: "",
-        ),
+      img: 'assets/icons/plus-minus.png',
+      btntapname: 'Buy & Sell',
+      nav: "",
+    ),
     ButtonTabs(
-        img: 'assets/icons/send.png', btntapname: 'Send', nav: "/Send()",Pressed:(){
-print("dfbnihbsighhfg");
-Get.to(Send());
-
-
+        img: 'assets/icons/send.png',
+        btntapname: 'Send',
+        nav: "/Send()",
+        Pressed: () {
+          print("dfbnihbsighhfg");
+          Get.to(Send());
         }),
-    ButtonTabs(img: 'assets/icons/exchange.png', btntapname: 'Swap', Pressed: ()=> Get.to(Swap())),
+    ButtonTabs(
+        img: 'assets/icons/exchange.png',
+        btntapname: 'Swap',
+        Pressed: () => Get.to(Swap())),
     ButtonTabs(img: 'assets/icons/bridge.png', btntapname: 'Bridge'),
     ButtonTabs(img: 'assets/icons/stock.png', btntapname: 'Portfolio'),
   ];
