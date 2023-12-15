@@ -1,7 +1,6 @@
-
 import 'package:extensionapp/Utils/Constant.dart';
+import 'package:extensionapp/Utils/customfonts.dart';
 import 'package:extensionapp/Utils/sharedpref.dart';
-import 'package:protobuf_google/protobuf_google.dart';
 
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -12,6 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
+import 'package:trust_wallet_core/protobuf/Polkadot.pb.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../Blockchain/DataExtension/Api.dart';
@@ -28,27 +28,22 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage>
     with SingleTickerProviderStateMixin {
+  List<Token_Item> currentlist = [];
 
+  String? walletaddress = ConstantClass.currentIndex == 0
+      ? ConstantClass.walletBsc
+      : ConstantClass.walletTron;
 
-
-  List<Token_Item>currentlist=[];
-
-  
-  String? walletaddress= ConstantClass.currentIndex==0?ConstantClass.walletBsc:ConstantClass.walletTron;
-  
   //'loading';
 // getaddress()  {
-
 
 //   print(
 //       "{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{walet}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}");
 //   print("Wallet Address${ConstantClass.walletTron}");
- 
+
 //   return walletaddress;
-  
+
 // }
-
-
 
   // getcliptext() async {
   //   cliptext = await SharedPreferencesManager().readString('publickey');
@@ -56,26 +51,89 @@ class _MyHomePageState extends State<MyHomePage>
   // }
 
   late TabController _tabController;
+  late Map<String, dynamic> bnbData;
+  late Map<String, dynamic> usdData;
+  late Map<String, dynamic> tronData;
+  bool isDataLoaded = false;
 
   @override
   void initState() {
-
-
     _tabController = TabController(length: 3, vsync: this);
     changetroken();
-APIClass().fetchPrice();
+    loadcoinData();
+
+    ConstantClass.totalBalance =
+        get_TotalBalance(Token_Item.Bsclist, Token_Item.Tronlist);
+    ConstantClass.currentBalance = getbalance(currentlist);
     super.initState();
   }
 
-changetroken(){
-  currentlist =
-      ConstantClass.currentIndex == 0 ? [...Token_Item.Bsclist] : [...Token_Item.Tronlist];
-  setState(() {});
-print("object---------------------");
-return currentlist;
-}
+  getbalance(List<Token_Item> network_coin) {
+    double balances = 0;
 
+    for (int i = 0; i < network_coin.length; i++) {
+      balances += network_coin[i].balance;
+    }
 
+    return balances;
+  }
+
+  get_TotalBalance(List<Token_Item> one, List<Token_Item> two) {
+    double bal1 = 0;
+    double bal2 = 0;
+
+    bal1 = getbalance(one);
+    bal2 = getbalance(two);
+
+    return bal1 + bal2;
+  }
+
+  Future<void> loadcoinData() async {
+    try {
+      usdData = (await APIClass()
+          .fetchcoindata('https://api.coingecko.com/api/v3/coins/usd'));
+
+      bnbData = (await APIClass().fetchcoindata(
+          'https://api.coingecko.com/api/v3/coins/binance-coin-wormhole'));
+
+      tronData = (await APIClass()
+          .fetchcoindata('https://api.coingecko.com/api/v3/coins/tron'));
+      setState(() {
+        isDataLoaded = true;
+
+        ConstantClass.usdrate =
+            (usdData["market_data"]["current_price"]["usd"]);
+
+        ConstantClass.bnbrate =
+            (bnbData["market_data"]["current_price"]["usd"]);
+
+        ConstantClass.tronrate =
+            (tronData["market_data"]["current_price"]["usd"]);
+
+        Token_Item.Bsclist[0].rate = ConstantClass.bnbrate!;
+        Token_Item.Bsclist[1].rate = ConstantClass.usdrate!;
+        Token_Item.Tronlist[0].rate = ConstantClass.tronrate!;
+        print("dfdsfdf---->   " +
+            ConstantClass.usdrate.toString() +
+            "   ++item mrate     " +
+            Token_Item.Bsclist[1].rate.toString());
+      });
+    } catch (error) {
+      print('Error: $error');
+      // Handle error appropriately
+    }
+
+    getbalance(currentlist);
+  }
+
+  changetroken() {
+    currentlist = ConstantClass.currentIndex == 0
+        ? [...Token_Item.Bsclist]
+        : [...Token_Item.Tronlist];
+    setState(() {});
+    print("object---------------------");
+    return currentlist;
+  }
 
   bool isdata = false;
   var selectedItem = '';
@@ -86,10 +144,9 @@ return currentlist;
     }
   }
 
-
   @override
   Widget build(BuildContext context) {
-print(ConstantClass.currentIndex);
+    print(ConstantClass.currentIndex);
     print("Home55555555555555555555555");
     return Scaffold(
       backgroundColor: Colors.black87,
@@ -104,7 +161,8 @@ print(ConstantClass.currentIndex);
             ),
             GestureDetector(
               onTap: () {
-                Clipboard.setData(ClipboardData(text: walletaddress??"loading"));
+                Clipboard.setData(
+                    ClipboardData(text: walletaddress ?? "loading"));
                 Fluttertoast.showToast(
                     msg: 'Copied',
                     toastLength: Toast.LENGTH_SHORT,
@@ -124,26 +182,20 @@ print(ConstantClass.currentIndex);
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-
                       SizedBox(
                         width: Get.width / 5,
                         child: Text(
-
 //ConstantClass.wallet??"loading",
 
+                          ConstantClass.currentIndex == 0
+                              ? ConstantClass.walletBsc!
+                              : ConstantClass.walletTron!,
 
-
-  ConstantClass.currentIndex==0? ConstantClass.walletBsc!:ConstantClass.walletTron!,
-
- 
- //??ConstantClass.walletTron!,
- //??
+                          //??ConstantClass.walletTron!,
+                          //??
 //  walletaddress ,
 
-
-
-
-                         // walletaddress,
+                          // walletaddress,
                           style: TextStyle(
                               color: Colors.blue,
                               fontSize: 13,
@@ -163,7 +215,7 @@ print(ConstantClass.currentIndex);
             SizedBox(
               height: 20,
             ),
-            Text('0 ETH',
+            Text('\$ ${ConstantClass.totalBalance}',
                 style: TextStyle(
                     color: Colors.white,
                     fontSize: 32,
@@ -171,8 +223,18 @@ print(ConstantClass.currentIndex);
             SizedBox(
               height: 5,
             ),
-            Text('\$ 0.00 USD ',
-                style: TextStyle(color: Colors.white, fontSize: 15)),
+            //  isDataLoaded ?Text(usdData['ethereum']['usd'].toString(),
+            Container(
+              height: Get.height / 35,
+              padding: EdgeInsets.all( Get.height * 0.003),
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(30),
+                  color: ConstantClass.currentIndex == 0
+                      ? Color.fromRGBO(245, 241, 0, 0.514)
+                      : Color.fromARGB(255, 223, 75, 64).withOpacity(0.5)),
+              child: CustomFonts.text13('\ ${ConstantClass.currentBalance} USD ', Colors.white
+              )
+            ),
             SizedBox(
               height: 20,
             ),
@@ -217,7 +279,8 @@ print(ConstantClass.currentIndex);
                       Text(
                         ButtonTabs.btntaps[i].btntapname,
                         style: TextStyle(
-                            fontSize: 12,
+                          fontFamily: 'popins',
+                            fontSize: 14,
                             fontWeight: FontWeight.w400,
                             color: Colors.white),
                       ),
@@ -235,7 +298,7 @@ print(ConstantClass.currentIndex);
               height: Get.height / 20,
               child: TabBar(
                   controller: _tabController,
-                  indicatorPadding: EdgeInsets.only(top: Get.height * 0.05),
+            //     indicatorPadding: EdgeInsets.only(top: Get.height * 0.05),
 
                   //indicatorPadding: EdgeInsets.only(top: 20),
                   dividerColor: Colors.transparent,
@@ -269,65 +332,71 @@ print(ConstantClass.currentIndex);
                       children: [
                         Container(
                           padding: EdgeInsets.only(bottom: Get.height / 70),
-                          child: 
-                          
-                          currentlist.length==0?Center(child: CircularProgressIndicator()): ListView.builder(
-                              shrinkWrap: true,
-                              itemCount: currentlist.length,
-                              itemBuilder: (context, index) {
-
-
-
-                                return Container(
-                                  padding: EdgeInsets.symmetric(horizontal: 10),
-                                  //   color: Colors.pink,
-                                  margin: EdgeInsets.all(10),
-                                  height: Get.height / 17,
-                                  child: Row(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Image.asset(
-
-                           currentlist[index].coinimage, 
-                                    
-                                        height: Get.height / 25,
-                                      ),
-                                      SizedBox(
-                                        width: Get.width / 35,
-                                      ),
-                                      Column(
+                          child: currentlist.length == 0 &&
+                                  isDataLoaded == false
+                              ? Center(child: CircularProgressIndicator())
+                              : ListView.builder(
+                                  shrinkWrap: true,
+                                  itemCount: currentlist.length,
+                                  itemBuilder: (context, index) {
+                                    return Container(
+                                      padding:
+                                          EdgeInsets.symmetric(horizontal: 10),
+                                      //   color: Colors.pink,
+                                      margin: EdgeInsets.all(10),
+                                      height: Get.height / 17,
+                                      child: Row(
                                         crossAxisAlignment:
                                             CrossAxisAlignment.start,
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
                                         children: [
-                                          Text(
-                                         currentlist[index].coinname,     
-                                            style: TextStyle(
-                                              color: Colors.white,
+                                          CircleAvatar(backgroundColor: Colors.transparent,
+                                            child: Image.asset(
+                                              currentlist[index].coinimage,
+                                              height: Get.height / 22,
+                                              fit: BoxFit.contain,
                                             ),
                                           ),
                                           SizedBox(
-                                            height: 3,
+                                            width: Get.width / 35,
                                           ),
-                                          Text("0 ETH",
+                                          Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            children: [
+                                              Text(
+                                                currentlist[index].coinname,
+                                                style: TextStyle(
+                                                  color: Colors.white,
+                                                ),
+                                              ),
+                                              SizedBox(
+                                                height: 3,
+                                              ),
+                                              Text(
+                                                  currentlist[index]
+                                                      .balance
+                                                      .toString(),
+                                                  style: TextStyle(
+                                                      color: Colors.white,
+                                                      fontWeight:
+                                                          FontWeight.w100,
+                                                      fontSize: 13)),
+                                            ],
+                                          ),
+                                          Spacer(),
+                                          Text(
+                                              //ConstantClass.usdrate.toString(),
+                                              "\$  ${currentlist[index].rate.toString()}",
                                               style: TextStyle(
                                                   color: Colors.white,
-                                                  fontWeight: FontWeight.w100,
-                                                  fontSize: 13)),
+                                                  fontWeight: FontWeight.w500,
+                                                  fontSize: 14))
                                         ],
                                       ),
-                                      Spacer(),
-                                      Text("\$0.00 USD",
-                                          style: TextStyle(
-                                              color: Colors.white,
-                                              fontWeight: FontWeight.w500,
-                                              fontSize: 14))
-                                    ],
-                                  ),
-                                );
-                              }),
+                                    );
+                                  }),
                         ),
                         TextButton.icon(
                             style: ButtonStyle(
@@ -486,41 +555,46 @@ class MainNet {
   final String coinname;
   final String coinimage;
 
-  MainNet({ required this.networkindex,  required this.coinimage, required this.coinname});
+  MainNet(
+      {required this.networkindex,
+      required this.coinimage,
+      required this.coinname});
 
   static List<MainNet> mainnetworklist = [
-    MainNet(networkindex: 0,
-        coinimage: 'assets/images/bsc.png', coinname: 'Binance  Mainnet'),
-    MainNet(networkindex: 1,
-        coinimage: 'assets/images/tron.png', coinname: 'Tron  Mainnet'),
+    MainNet(
+        networkindex: 0,
+        coinimage: 'assets/images/bsc.png',
+        coinname: 'Binance  Mainnet'),
+    MainNet(
+        networkindex: 1,
+        coinimage: 'assets/images/tron.png',
+        coinname: 'Tron  Mainnet'),
   ];
 }
-
-
-
-
-
-
-
-
-
 
 class TestNetwork {
   final int testnetworkindex;
   final String coinname;
   final String coinimage;
 
-  TestNetwork({
-    required this.testnetworkindex,
-    required this.coinimage, required this.coinname});
+  TestNetwork(
+      {required this.testnetworkindex,
+      required this.coinimage,
+      required this.coinname});
 
   static List<TestNetwork> testnetworklist = [
-    TestNetwork(testnetworkindex: 0, coinimage: 'assets/images/letter-g.png', coinname: 'Georila'),
-    TestNetwork(testnetworkindex: 1,
-        coinimage: 'assets/images/letter-l.png', coinname: 'Linea Georila'),
     TestNetwork(
-      testnetworkindex: 2,
-      coinimage: 'assets/images/letter-s.png', coinname: 'Sepolia'),
+        testnetworkindex: 0,
+        coinimage: 'assets/images/letter-g.png',
+        coinname: 'Georila'),
+    TestNetwork(
+        testnetworkindex: 1,
+        coinimage: 'assets/images/letter-l.png',
+        coinname: 'Linea Georila'),
+    TestNetwork(
+        testnetworkindex: 2,
+        coinimage: 'assets/images/letter-s.png',
+        coinname: 'Sepolia'),
   ];
 }
 

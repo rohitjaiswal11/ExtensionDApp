@@ -9,15 +9,12 @@ import 'package:http/http.dart' as http;
 class APIClass{
 
 
-
- Future<Map<String, dynamic>> fetchPrice() async {
-    final response = await  http.get(Uri.parse('https://api.coingecko.com/api/v3/coins/usd'));
+ Future<Map<String, dynamic>> fetchcoindata(String urrl) async {
+    final response = await http.get(Uri.parse(urrl));
 
     if (response.statusCode == 200) {
-
-
-
-      return json.decode(response.body);
+      final Map<String, dynamic> data = json.decode(response.body);
+      return data;
     } else {
       throw Exception('Failed to load data');
     }

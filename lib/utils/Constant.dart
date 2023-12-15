@@ -54,11 +54,43 @@ class ConstantClass {
 
     print("Text in " + "${ConstantClass.walletBsc}");
     print("Get Wallet Constanrt class executed");
-
-    // ConstantClass.Network = prefs.getString('Network') ?? "Pox Testnet";
   }
+
+  static double? usdrate;
+  static double? bnbrate;
+  static double? tronrate;
+static double ?currentBalance;
+static double ? totalBalance;
+
+
+
+
+
+
+
+
 }
 
+
+
+//
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//
 class AppContant {
 //Shared Perfarnce Key
   static String THEME = "theme";

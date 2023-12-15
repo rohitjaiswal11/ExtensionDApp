@@ -1,9 +1,11 @@
 import 'package:extensionapp/Blockchain/blockchain%20.dart';
 import 'package:extensionapp/Utils/common.dart';
 import 'package:extensionapp/Utils/common_Acc.dart';
+import 'package:extensionapp/Utils/customfonts.dart';
 import 'package:extensionapp/Utils/sharedpref.dart';
 import 'package:extensionapp/views/home/home.dart';
 import 'package:extensionapp/views/send/send.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_navigation/get_navigation.dart';
@@ -139,12 +141,7 @@ class _TopbarState extends State<Topbar> {
                                           mainAxisAlignment:
                                               MainAxisAlignment.spaceBetween,
                                           children: [
-                                            Text(
-                                              "Select a network",
-                                              style: TextStyle(
-                                                  fontSize: 17,
-                                                  color: Colors.white),
-                                            ),
+                                           CustomFonts.Text17("Select a network", Colors.white),
                                             IconButton(
                                               onPressed: () {
                                                 Get.back();
@@ -157,7 +154,8 @@ class _TopbarState extends State<Topbar> {
                                         SizedBox(
                                           height: Get.height *
                                               0.09 *
-                                              MainNet.mainnetworklist.length,
+                                            
+                                             MainNet.mainnetworklist.length,
                                           child: ListView.builder(
                                               itemCount: MainNet
                                                   .mainnetworklist.length,
@@ -177,51 +175,52 @@ class _TopbarState extends State<Topbar> {
                                                       },
                                                     );
 
-
                                                     Get.back();
-                                                 
+
 // Get.to(const MyHomePage())?.then((value) {
 
 //   Get.back();
 // });
-
                                                   },
-                                                  child: Padding(
-                                                    padding:
-                                                        const EdgeInsets.all(
-                                                            8.0),
-                                                    child: Row(
-                                                      mainAxisAlignment:
-                                                          MainAxisAlignment
-                                                              .start,
-                                                      children: [
-                                                        Image.asset(
+                                                  child: Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .start,
+                                                    children: [
+                                                      CircleAvatar(  
+                                                        backgroundColor:
+                                                            Colors
+                                                                .transparent,
+
+                                                        child: Image.asset(
                                                           MainNet
                                                               .mainnetworklist[
                                                                   index]
                                                               .coinimage,
-                                                          height:
-                                                              Get.height * 0.04,
+                                                          height: Get.height *
+                                                              0.04,
                                                         ),
-                                                        SizedBox(
-                                                          width: 10,
-                                                        ),
-                                                        Text(
-                                                          MainNet
-                                                              .mainnetworklist[
-                                                                  index]
-                                                              .coinname,
-                                                          style: TextStyle(
-                                                              fontSize: 14,
-                                                              color:
-                                                                  Colors.white),
-                                                        ),
-                                                      ],
-                                                    ),
+                                                      ),
+                                                      SizedBox(
+                                                        width: 10,
+                                                      ),
+                                                      Text(
+                                                        MainNet
+                                                            .mainnetworklist[
+                                                                index]
+                                                            .coinname,
+                                                        style: TextStyle(
+                                                            fontSize: 14,
+                                                            color:
+                                                                Colors.white),
+                                                      ),
+                                                    ],
                                                   ),
                                                 );
                                               }),
                                         ),
+                                       
+                                       
                                         Row(
                                           children: [
                                             Text(
@@ -231,74 +230,85 @@ class _TopbarState extends State<Topbar> {
                                                   color: Colors.white),
                                             ),
                                             Spacer(),
-                                            Switch(
-                                              onChanged: (value) {
-                                                setState(() {
-                                                  isSwitched = value;
-                                                });
-                                              },
-                                              value: isSwitched,
-                                              activeColor: Colors.white,
-                                              activeTrackColor: Colors.blue,
-                                              inactiveThumbColor: Colors.white,
-                                              inactiveTrackColor:
-                                                  Colors.grey.withOpacity(0.5),
+                                          Transform.scale(
+
+                           scale: 0.7,
+                                              child: CupertinoSwitch(
+                                                onChanged: (value) {
+                                                  setState(() {
+                                                    isSwitched = value;
+                                                  });
+                                                },
+                                                value: isSwitched,
+                                                activeColor: Colors.white,
+                                                                                       thumbColor: Colors.blue,trackColor:Colors.grey.withOpacity(0.5),
+                                                // inactiveThumbColor: Colors.white,
+                                                // inactiveTrackColor:
+                                                //     Colors.grey.withOpacity(0.5),
+                                              ),
                                             ),
                                           ],
                                         ),
                                         if (isSwitched == true)
                                           SingleChildScrollView(
-                                            child: Container(
-                                              //  color: Colors.green,
-                                              height: Get.height / 3,
-                                              width: Get.width,
-                                              child: ListView.separated(
-                                                  itemCount: TestNetwork
-                                                      .testnetworklist.length,
-                                                  itemBuilder:
-                                                      (context, index) {
-                                                    return InkWell(
-                                                      onTap: () {
-                                                        // networkchange(TestNetwork
-                                                        //     .testnetworklist[
-                                                        //         index]
-                                                        //     .coinimage);
-                                                      },
-                                                      child: Row(
-                                                        children: [
-                                                          Image.asset(
-                                                            TestNetwork
-                                                                .testnetworklist[
-                                                                    index]
-                                                                .coinimage,
-                                                            fit: BoxFit.contain,
-                                                            height: Get.height *
-                                                                0.04,
-                                                          ),
-                                                          SizedBox(
-                                                            width: 5,
-                                                          ),
-                                                          Text(
-                                                            TestNetwork
-                                                                .testnetworklist[
-                                                                    index]
-                                                                .coinname
-                                                                .toString(),
-                                                            style: TextStyle(
-                                                                fontSize: 14,
-                                                                color: Colors
-                                                                    .white),
-                                                          )
-                                                        ],
-                                                      ),
-                                                    );
+                                       child:   SizedBox(
+                                          height: Get.height *
+                                              0.09 *
+                                            
+                                             TestNetwork.testnetworklist.length,
+                                          child: ListView.builder(
+                                              itemCount: TestNetwork
+                                                  .testnetworklist.length,
+                                              itemBuilder: (context, index) {
+                                                return InkWell(
+                                                  onTap: () async {
+                                                 
+
+                                                    Get.back();
+
+
                                                   },
-                                                  separatorBuilder:
-                                                      (context, index) =>
-                                                          SizedBox(
-                                                            height: 20,
-                                                          )),
-                                            ),
+                                                  child: Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .start,
+                                                    children: [
+                                                      CircleAvatar(  
+                                                        backgroundColor:
+                                                            Colors
+                                                                .transparent,
+
+                                                        child: Image.asset(
+                                                          TestNetwork
+                                                              .testnetworklist[
+                                                                  index]
+                                                              .coinimage,
+                                                          height: Get.height *
+                                                              0.04,
+                                                        ),
+                                                      ),
+                                                      SizedBox(
+                                                        width: 10,
+                                                      ),
+                                                      Text(
+                                                        TestNetwork
+                                                            .testnetworklist[
+                                                                index]
+                                                            .coinname,
+                                                        style: TextStyle(
+                                                            fontSize: 14,
+                                                            color:
+                                                                Colors.white),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                );
+                                              }),
+                                        ),
+                                       
+                                       
+                                       
+                                       
                                           ),
                                         Container(
                                           padding: EdgeInsets.zero,
@@ -479,7 +489,7 @@ class _TopbarState extends State<Topbar> {
                                 padding: EdgeInsets.symmetric(
                                     vertical: Get.height * 0.005,
                                     horizontal: Get.width * 0.05),
-                                height: Get.height / 3,
+                                height: Get.height / 3.5,
                                 decoration: BoxDecoration(
                                     color: Colors.black87,
                                     borderRadius:
@@ -489,11 +499,8 @@ class _TopbarState extends State<Topbar> {
                                   children: [
                                     ListTile(
                                       contentPadding: EdgeInsets.zero,
-                                      leading: Text(
-                                        "New tab",
-                                        style: TextStyle(
-                                            color: Colors.white, fontSize: 15),
-                                      ),
+                                      leading: CustomFonts.text14(
+                                          "New Tab", Colors.white),
                                       trailing: IconButton(
                                           onPressed: () {
                                             Get.back();
@@ -501,11 +508,9 @@ class _TopbarState extends State<Topbar> {
                                           icon: Icon(Icons.close,
                                               color: Colors.white, size: 20)),
                                     ),
-                                    Text(
-                                      'MetaMask is not connected to this site. To connect to a web3 site, find and click the connect button.',
-                                      style: TextStyle(
-                                          color: Colors.white, fontSize: 13),
-                                    ),
+                                    CustomFonts.Text12(
+                                        " 'MetaMask is not connected to this site. To connect to a web3 site, find and click the connect button.',",
+                                           Colors.white)
                                   ],
                                 ),
                               ),

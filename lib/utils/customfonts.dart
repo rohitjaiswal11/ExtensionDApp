@@ -108,6 +108,17 @@ static Widget heading18800(String mytext,Color mycolor) {
    ),);
 
 
+} static Widget Text17(String mytext,Color mycolor){
+   return Text(mytext,
+     style: TextStyle(
+     color: mycolor,
+     fontSize: 17,
+     fontFamily: 'Poppins',
+     fontStyle: FontStyle.normal,
+       fontWeight: FontWeight.w500,
+   ),);
+
+
 } static Widget Text12(String mytext,Color mycolor){
    return Expanded(
      child: Text(mytext,softWrap: true,maxLines: 5,
