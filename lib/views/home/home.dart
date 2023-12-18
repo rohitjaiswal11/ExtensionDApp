@@ -15,6 +15,7 @@ import 'package:trust_wallet_core/protobuf/Polkadot.pb.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../Blockchain/DataExtension/Api.dart';
+import '../Receive/Receive .dart';
 import 'tokenItem.dart';
 
 class MyHomePage extends StatefulWidget {
@@ -54,6 +55,7 @@ class _MyHomePageState extends State<MyHomePage>
   late Map<String, dynamic> bnbData;
   late Map<String, dynamic> usdData;
   late Map<String, dynamic> tronData;
+  late Map<String, dynamic> ethData;
   bool isDataLoaded = false;
 
   @override
@@ -98,6 +100,13 @@ class _MyHomePageState extends State<MyHomePage>
 
       tronData = (await APIClass()
           .fetchcoindata('https://api.coingecko.com/api/v3/coins/tron'));
+
+
+          
+      ethData = (await APIClass()
+          .fetchcoindata('https://api.coingecko.com/api/v3/coins/ethereum'));
+
+
       setState(() {
         isDataLoaded = true;
 
@@ -110,9 +119,16 @@ class _MyHomePageState extends State<MyHomePage>
         ConstantClass.tronrate =
             (tronData["market_data"]["current_price"]["usd"]);
 
+
+        ConstantClass.ethrate =
+            (ethData["market_data"]["current_price"]["usd"]);
+
+
         Token_Item.Bsclist[0].rate = ConstantClass.bnbrate!;
         Token_Item.Bsclist[1].rate = ConstantClass.usdrate!;
         Token_Item.Tronlist[0].rate = ConstantClass.tronrate!;
+
+        Token_Item.Bsclist[2].rate=ConstantClass.ethrate!;
         print("dfdsfdf---->   " +
             ConstantClass.usdrate.toString() +
             "   ++item mrate     " +
@@ -163,15 +179,15 @@ class _MyHomePageState extends State<MyHomePage>
               onTap: () {
                 Clipboard.setData(
                     ClipboardData(text: walletaddress ?? "loading"));
-                Fluttertoast.showToast(
-                    msg: 'Copied',
-                    toastLength: Toast.LENGTH_SHORT,
-                    webPosition: 'center',
-                    gravity: ToastGravity.BOTTOM,
-                    timeInSecForIosWeb: 1,
-                    // backgroundColor: Colors.white,
-                    // webBgColor: Colors.white,
-                    textColor: Colors.black);
+              ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          backgroundColor: Colors.white,duration: Duration(seconds: 1),
+          content: Text(
+            'Copied',
+            style: TextStyle(color: Colors.black),
+          ),
+        ),
+      );
               },
               child: Container(
                   decoration: BoxDecoration(
@@ -225,16 +241,15 @@ class _MyHomePageState extends State<MyHomePage>
             ),
             //  isDataLoaded ?Text(usdData['ethereum']['usd'].toString(),
             Container(
-              height: Get.height / 35,
-              padding: EdgeInsets.all( Get.height * 0.003),
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(30),
-                  color: ConstantClass.currentIndex == 0
-                      ? Color.fromRGBO(245, 241, 0, 0.514)
-                      : Color.fromARGB(255, 223, 75, 64).withOpacity(0.5)),
-              child: CustomFonts.text13('\ ${ConstantClass.currentBalance} USD ', Colors.white
-              )
-            ),
+                height: Get.height / 35,
+                padding: EdgeInsets.all(Get.height * 0.003),
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(30),
+                    color: ConstantClass.currentIndex == 0
+                        ? Color.fromRGBO(245, 241, 0, 0.514)
+                        : Color.fromARGB(255, 223, 75, 64).withOpacity(0.5)),
+                child: CustomFonts.text13(
+                    '\ ${ConstantClass.currentBalance} USD ', Colors.white)),
             SizedBox(
               height: 20,
             ),
@@ -279,7 +294,7 @@ class _MyHomePageState extends State<MyHomePage>
                       Text(
                         ButtonTabs.btntaps[i].btntapname,
                         style: TextStyle(
-                          fontFamily: 'popins',
+                            fontFamily: 'popins',
                             fontSize: 14,
                             fontWeight: FontWeight.w400,
                             color: Colors.white),
@@ -298,7 +313,7 @@ class _MyHomePageState extends State<MyHomePage>
               height: Get.height / 20,
               child: TabBar(
                   controller: _tabController,
-            //     indicatorPadding: EdgeInsets.only(top: Get.height * 0.05),
+                  //     indicatorPadding: EdgeInsets.only(top: Get.height * 0.05),
 
                   //indicatorPadding: EdgeInsets.only(top: 20),
                   dividerColor: Colors.transparent,
@@ -349,7 +364,8 @@ class _MyHomePageState extends State<MyHomePage>
                                         crossAxisAlignment:
                                             CrossAxisAlignment.start,
                                         children: [
-                                          CircleAvatar(backgroundColor: Colors.transparent,
+                                          CircleAvatar(
+                                            backgroundColor: Colors.transparent,
                                             child: Image.asset(
                                               currentlist[index].coinimage,
                                               height: Get.height / 22,
@@ -420,7 +436,11 @@ class _MyHomePageState extends State<MyHomePage>
                                         horizontal: 30, vertical: 15)),
                                 foregroundColor:
                                     MaterialStatePropertyAll(Colors.blue)),
-                            onPressed: () {},
+                            onPressed: () {
+                              setState(() {
+                                Get.to(() => MyHomePage());
+                              });
+                            },
                             icon: Icon(Icons.refresh),
                             label: Text('Refresh list')),
                         SizedBox(
@@ -633,7 +653,12 @@ class ButtonTabs {
         img: 'assets/icons/exchange.png',
         btntapname: 'Swap',
         Pressed: () => Get.to(Swap())),
-    ButtonTabs(img: 'assets/icons/bridge.png', btntapname: 'Bridge'),
+    ButtonTabs(
+        img: 'assets/icons/receive.png',
+        btntapname: 'Receive',
+        Pressed: () {
+          Get.to(Receive());
+        }),
     ButtonTabs(img: 'assets/icons/stock.png', btntapname: 'Portfolio'),
   ];
 }

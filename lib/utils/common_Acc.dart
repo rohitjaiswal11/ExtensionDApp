@@ -146,83 +146,96 @@ class _AccountState extends State<Account> {
                           ],
                         ),
                       ),
-                      
-                        PopupMenuButton<int>(
-                            onSelected: (int value) {
-                              // Handle the item selection here
-                              switch (value) {
-                                case 0:
-                                  print(value);
-                                  break;
-                                case 1:
-                                  print(value);
-                                  // Navigate to a new screen or perform an action for item 1
+                      PopupMenuButton<int>(
+                        onSelected: (int value) {
+                          // Handle the item selection here
+                          switch (value) {
+                            case 0:
+                              print(value);
 
-                                  break;
-                                case 2:
-                                  // Navigate to a different screen or perform an action for item 2
 
-                                  print(value);
-                                  break;
-                              }
-                            },
-                            itemBuilder: (context) => [
-                              PopupMenuItem<int>(
-                                value: 0,
-                                child: Row(
-                                  children: [
-                                    Icon(Icons.short_text_sharp, color: Colors.white),
-                                    SizedBox(width: 10),
-                                   CustomFonts.text12("Rename", Colors.white)
-                                  ],
-                                ),
-                              ),
-                              PopupMenuItem<int>(
-                                  value: 1,
-                                  child: Row(children: [
-                                    Icon(Icons.clear, color: Colors.white),
-                                    SizedBox(width: 10),
-                                     CustomFonts.text12("Delete", Colors.white)
-                                  ]))
+                              break;
+                            case 1:
+                              print(value);
 
-                              // popupmenu item 1
 
-                              // for (int i = 0; i < 2; i++)
-                              //   PopupMenuItem(
-                              //     value: i,
-                              //     // row has two child icon and text
-                              //     child: Row(
-                              //       children: [
-                              //         menuicon[i],
-                              //         //  Icon(Icons.settings, color: Colors.white),
-                              //         SizedBox(
-                              //           // sized box with width 10
-                              //           width: 10,
-                              //         ),
-                              //         menutxt[i],
-                              //       ],
-                              //     ),
-                              //   ),
-                            ],
-                            // offset: Offset(25, 50),
+                              
+                              setState(() {
+                                removeformlist(index);
+                              });
+                              // Navigate to a new screen or perform an action for item 1
 
-                            color: Colors.black.withOpacity(0.7),
-                            //   elevation: 2,
+                              break;
+                            // case 2:
+                            //   // Navigate to a different screen or perform an action for item 2
 
-                            icon: Image.asset(
-                              'assets/images/more.png',
-                              height: 20,
-                              fit: BoxFit.fitHeight,
+                            //   print(value);
+                            //   break;
+                          }
+                        },
+                        itemBuilder: (context) => [
+                          PopupMenuItem<int>(
+                            value: 0,
+                            child: Row(
+                              children: [
+                                Icon(Icons.short_text_sharp,
+                                    color: Colors.white),
+                                SizedBox(width: 10),
+                                CustomFonts.text12("Rename", Colors.white)
+                              ],
                             ),
-                            padding: EdgeInsets.zero,
                           ),
+                          PopupMenuItem<int>(
+                              value: 1,
+                              child: Row(children: [
+                                Icon(Icons.clear, color: Colors.white),
+                                SizedBox(width: 10),
+                                CustomFonts.text12("Delete", Colors.white)
+                              ]))
 
-                    
+                          // popupmenu item 1
+
+                          // for (int i = 0; i < 2; i++)
+                          //   PopupMenuItem(
+                          //     value: i,
+                          //     // row has two child icon and text
+                          //     child: Row(
+                          //       children: [
+                          //         menuicon[i],
+                          //         //  Icon(Icons.settings, color: Colors.white),
+                          //         SizedBox(
+                          //           // sized box with width 10
+                          //           width: 10,
+                          //         ),
+                          //         menutxt[i],
+                          //       ],
+                          //     ),
+                          //   ),
+                        ],
+                        // offset: Offset(25, 50),
+
+                        color: Colors.black.withOpacity(0.7),
+                        //   elevation: 2,
+
+                        icon: Image.asset(
+                          'assets/images/more.png',
+                          height: 20,
+                          fit: BoxFit.fitHeight,
+                        ),
+                        padding: EdgeInsets.zero,
+                      ),
                     ],
                   ),
                 );
               })
           : SizedBox(),
     );
+  }
+
+  void removeformlist(int index) {
+    Common.walletcreated.removeAt(index);
+
+
+    print("Length after Removal ==========="+Common.walletcreated.length.toString());
   }
 }

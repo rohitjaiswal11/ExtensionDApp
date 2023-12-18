@@ -59,6 +59,7 @@ class ConstantClass {
   static double? usdrate;
   static double? bnbrate;
   static double? tronrate;
+  static double? ethrate;
 static double ?currentBalance;
 static double ? totalBalance;
 
