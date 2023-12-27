@@ -1,3 +1,5 @@
+import 'dart:core';
+
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -63,11 +65,17 @@ class ConstantClass {
 static double ?currentBalance;
 static double ? totalBalance;
 
+static double? Tronbalance;
+
+static double? TrxUSDbalance;
+
+  static String? baseBSCaddress="https://api-testnet.bscscan.com/api?module=account&action=balance&address=";
+    static String? BSCstaticwallet="0xb2aA02353807b5726cFf4311Fb4752A2CAb09f2E";
+    static String? BscApikey="FZ4ZHBRMX6YZSJVUMAJM5CB2YRMGMD9REE";
 
 
-
-
-
+static double? Binancebalance;
+static double? BnbUsdbalance;
 
 
 }

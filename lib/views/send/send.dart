@@ -2,6 +2,7 @@ import 'package:extensionapp/Blockchain/blockchain%20.dart';
 import 'package:extensionapp/Controller/controller.dart';
 import 'package:extensionapp/Utils/common.dart';
 import 'package:extensionapp/Utils/common_Acc.dart';
+import 'package:extensionapp/Utils/customfonts.dart';
 import 'package:extensionapp/Utils/dialogwidget.dart';
 import 'package:extensionapp/Utils/sharedpref.dart';
 import 'package:extensionapp/views/add_account.dart';
@@ -29,114 +30,164 @@ class _SendState extends State<Send> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.black87,
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-          //     Topbar(),
-          SizedBox(
-            height: Get.height * 0.01,
-          ),
-          Padding(
-            padding: EdgeInsets.symmetric(
-                horizontal: Get.width / 30, vertical: Get.height / 40),
-            child: Stack(children: [
-              Align(
-                alignment: Alignment.centerLeft,
-                child: IconButton(
-                    onPressed: () {
-                      Get.back();
-                    },
-                    icon: Icon(Icons.arrow_back,color: Colors.white)),
-              ),
-              Center(
-                child: Text(
-                  "Send to",
-                  style: TextStyle(fontSize: 20, color: Colors.white),
+      body: Padding(
+        padding: EdgeInsets.symmetric(horizontal: Get.width / 30),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            //     Topbar(),
+            SizedBox(
+              height: Get.height * 0.01,
+            ),
+            Padding(
+              padding: EdgeInsets.symmetric(
+                 vertical: Get.height / 40),
+              child: Stack(children: [
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: IconButton(
+                      onPressed: () {
+                        Get.back();
+                      },
+                      icon: Icon(Icons.arrow_back, color: Colors.white)),
                 ),
-              ),
-              Align(
-                alignment: Alignment.centerRight,
-                child: TextButton(
-                  onPressed: () {
-                  Get.to(MyHomePage());
-                  },
+                Center(
                   child: Text(
-                    'Cancel',
-                    style: TextStyle(color: Colors.blue),
+                    "Send to",
+                    style: TextStyle(fontSize: 20, color: Colors.white),
                   ),
                 ),
-              )
-            ]),
-          ),
-          SizedBox(
-            height: Get.height * 0.01,
-          ),
-          Container(
-              padding: EdgeInsets.symmetric(horizontal: Get.width / 30),
-              child: TextField(
-                controller: _textFieldController,
-                style: TextStyle(color: Colors.white),
-                decoration: InputDecoration(
-                  hintText: 'Enter public address(0x) or ENS name',
-                  suffixIcon: IconButton(
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: TextButton(
                     onPressed: () {
-                      _getClipboardText();
+                      Get.to(MyHomePage());
                     },
-                    icon: Icon(Icons.paste),
+                    child: Text(
+                      'Cancel',
+                      style: TextStyle(color: Colors.blue),
+                    ),
                   ),
-                  suffixIconColor: Colors.blue,
-                  hintStyle: TextStyle(color: Colors.grey),
-                  enabledBorder: OutlineInputBorder(
-                    borderSide:
-                        BorderSide(width: 1, color: Colors.grey), //<-- SEE HERE
-                    borderRadius: BorderRadius.circular(10.0),
+                )
+              ]),
+            ),
+            SizedBox(
+              height: Get.height * 0.01,
+            ),
+            Container(
+            
+                child: TextField(
+                  controller: _textFieldController,
+                  style: TextStyle(color: Colors.white),
+                  decoration: InputDecoration(
+                    hintText: 'Enter public address(0x) or ENS name',
+                    suffixIcon: IconButton(
+                      onPressed: () {
+                        _getClipboardText();
+                      },
+                      icon: Icon(Icons.paste),
+                    ),
+                    suffixIconColor: Colors.blue,
+                    hintStyle: TextStyle(color: Colors.grey),
+                    enabledBorder: OutlineInputBorder(
+                      borderSide:
+                          BorderSide(width: 1, color: Colors.grey), //<-- SEE HERE
+                      borderRadius: BorderRadius.circular(10.0),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide:
+                          BorderSide(width: 1, color: Colors.grey), //<-- SEE HERE
+                      borderRadius: BorderRadius.circular(10.0),
+                    ),
                   ),
-                  focusedBorder: OutlineInputBorder(
-                    borderSide:
-                        BorderSide(width: 1, color: Colors.grey), //<-- SEE HERE
-                    borderRadius: BorderRadius.circular(10.0),
-                  ),
-                ),
-              )),
-          SizedBox(
-            height: Get.height * 0.03,
+                )),
+            SizedBox(
+              height: Get.height * 0.03,
+            ),
+      
+            Align(
+                alignment: Alignment.centerLeft,
+                child: CustomFonts.text14("Amount", Colors.white)),
+            SizedBox(
+              height: Get.height * 0.03,
+            ),
+      
+            Row(
+              //mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Container(
+                    width: Get.width * 0.7,
+                    height: Get.height * 0.06,
+                    // padding: EdgeInsets.symmetric(horizontal: Get.width / 20),
+                    child: TextField(
+                //      controller: _textFieldController,
+                      style: TextStyle(color: Colors.white),
+                      decoration: InputDecoration(
+      hintText:"Enter amount",
+      
+                      hintStyle: TextStyle(color: Colors.grey, fontSize: 13),
+                        enabledBorder: OutlineInputBorder(
+                          borderSide: BorderSide(
+                              width: 1, color: Colors.grey), //<-- SEE HERE
+                          borderRadius: BorderRadius.circular(10.0),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderSide: BorderSide(
+                              width: 1, color: Colors.grey), //<-- SEE HERE
+                          borderRadius: BorderRadius.circular(10.0),
+                        ),
+                      ),
+                    )),
+                    Spacer(),
+                Container(
+                //   width:Get.height * 0.06,
+                    height: Get.height * 0.07,
+                    padding: EdgeInsets.all( 10,),
+                    decoration: BoxDecoration( shape: BoxShape.rectangle,
+                        border: Border.all(color: Colors.grey),
+                        borderRadius: BorderRadius.circular(10)),
+                    child: Center(child: CustomFonts.Text16("Max", Colors.white))),  
+              ],
+            ),
+      
+
+
+        SizedBox(
+              height: Get.height * 0.06,
+            ),
+    btncustom(
+            btntxt: "Send",
+            BtnPressed: () {
+             // Get.to(MyHomePage());
+            },
           ),
-          // Padding(
-          //   padding: EdgeInsets.symmetric(horizontal: Get.width / 30),
-          //   child: Align(
-          //     alignment: Alignment.topLeft,
-          //     child: Text(
-          //       'Your accounts',
-          //       style: TextStyle(
-          //           fontWeight: FontWeight.w500,
-          //           fontSize: 17,
-          //           color: Colors.grey),
-          //     ),
-          //   ),
-          // ),
-          SizedBox(
-            height: Get.height * 0.03,
-          ),
-          Container(
-            height: Get.height / 2,
-            child: ListView.separated(
-                shrinkWrap: true,
-                itemBuilder: (context, Index) {
-                  return InkWell(
-                      onTap: () {},
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 10),
-                        child: Account(context),
-                      ));
-                },
-                separatorBuilder: ((context, index) {
-                  return SizedBox(
-                    height: Get.height / 100,
-                  );
-                }),
-                itemCount: 1),
-          )
-        ],
+            SizedBox(
+              height: Get.height * 0.03,
+            ),
+      
+            // Container(
+            //   height: Get.height / 2,
+            //   child: ListView.separated(
+            //       shrinkWrap: true,
+            //       itemBuilder: (context, Index) {
+            //         return InkWell(
+            //             onTap: () {},
+            //             child: Container(
+            //               padding: const EdgeInsets.symmetric(horizontal: 10),
+            //               child:
+      
+            //                Account(context),
+            //             ));
+            //       },
+            //       separatorBuilder: ((context, index) {
+            //         return SizedBox(
+            //           height: Get.height / 100,
+            //         );
+            //       }),
+            //       itemCount: 1),
+            // )
+          ],
+        ),
       ),
     );
   }

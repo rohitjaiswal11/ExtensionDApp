@@ -1,3 +1,6 @@
+import 'dart:math';
+
+import 'package:extensionapp/Utils/API.dart';
 import 'package:extensionapp/Utils/Constant.dart';
 import 'package:extensionapp/Utils/customfonts.dart';
 import 'package:extensionapp/Utils/sharedpref.dart';
@@ -11,6 +14,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
+import 'package:trust_wallet_core/protobuf/Cosmos.pb.dart';
 import 'package:trust_wallet_core/protobuf/Polkadot.pb.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -29,7 +33,8 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage>
     with SingleTickerProviderStateMixin {
-  List<Token_Item> currentlist = [];
+ // List<Token_Item> currentlist = [];
+  List<Token_Transaction> currenttransaction = [];
 
   String? walletaddress = ConstantClass.currentIndex == 0
       ? ConstantClass.walletBsc
@@ -56,6 +61,9 @@ class _MyHomePageState extends State<MyHomePage>
   late Map<String, dynamic> usdData;
   late Map<String, dynamic> tronData;
   late Map<String, dynamic> ethData;
+  late Map<String, dynamic> trxaccinfo;
+  late Map<String, dynamic> bscaccinfo;
+
   bool isDataLoaded = false;
 
   @override
@@ -63,6 +71,8 @@ class _MyHomePageState extends State<MyHomePage>
     _tabController = TabController(length: 3, vsync: this);
     changetroken();
     loadcoinData();
+    loadaccountinfo();
+    print("Loadingaccountinfo");
 
     ConstantClass.totalBalance =
         get_TotalBalance(Token_Item.Bsclist, Token_Item.Tronlist);
@@ -71,23 +81,58 @@ class _MyHomePageState extends State<MyHomePage>
   }
 
   getbalance(List<Token_Item> network_coin) {
-    double balances = 0;
-
+    double balances = 0.0;
     for (int i = 0; i < network_coin.length; i++) {
-      balances += network_coin[i].balance;
-    }
+      double balance = network_coin[i].balance;
+      double rate = network_coin[i].rate;
 
+      double tokenBalance = balance * rate;
+      balances += tokenBalance;
+    }
+    balances = double.parse(balances.toStringAsFixed(3));
     return balances;
   }
 
   get_TotalBalance(List<Token_Item> one, List<Token_Item> two) {
     double bal1 = 0;
     double bal2 = 0;
-
+    double total = 0;
     bal1 = getbalance(one);
     bal2 = getbalance(two);
 
-    return bal1 + bal2;
+    total = bal1 + bal2;
+    total = double.parse(total.toStringAsFixed(3));
+    return total;
+  }
+
+  Future<void> loadaccountinfo() async {
+    try {
+      trxaccinfo = await APIClass().getAccountInfo();
+      bscaccinfo = await APIClass().fetchcoindata(
+          "https://api-testnet.bscscan.com/api?module=account&action=balance&address=${ConstantClass.BSCstaticwallet}&apikey=${ConstantClass.BscApikey}");
+
+      setState(() {
+        ConstantClass.Tronbalance =
+            double.parse(trxaccinfo["data"][0]["balance"].toString()) / 1000000;
+        ConstantClass.TrxUSDbalance = double.parse(trxaccinfo["data"][0]
+                    ["trc20"][0]["TY5kVT6aMqStDG81wPzmVmcxikfr8ReUu1"]
+                .toString()) /
+            1000000;
+        Token_Item.Tronlist[0].balance = ConstantClass.Tronbalance!;
+        Token_Item.Tronlist[1].balance = ConstantClass.TrxUSDbalance!;
+
+        //Binance  ***      Network Balance
+        ConstantClass.Binancebalance =
+            double.parse(bscaccinfo["result"].toString()) / 1000000000000000000;
+
+        Token_Item.Bsclist[0].balance = ConstantClass.Binancebalance!;
+      });
+      print("----------${ConstantClass.Binancebalance}------------------");
+      print("&&&&&&&&&&&&&& Token_Item.Tronlist[1].balance.toDouble()");
+    } catch (error) {
+      print('Error: $error');
+      // Handle error appropriately
+    }
   }
 
   Future<void> loadcoinData() async {
@@ -101,11 +146,8 @@ class _MyHomePageState extends State<MyHomePage>
       tronData = (await APIClass()
           .fetchcoindata('https://api.coingecko.com/api/v3/coins/tron'));
 
-
-          
       ethData = (await APIClass()
           .fetchcoindata('https://api.coingecko.com/api/v3/coins/ethereum'));
-
 
       setState(() {
         isDataLoaded = true;
@@ -113,22 +155,21 @@ class _MyHomePageState extends State<MyHomePage>
         ConstantClass.usdrate =
             (usdData["market_data"]["current_price"]["usd"]);
 
-        ConstantClass.bnbrate =
-            (bnbData["market_data"]["current_price"]["usd"]);
+        ConstantClass.bnbrate = double.parse(
+            bnbData["market_data"]["current_price"]["usd"].toString());
 
-        ConstantClass.tronrate =
-            (tronData["market_data"]["current_price"]["usd"]);
+        ConstantClass.tronrate = double.parse(
+            tronData["market_data"]["current_price"]["usd"].toString());
 
-
-        ConstantClass.ethrate =
-            (ethData["market_data"]["current_price"]["usd"]);
-
+        ConstantClass.ethrate = double.parse(
+            ethData["market_data"]["current_price"]["usd"].toString());
 
         Token_Item.Bsclist[0].rate = ConstantClass.bnbrate!;
         Token_Item.Bsclist[1].rate = ConstantClass.usdrate!;
         Token_Item.Tronlist[0].rate = ConstantClass.tronrate!;
+        Token_Item.Tronlist[1].rate = ConstantClass.usdrate!;
 
-        Token_Item.Bsclist[2].rate=ConstantClass.ethrate!;
+        Token_Item.Bsclist[2].rate = ConstantClass.ethrate!;
         print("dfdsfdf---->   " +
             ConstantClass.usdrate.toString() +
             "   ++item mrate     " +
@@ -162,8 +203,8 @@ class _MyHomePageState extends State<MyHomePage>
 
   @override
   Widget build(BuildContext context) {
-    print(ConstantClass.currentIndex);
-    print("Home55555555555555555555555");
+    print("Current index" + ConstantClass.currentIndex.toString());
+
     return Scaffold(
       backgroundColor: Colors.black87,
       body: SingleChildScrollView(
@@ -179,15 +220,16 @@ class _MyHomePageState extends State<MyHomePage>
               onTap: () {
                 Clipboard.setData(
                     ClipboardData(text: walletaddress ?? "loading"));
-              ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          backgroundColor: Colors.white,duration: Duration(seconds: 1),
-          content: Text(
-            'Copied',
-            style: TextStyle(color: Colors.black),
-          ),
-        ),
-      );
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    backgroundColor: Colors.white,
+                    duration: Duration(seconds: 1),
+                    content: Text(
+                      'Copied',
+                      style: TextStyle(color: Colors.black),
+                    ),
+                  ),
+                );
               },
               child: Container(
                   decoration: BoxDecoration(
@@ -391,9 +433,7 @@ class _MyHomePageState extends State<MyHomePage>
                                                 height: 3,
                                               ),
                                               Text(
-                                                  currentlist[index]
-                                                      .balance
-                                                      .toString(),
+                                                  "\$ ${currentlist[index].rate.toString()}",
                                                   style: TextStyle(
                                                       color: Colors.white,
                                                       fontWeight:
@@ -404,7 +444,7 @@ class _MyHomePageState extends State<MyHomePage>
                                           Spacer(),
                                           Text(
                                               //ConstantClass.usdrate.toString(),
-                                              "\$  ${currentlist[index].rate.toString()}",
+                                              "${currentlist[index].balance.toString()}",
                                               style: TextStyle(
                                                   color: Colors.white,
                                                   fontWeight: FontWeight.w500,
@@ -505,7 +545,7 @@ class _MyHomePageState extends State<MyHomePage>
                           ],
                         ),
 
-                  isdata
+                  !isdata
                       ? SingleChildScrollView(
                           child: Column(
                             children: [
@@ -514,11 +554,40 @@ class _MyHomePageState extends State<MyHomePage>
                                   itemCount: 20,
                                   itemBuilder: (context, index) {
                                     return Container(
-                                      height: Get.height / 20,
+                                      padding: EdgeInsets.all(8),
+                                      margin: EdgeInsets.all(5),
+                                      decoration: BoxDecoration(
+                                          // color: Colors.amber,
+                                          ),
+                                      height: Get.height / 14,
                                       child: Row(
                                         children: [
-                                          Image.asset(
-                                              'assets/images/ethlogo.png')
+                                          Stack(
+                                            children: [
+                                              CircleAvatar(backgroundColor: Colors.grey.shade700,
+                                                child:
+                                                 Image.asset(
+                                                    'assets/icons/arrowup.png', color: Colors.green,height: Get.height*0.02),
+                                              ),
+                                           
+                                            ],
+                                          ),SizedBox(width:Get.width*0.03),
+
+                                          CustomFonts.text14("Send", Colors.white),
+                                         Spacer(),
+                                           Column(
+mainAxisAlignment: MainAxisAlignment.spaceBetween,
+
+                                            children: [
+
+                                              //Amount in coin
+                                              CustomFonts.text15("0.0 BNB", Colors.white),
+
+                                              //Amount in usd
+
+                                       CustomFonts.text15("0.0 USD", Colors.white),
+                                            ],
+                                          )
                                         ],
                                       ),
                                     );
@@ -664,31 +733,19 @@ class ButtonTabs {
 }
 
 List menuicon = [
-  Icon(Icons.menu, color: Colors.white),
+  Icon(
+    Icons.menu,
+    color: Colors.white,
+  ),
   Icon(Icons.send_to_mobile, color: Colors.white),
   Icon(Icons.wifi, color: Colors.white),
   Icon(Icons.expand, color: Colors.white),
   Icon(Icons.chat, color: Colors.white),
 ];
 List menutxt = [
-  Text(
-    'Account detils',
-    style: TextStyle(color: Colors.white),
-  ),
-  Text(
-    'View in Explorer',
-    style: TextStyle(color: Colors.white),
-  ),
-  Text(
-    'Connected sites',
-    style: TextStyle(color: Colors.white),
-  ),
-  Text(
-    'Expanded View',
-    style: TextStyle(color: Colors.white),
-  ),
-  Text(
-    'Support',
-    style: TextStyle(color: Colors.white),
-  ),
+  CustomFonts.Text12('Account detils', Colors.white),
+  CustomFonts.Text12('View in Explorer', Colors.white),
+  CustomFonts.Text12('Connected sites', Colors.white),
+  CustomFonts.Text12('Expanded View', Colors.white),
+  CustomFonts.Text12('Support', Colors.white),
 ];

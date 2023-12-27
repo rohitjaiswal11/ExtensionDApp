@@ -141,7 +141,9 @@ class _TopbarState extends State<Topbar> {
                                           mainAxisAlignment:
                                               MainAxisAlignment.spaceBetween,
                                           children: [
-                                           CustomFonts.Text17("Select a network", Colors.white),
+                                            CustomFonts.Text17(
+                                                "Select a network",
+                                                Colors.white),
                                             IconButton(
                                               onPressed: () {
                                                 Get.back();
@@ -154,8 +156,7 @@ class _TopbarState extends State<Topbar> {
                                         SizedBox(
                                           height: Get.height *
                                               0.09 *
-                                            
-                                             MainNet.mainnetworklist.length,
+                                              MainNet.mainnetworklist.length,
                                           child: ListView.builder(
                                               itemCount: MainNet
                                                   .mainnetworklist.length,
@@ -184,21 +185,18 @@ class _TopbarState extends State<Topbar> {
                                                   },
                                                   child: Row(
                                                     mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .start,
+                                                        MainAxisAlignment.start,
                                                     children: [
-                                                      CircleAvatar(  
+                                                      CircleAvatar(
                                                         backgroundColor:
-                                                            Colors
-                                                                .transparent,
-
+                                                            Colors.transparent,
                                                         child: Image.asset(
                                                           MainNet
                                                               .mainnetworklist[
                                                                   index]
                                                               .coinimage,
-                                                          height: Get.height *
-                                                              0.04,
+                                                          height:
+                                                              Get.height * 0.04,
                                                         ),
                                                       ),
                                                       SizedBox(
@@ -219,8 +217,6 @@ class _TopbarState extends State<Topbar> {
                                                 );
                                               }),
                                         ),
-                                       
-                                       
                                         Row(
                                           children: [
                                             Text(
@@ -230,9 +226,8 @@ class _TopbarState extends State<Topbar> {
                                                   color: Colors.white),
                                             ),
                                             Spacer(),
-                                          Transform.scale(
-
-                           scale: 0.7,
+                                            Transform.scale(
+                                              scale: 0.7,
                                               child: CupertinoSwitch(
                                                 onChanged: (value) {
                                                   setState(() {
@@ -241,7 +236,9 @@ class _TopbarState extends State<Topbar> {
                                                 },
                                                 value: isSwitched,
                                                 activeColor: Colors.white,
-                                                                                       thumbColor: Colors.blue,trackColor:Colors.grey.withOpacity(0.5),
+                                                thumbColor: Colors.blue,
+                                                trackColor: Colors.grey
+                                                    .withOpacity(0.5),
                                                 // inactiveThumbColor: Colors.white,
                                                 // inactiveTrackColor:
                                                 //     Colors.grey.withOpacity(0.5),
@@ -251,64 +248,57 @@ class _TopbarState extends State<Topbar> {
                                         ),
                                         if (isSwitched == true)
                                           SingleChildScrollView(
-                                       child:   SizedBox(
-                                          height: Get.height *
-                                              0.09 *
-                                            
-                                             TestNetwork.testnetworklist.length,
-                                          child: ListView.builder(
-                                              itemCount: TestNetwork
-                                                  .testnetworklist.length,
-                                              itemBuilder: (context, index) {
-                                                return InkWell(
-                                                  onTap: () async {
-                                                 
-
-                                                    Get.back();
-
-
-                                                  },
-                                                  child: Row(
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .start,
-                                                    children: [
-                                                      CircleAvatar(  
-                                                        backgroundColor:
-                                                            Colors
-                                                                .transparent,
-
-                                                        child: Image.asset(
-                                                          TestNetwork
-                                                              .testnetworklist[
-                                                                  index]
-                                                              .coinimage,
-                                                          height: Get.height *
-                                                              0.04,
-                                                        ),
+                                            child: SizedBox(
+                                              height: Get.height *
+                                                  0.09 *
+                                                  TestNetwork
+                                                      .testnetworklist.length,
+                                              child: ListView.builder(
+                                                  itemCount: TestNetwork
+                                                      .testnetworklist.length,
+                                                  itemBuilder:
+                                                      (context, index) {
+                                                    return InkWell(
+                                                      onTap: () async {
+                                                        Get.back();
+                                                      },
+                                                      child: Row(
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .start,
+                                                        children: [
+                                                          CircleAvatar(
+                                                            backgroundColor:
+                                                                Colors
+                                                                    .transparent,
+                                                            child: Image.asset(
+                                                              TestNetwork
+                                                                  .testnetworklist[
+                                                                      index]
+                                                                  .coinimage,
+                                                              height:
+                                                                  Get.height *
+                                                                      0.04,
+                                                            ),
+                                                          ),
+                                                          SizedBox(
+                                                            width: 10,
+                                                          ),
+                                                          Text(
+                                                            TestNetwork
+                                                                .testnetworklist[
+                                                                    index]
+                                                                .coinname,
+                                                            style: TextStyle(
+                                                                fontSize: 14,
+                                                                color: Colors
+                                                                    .white),
+                                                          ),
+                                                        ],
                                                       ),
-                                                      SizedBox(
-                                                        width: 10,
-                                                      ),
-                                                      Text(
-                                                        TestNetwork
-                                                            .testnetworklist[
-                                                                index]
-                                                            .coinname,
-                                                        style: TextStyle(
-                                                            fontSize: 14,
-                                                            color:
-                                                                Colors.white),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                );
-                                              }),
-                                        ),
-                                       
-                                       
-                                       
-                                       
+                                                    );
+                                                  }),
+                                            ),
                                           ),
                                         Container(
                                           padding: EdgeInsets.zero,
@@ -510,7 +500,7 @@ class _TopbarState extends State<Topbar> {
                                     ),
                                     CustomFonts.Text12(
                                         " 'MetaMask is not connected to this site. To connect to a web3 site, find and click the connect button.',",
-                                           Colors.white)
+                                        Colors.white)
                                   ],
                                 ),
                               ),
@@ -528,6 +518,7 @@ class _TopbarState extends State<Topbar> {
                 ),
                 Container(
                   child: PopupMenuButton<int>(
+                    //constraints: const BoxConstraints.expand(width: 50, height: 100),
                     onSelected: (int value) {
                       // Handle the item selection here
                       switch (value) {
@@ -560,11 +551,17 @@ class _TopbarState extends State<Topbar> {
 
                       for (int i = 0; i < 5; i++)
                         PopupMenuItem(
+                          //padding: EdgeInsets.all(100),
+                         height: Get.height * 0.045,
+                          textStyle: const TextStyle(fontSize: 13, fontFamily: 'popins'),
+
                           value: i,
                           // row has two child icon and text
                           child: Row(
                             children: [
-                              menuicon[i],
+                              Transform.scale(child:    menuicon[i],scale: 0.8,),
+                           
+
                               //  Icon(Icons.settings, color: Colors.white),
                               SizedBox(
                                 // sized box with width 10

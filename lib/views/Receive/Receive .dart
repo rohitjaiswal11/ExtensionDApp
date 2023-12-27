@@ -21,7 +21,7 @@ class _ReceiveState extends State<Receive> {
       String Cointype= (ConstantClass.currentIndex == 0?"Binance":Text("Tron")).toString();
 
 //  final ScreenshotController screenshotController = ScreenshotController();
-  final TextEditingController controller = TextEditingController();
+//TextEditingController controller = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -120,11 +120,13 @@ class _ReceiveState extends State<Receive> {
             SizedBox(
               height: Get.height / 30,
             ),
-            Text(
+
+          //  CustomFonts.Text12("  Send only $Cointype network coin to this address.\nSending any other coins may result in \npermanent loss.", Colors.white30,)
+          Text(
               "Send only $Cointype network coin to this address.\nSending any other coins may result in \npermanent loss.",
               textAlign: TextAlign.center,
               style: TextStyle(
-                fontSize: 14,color: Colors.white30,
+                fontSize: 12,color: Colors.white30,
                 fontWeight: FontWeight.w400,
               ),
             ),
@@ -136,7 +138,7 @@ class _ReceiveState extends State<Receive> {
               children: [
                 InkWell(
                   onTap: () {
-                    String Cliptext = controller.text.toString();
+                    String Cliptext = generatedQrCode.toString();
                     print("Copppppied" + Cliptext);
                     Clipboard.setData(ClipboardData(text: Cliptext)).then((_) {
                       ScaffoldMessenger.of(context).showSnackBar(
