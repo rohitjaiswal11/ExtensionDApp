@@ -246,3 +246,60 @@
 //     throw Exception('Failed to retrieve coin information.');
 //   }
 // }
+
+
+
+
+
+
+
+
+
+
+
+
+//   getTransition() async {
+//     String url;
+//     if (args!.coinNetwork == NetworkType.BSCTestnet ||
+//         args!.coinNetwork == NetworkType.BSC) 
+        
+        
+//         {
+//       if (args!.coinAbi == null) {
+//         url =
+
+//  //"https://api-testnet.bscscan.com/api?module=account&action=txlist&address=TZ4UXDV5ZhNW7fb2AMSbgfAEZ7hWsnYS2g&page=1&offset=100&startblock=0&endblock=99999999999&sort=desc&apikey=FZ4ZHBRMX6YZSJVUMAJM5CB2YRMGMD9REE";
+
+//             "https://${AppContant.bnbbase}/api?module=account&action=txlist&address=$walletaddress&page=1&offset=100&startblock=0&endblock=99999999999&sort=desc&apikey=${AppContant.bsc_API_KEY}";
+//       } else {
+//         url =
+//             "https://${AppContant.bnbbase}/api?module=account&action=tokentx&contractaddress=${args!.contractAddress}&address=$walletaddress&page=1&offset=100&startblock=0&endblock=99999999999&sort=desc&apikey=${AppContant.bsc_API_KEY}";
+//       }
+//     } else {
+//       url = args!.coinAbi != null
+//           ?
+//           // "https://nile.trongrid.io/v1/accounts/TLm6d54oZX2GRPaQfvy24ruwsmFTxUNjn4/transactions/trc20?contract_address=TXLAQ63Xg1NAzckPwKHvzw7CSEmLMEqcdj"
+//           "https://${AppContant.tronbalance}/v1/accounts/$walletaddress/transactions/trc20?contract_address=${args!.contractAddress}"
+//           : "https://shastapi.tronscan.org/api/transaction?sort=-timestamp&count=true&limit=1000&start=0&address=$walletaddress&type=1";
+//     }
+//     Logger.logprint("url>>" + url);
+//     try {
+//       var response = await http.get(Uri.parse(url));
+//       var data = json.decode(response.body);
+//       Logger.logprint(data.toString());
+
+//       if (args!.coinNetwork == NetworkType.BSCTestnet ||
+//           args!.coinNetwork == NetworkType.BSC) {
+//         transactionsList = data["result"];
+//       } else {
+//         transactionsList = data["data"];
+//       }
+//       load = false;
+//     } catch (e) {
+//       load = false;
+//     }
+//     setState(() {});
+//   }
+
+
+

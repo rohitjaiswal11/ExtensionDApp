@@ -46,8 +46,8 @@ class _Verify_MnemonicState extends State<Verify_Mnemonic> {
   List other = ConstantClass.mnemonic.split(" ");
 
   Future<bool> CreateWallet() async {
-    await Wallet().walletaddressBSc(ConstantClass.mnemonic);
-    await Wallet().walletaddresstron(ConstantClass.mnemonic);
+    await Blockchain().walletaddressBSc(ConstantClass.mnemonic);
+    await Blockchain().walletaddresstron(ConstantClass.mnemonic);
     return true;
   }
 

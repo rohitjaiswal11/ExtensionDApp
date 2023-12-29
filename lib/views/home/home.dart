@@ -1,21 +1,18 @@
+import 'dart:js_util';
 import 'dart:math';
 
-import 'package:extensionapp/Utils/API.dart';
 import 'package:extensionapp/Utils/Constant.dart';
 import 'package:extensionapp/Utils/customfonts.dart';
-import 'package:extensionapp/Utils/sharedpref.dart';
-
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:extensionapp/Utils/word_truncate.dart';
 
 import 'package:extensionapp/views/send/send.dart';
 import 'package:extensionapp/views/home/topbar.dart';
 import 'package:extensionapp/views/swap/swap.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:fluttertoast/fluttertoast.dart';
+
 import 'package:get/get.dart';
-import 'package:trust_wallet_core/protobuf/Cosmos.pb.dart';
-import 'package:trust_wallet_core/protobuf/Polkadot.pb.dart';
+
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../Blockchain/DataExtension/Api.dart';
@@ -33,7 +30,7 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage>
     with SingleTickerProviderStateMixin {
- // List<Token_Item> currentlist = [];
+  List<Token_Item> currentlist = [];
   List<Token_Transaction> currenttransaction = [];
 
   String? walletaddress = ConstantClass.currentIndex == 0
@@ -63,6 +60,11 @@ class _MyHomePageState extends State<MyHomePage>
   late Map<String, dynamic> ethData;
   late Map<String, dynamic> trxaccinfo;
   late Map<String, dynamic> bscaccinfo;
+  late Map<String, dynamic> BscUSDTaccinfo;
+  late List<dynamic> result;
+  late Map<String, dynamic> TranscationDetails;
+
+  List<Token_Transaction> TransactionCurrent = [];
 
   bool isDataLoaded = false;
 
@@ -72,6 +74,8 @@ class _MyHomePageState extends State<MyHomePage>
     changetroken();
     loadcoinData();
     loadaccountinfo();
+
+    transcationdetailsAPI();
     print("Loadingaccountinfo");
 
     ConstantClass.totalBalance =
@@ -104,13 +108,66 @@ class _MyHomePageState extends State<MyHomePage>
     total = double.parse(total.toStringAsFixed(3));
     return total;
   }
+Future<void> transcationdetailsAPI() async {
+  // try {
+    // BSc transaction
+    ConstantClass.currentIndex == 0
+        ? TranscationDetails = await APIClass().fetchcoindata(ConstantClass.transactionBscAPI)
+        : TranscationDetails = await APIClass().fetchcoindata(ConstantClass.transactionTronAPI);
+
+    setState(() {
+      result = ConstantClass.currentIndex == 0 ? TranscationDetails['result'] : TranscationDetails['data'];
+      // print("Result $result");
+
+      for (int i = 0; i < result.length; i++) {
+        double parsedval = ConstantClass.currentIndex == 0
+            ? double.parse(result[i]["value"].toString()) / 1000000000.0
+            : double.parse(result[i]["amount"].toString()) / 100000000.0;
+       double inusd = 10 * parsedval;
+       print("++++++++++ins++++++$inusd");
+
+        if (ConstantClass.currentIndex == 0) {
+          Token_Transaction.TransactionBsc.add(Token_Transaction(
+            fromAddress: result[i]["from"],
+            toAddress: result[i]["to"],
+            coinname: "coinname",
+            coinSymbol: " BNB",
+            value: parsedval,
+            valUSD: 0.32,
+          ));
+          TransactionCurrent = [...Token_Transaction.TransactionBsc];
+        } else {
+          Token_Transaction.TransactionTRON.add(Token_Transaction(
+            fromAddress: result[i]["ownerAddress"].toString(),
+            toAddress: result[i]["toAddress"].toString(),
+            coinname:  result[i]["tokenInfo"]["tokenName"].toString(),
+            coinSymbol:result[i]["tokenInfo"]["tokenAbbr"].toString(),
+            value: parsedval,
+            valUSD: 0.32,
+          ));
+          TransactionCurrent
+           = [...Token_Transaction.TransactionTRON];
+          print("Tron Transaction Done     ${TranscationDetails['data'][0]["toAddress"].toString()},  ");
+        }
+      }
+    });
+  // } catch (error) {
+  //   print('Error Transaction code: $error');
+  //   // Handle error appropriately
+  // }
+}
 
   Future<void> loadaccountinfo() async {
     try {
       trxaccinfo = await APIClass().getAccountInfo();
       bscaccinfo = await APIClass().fetchcoindata(
           "https://api-testnet.bscscan.com/api?module=account&action=balance&address=${ConstantClass.BSCstaticwallet}&apikey=${ConstantClass.BscApikey}");
+      BscUSDTaccinfo = await APIClass().fetchcoindata(
+          // "https://api.bscscan.com/api?module=account&action=tokenbalance&contractaddress=${ConstantClass.BscUSDTContractAdd}&address=${ConstantClass.BSCstaticwallet}&tag=latest&apikey=${ConstantClass.BscApikey}");
 
+          //  "https://api.bscscan.com/api?module=account&action=tokenbalance&contractaddress=0xe9e7cea3dedca5984780bafc599bd69add087d56&address=0x89e73303049ee32919903c09e8de5629b84f59eb&tag=latest&apikey=YourApiKeyToken");
+
+          "https://api-testnet.bscscan.com/api?module=account&action=tokenbalance&contractaddress=${ConstantClass.BscUSDTContractAdd}&address=${ConstantClass.BSCstaticwallet}&tag=latest&apikey=${ConstantClass.BscApikey}");
       setState(() {
         ConstantClass.Tronbalance =
             double.parse(trxaccinfo["data"][0]["balance"].toString()) / 1000000;
@@ -126,8 +183,14 @@ class _MyHomePageState extends State<MyHomePage>
             double.parse(bscaccinfo["result"].toString()) / 1000000000000000000;
 
         Token_Item.Bsclist[0].balance = ConstantClass.Binancebalance!;
+
+// BNB USd balance
+        ConstantClass.BnbUsdbalance =
+            double.parse(BscUSDTaccinfo["result"].toString()) /
+                1000000000000000000;
+        Token_Item.Bsclist[1].balance = ConstantClass.BnbUsdbalance!;
       });
-      print("----------${ConstantClass.Binancebalance}------------------");
+      print("----------${BscUSDTaccinfo.toString()}------------------");
       print("&&&&&&&&&&&&&& Token_Item.Tronlist[1].balance.toDouble()");
     } catch (error) {
       print('Error: $error');
@@ -135,13 +198,17 @@ class _MyHomePageState extends State<MyHomePage>
     }
   }
 
+
+
   Future<void> loadcoinData() async {
     try {
       usdData = (await APIClass()
           .fetchcoindata('https://api.coingecko.com/api/v3/coins/usd'));
 
-      bnbData = (await APIClass().fetchcoindata(
-          'https://api.coingecko.com/api/v3/coins/binance-coin-wormhole'));
+      // bnbData = (await APIClass().fetchcoindata(
+      //     'https://api.coingecko.com/api/v3/coins/binance-coin-wormhole'));
+            bnbData = (await APIClass().fetchcoindata(
+          'https://api.coingecko.com/api/v3/coins/usd'));
 
       tronData = (await APIClass()
           .fetchcoindata('https://api.coingecko.com/api/v3/coins/tron'));
@@ -184,6 +251,7 @@ class _MyHomePageState extends State<MyHomePage>
   }
 
   changetroken() {
+    // TransactionCurrent.clear();
     currentlist = ConstantClass.currentIndex == 0
         ? [...Token_Item.Bsclist]
         : [...Token_Item.Tronlist];
@@ -203,7 +271,7 @@ class _MyHomePageState extends State<MyHomePage>
 
   @override
   Widget build(BuildContext context) {
-    print("Current index" + ConstantClass.currentIndex.toString());
+    print(" Start Current index" + ConstantClass.currentIndex.toString());
 
     return Scaffold(
       backgroundColor: Colors.black87,
@@ -545,13 +613,13 @@ class _MyHomePageState extends State<MyHomePage>
                           ],
                         ),
 
-                  !isdata
+                 !TransactionCurrent.isEmpty
                       ? SingleChildScrollView(
                           child: Column(
                             children: [
                               ListView.builder(
                                   shrinkWrap: true,
-                                  itemCount: 20,
+                                  itemCount: result.length,
                                   itemBuilder: (context, index) {
                                     return Container(
                                       padding: EdgeInsets.all(8),
@@ -564,28 +632,114 @@ class _MyHomePageState extends State<MyHomePage>
                                         children: [
                                           Stack(
                                             children: [
-                                              CircleAvatar(backgroundColor: Colors.grey.shade700,
-                                                child:
-                                                 Image.asset(
-                                                    'assets/icons/arrowup.png', color: Colors.green,height: Get.height*0.02),
-                                              ),
-                                           
+                                              if (TransactionCurrent[index]
+                                                          .fromAddress ==
+                                                      ConstantClass
+                                                          .myBSCAddress ||
+                                                  TransactionCurrent[index]
+                                                          .fromAddress ==
+                                                      ConstantClass
+                                                          .myTRXaddress)
+                                                CircleAvatar(
+                                                  backgroundColor:
+                                                      Colors.grey.shade700,
+                                                  child: Image.asset(
+                                                      'assets/icons/arrowup.png',
+                                                      color: Colors.green,
+                                                      height:
+                                                          Get.height * 0.02),
+                                                )
+                                              else
+                                                CircleAvatar(
+                                                  backgroundColor:
+                                                      Colors.grey.shade700,
+                                                  child: Image.asset(
+                                                      'assets/icons/arrowdown.png',
+                                                      color: Colors.green,
+                                                      height:
+                                                          Get.height * 0.02),
+                                                )
                                             ],
-                                          ),SizedBox(width:Get.width*0.03),
+                                          ),
+                                          SizedBox(width: Get.width * 0.03),
+                                          if (TransactionCurrent[index]
+                                                      .fromAddress ==
+                                                  ConstantClass.myBSCAddress ||
+                                              TransactionCurrent[index]
+                                                      .fromAddress ==
+                                                  ConstantClass.myTRXaddress)
+                                            SizedBox(
+                                              width: Get.width / 4,
+                                              child: CustomFonts.text13(
+                                                  "Send", Colors.white),
+                                            )
+                                          else
+                                            SizedBox(
+                                              width: Get.width / 4,
+                                              child: CustomFonts.text13(
+                                                  "Receive", Colors.white),
+                                            ),
 
-                                          CustomFonts.text14("Send", Colors.white),
-                                         Spacer(),
-                                           Column(
-mainAxisAlignment: MainAxisAlignment.spaceBetween,
 
+
+                                        // For Receive
+                                          if (TransactionCurrent[index]
+                                                      .toAddress ==
+                                                  ConstantClass.myBSCAddress ||
+                                              TransactionCurrent[index]
+                                                      .toAddress ==
+                                                  ConstantClass.myTRXaddress)
+                                            Center(
+                                              child: Text(
+                                                TextFormat.truncateWord(
+                                                    TransactionCurrent[index]
+                                                        .fromAddress
+                                                        .toString()),
+                                                style: TextStyle(
+                                                    color: Colors.grey),
+                                              ),
+                                            )
+
+
+                                            // For Send
+                                          else
+                                            Center(
+                                              child: Text(
+                                                TextFormat.truncateWord(
+                                                    TransactionCurrent[index]
+                                                        .toAddress
+                                                        .toString()),
+                                                style: TextStyle(
+                                                    color: Colors.grey),
+                                              ),
+                                            ),
+                                          Spacer(),
+                                          Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.end,
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
                                             children: [
-
                                               //Amount in coin
-                                              CustomFonts.text15("0.0 BNB", Colors.white),
+                                              CustomFonts.text13(
+                                                  TransactionCurrent[index]
+                                                          .value
+                                                          .toString() +
+
+                                                          " "+ TransactionCurrent[index]
+                                                          .coinSymbol
+                                                          .toString() ,
+                                               
+                                                  Colors.white),
 
                                               //Amount in usd
 
-                                       CustomFonts.text15("0.0 USD", Colors.white),
+                                              // CustomFonts.text13(
+                                              //     TransactionCurrent[index]
+                                              //             .valUSD
+                                              //             .toString() +
+                                              //         " USD",
+                                              //     Colors.white),
                                             ],
                                           )
                                         ],
@@ -617,18 +771,16 @@ mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 label: Text(
                                   "MetaMask support",
                                   style: TextStyle(color: Colors.blue),
-                                ))
+                                )),
+                                SizedBox(
+
+
+                                  height: 20,
+                                )
                           ],
                         ),
 
-                  // ListView.builder( itemCount: 20,itemBuilder: (context, index) {
-                  //   return Container(
-                  //     height: Get.height / 20,
-                  //     child: Row(
-                  //       children: [Image.asset('assets/images/copy.png')],
-                  //     ),
-                  //   );
-                  // }),
+       
                 ],
               ),
             ),

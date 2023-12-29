@@ -269,16 +269,16 @@ class _ImportWalletPageState extends State<ImportWalletPage> {
     if (isValid == true) {
       print("----valid mnemonoics--------");
       String mnemonicsfetched = _values.toString();
-      Wallet().walletaddresstron(mnemonicsfetched);
+     Blockchain().walletaddresstron(mnemonicsfetched);
 
-      // Wallet().walletaddressBSc(mnemonicsfetched);
+      // Blockchain().walletaddressBSc(mnemonicsfetched);
     } else {
       print("-----Invalid mnemonoics--------");
 
       String mnemonicsfetched = _values.toString();
-      Wallet().walletaddresstron(mnemonicsfetched);
+      Blockchain().walletaddresstron(mnemonicsfetched);
 
-      Wallet().walletaddressBSc(mnemonicsfetched);
+      Blockchain().walletaddressBSc(mnemonicsfetched);
     }
   }
 }

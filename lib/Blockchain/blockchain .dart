@@ -12,8 +12,9 @@ import 'package:wallet/wallet.dart';
 import 'package:web3dart/credentials.dart';
 
 import '../Utils/Constant.dart';
+import '../Utils/logger.dart';
 
-class Wallet {
+class Blockchain {
   String mnemonic = "";
   generateMnemonic() async {
     // Generate a random BIP-39 mnemonic phrase with 12 words.
@@ -132,4 +133,33 @@ class Wallet {
     
     return BscAddress;
   }
+
+
+
+
+  String genartepvtkey(List<String> phase) {
+    final passphrase = '';
+    final seed = wallet.mnemonicToSeed(phase, passphrase: passphrase);
+    final master = wallet.ExtendedPrivateKey.master(seed, wallet.xprv);
+    final root = master.forPath("m/44'/195'/0'/0/0");
+    print("keyBIh ${(root as wallet.ExtendedPrivateKey).key}");
+    final privateKey =
+        wallet.PrivateKey((root as wallet.ExtendedPrivateKey).key);
+    final publicKey = wallet.tron.createPublicKey(privateKey);
+    final address = wallet.tron.createAddress(publicKey);
+    String hexString =
+        BigInt.parse(privateKey.value.toString()).toRadixString(16);
+
+    if (hexString.length < 64) {
+      hexString = hexString.padLeft(64, '0');
+    }
+    Logger.logprint("key ${hexString.toUpperCase()}");
+    // TRON private keys are typically in uppercase
+
+    return hexString.toUpperCase();
+  }
+
+
+
+
 }

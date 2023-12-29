@@ -1,5 +1,6 @@
 import 'dart:core';
 
+import 'package:extensionapp/views/home/tokenItem.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -32,7 +33,7 @@ class ConstantClass {
 
   static bool? imported;
 
-  static String? FixedWallet = "TUPxRRwjzPtLpbHYY21CLCCoPZ4eaynKm5";
+  //static String? FixedWallet = "TUPxRRwjzPtLpbHYY21CLCCoPZ4eaynKm5";
 
   static String? publicgenerated;
 
@@ -40,6 +41,33 @@ class ConstantClass {
 
   static bool network0 = true;
   static bool network1 = false;
+  static String myBSCAddress = "0xf426a8d0a94bf039a35cee66dbf0227a7a12d11e";
+  static String myTRXaddress = "TZ4UXDV5ZhNW7fb2AMSbgfAEZ7hWsnYS2g";
+
+  static double? usdrate;
+  static double? bnbrate;
+  static double? tronrate;
+  static double? ethrate;
+  static double? currentBalance;
+  static double? totalBalance;
+
+  static double? Tronbalance;
+
+  static double? TrxUSDbalance;
+
+  static String? baseBSCaddress =
+      "https://api-testnet.bscscan.com/api?module=account&action=balance&address=";
+  static String? BSCstaticwallet = "0xb2aA02353807b5726cFf4311Fb4752A2CAb09f2E";
+  static String? BscApikey = "FZ4ZHBRMX6YZSJVUMAJM5CB2YRMGMD9REE";
+  static String BscUSDTContractAdd =
+      "0x337610d27c682E347C9cD60BD4b3b107C9d34dDd";
+
+  static double? Binancebalance;
+  static double? BnbUsdbalance;
+  static String transactionBscAPI =
+      "https://api.bscscan.com/api?module=account&action=txlist&address=0xF426a8d0A94bf039A35CEE66dBf0227A7a12D11e&startblock=0&endblock=99999999&page=1&offset=10&sort=asc&apikey=$BscApikey";
+  static String transactionTronAPI =
+      "https://shastapi.tronscan.org/api/transaction?sort=-timestamp&count=true&limit=1000&start=0&address=$myTRXaddress&type=1";
 
   static Future<void> getWallet() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -57,47 +85,9 @@ class ConstantClass {
     print("Text in " + "${ConstantClass.walletBsc}");
     print("Get Wallet Constanrt class executed");
   }
-
-  static double? usdrate;
-  static double? bnbrate;
-  static double? tronrate;
-  static double? ethrate;
-static double ?currentBalance;
-static double ? totalBalance;
-
-static double? Tronbalance;
-
-static double? TrxUSDbalance;
-
-  static String? baseBSCaddress="https://api-testnet.bscscan.com/api?module=account&action=balance&address=";
-    static String? BSCstaticwallet="0xb2aA02353807b5726cFf4311Fb4752A2CAb09f2E";
-    static String? BscApikey="FZ4ZHBRMX6YZSJVUMAJM5CB2YRMGMD9REE";
-
-
-static double? Binancebalance;
-static double? BnbUsdbalance;
-
-
 }
 
-
-
 //
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 //
 class AppContant {

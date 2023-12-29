@@ -243,7 +243,7 @@ class _DialogCustomState extends State<DialogCustom> {
                               savedprivate();
                               // Get.back();
 
-                              Wallet().getpublic(mytextController.toString());
+                            Blockchain().getpublic(mytextController.toString());
                             }),
                       SizedBox(
                         child: widget.w1,

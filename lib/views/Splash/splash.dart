@@ -28,7 +28,7 @@ class _SplashState extends State<Splash> {
     print("wallet Tron splash   " + ConstantClass.walletTron.toString());
 
     Timer(
-      Duration(seconds: 4),
+      Duration(seconds: 3),
       () => Navigator.pushReplacement(
         context,
         MaterialPageRoute(
