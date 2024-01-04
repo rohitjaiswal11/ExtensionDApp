@@ -48,11 +48,25 @@ class CustomFonts{
           fontWeight: FontWeight.w600,
           overflow: TextOverflow.ellipsis
       ),);
-  } static Widget heading18(String mytext,Color mycolor) {
+  } 
+  static Widget heading18(String mytext,Color mycolor) {
     return Text(mytext,
       style: TextStyle(
           color: mycolor,
           fontSize: 18,
+          fontFamily: 'Poppins',
+          fontStyle: FontStyle.normal,
+          letterSpacing: 0.5,
+          fontWeight: FontWeight.w600,
+          overflow: TextOverflow.ellipsis
+      ),);
+  }
+
+    static Widget heading17(String mytext,Color mycolor) {
+    return Text(mytext,
+      style: TextStyle(
+          color: mycolor,
+          fontSize: 17,
           fontFamily: 'Poppins',
           fontStyle: FontStyle.normal,
           letterSpacing: 0.5,
@@ -226,7 +240,7 @@ static Widget heading18800(String mytext,Color mycolor) {
 
 
 }
-static Widget text12(String mytext,Color mycolor){
+static Widget text12(String mytext,Color mycolor, ){
    return Text(mytext,
      style: TextStyle(
      color: mycolor,
@@ -267,7 +281,23 @@ static Widget text12(String mytext,Color mycolor){
    ),);
 
 
-}static Widget text14600(String mytext,Color mycolor){
+}static Widget text14w600(String mytext,Color mycolor){
+   return Text(mytext,
+     style: TextStyle(
+     color: mycolor,
+     fontSize: 14,
+     fontFamily: 'Poppins',
+
+     letterSpacing: 0.5,
+     fontStyle: FontStyle.normal,
+         fontWeight: FontWeight.w600,
+         overflow: TextOverflow.ellipsis
+
+   ),);
+
+
+}
+static Widget text14600(String mytext,Color mycolor){
    return Text(mytext,
      style: TextStyle(
      color: mycolor,
@@ -282,7 +312,24 @@ static Widget text12(String mytext,Color mycolor){
    ),);
 
 
-}static Widget text14ex(String mytext,Color mycolor){
+}static Widget text13600(String mytext,Color mycolor){
+   return Text(mytext,
+     style: TextStyle(
+     color: mycolor,
+     fontSize: 13,
+     fontFamily: 'Poppins',
+
+     letterSpacing: 0.5,
+     fontStyle: FontStyle.normal,
+         fontWeight: FontWeight.w600,
+         overflow: TextOverflow.ellipsis
+
+   ),);
+
+
+}
+
+static Widget text14ex(String mytext,Color mycolor){
    return Text(mytext,
      softWrap: true,
      maxLines: 8,

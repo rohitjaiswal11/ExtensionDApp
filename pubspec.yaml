@@ -123,6 +123,7 @@ dependencies:
   protobuf_google: ^0.0.1
   bs58: ^1.0.2
   storage_manager: ^0.3.0
+  js: ^0.6.7
   
 #   numeric_keyboard: ^1.1.0
 #   local_auth: ^2.1.7

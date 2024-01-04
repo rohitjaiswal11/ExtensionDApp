@@ -1,9 +1,12 @@
-import 'dart:js_util';
+import 'dart:js_interop_unsafe';
+import 'dart:js'as js;
 import 'dart:math';
-
+import 'package:js/js.dart';
 import 'package:extensionapp/Utils/Constant.dart';
 import 'package:extensionapp/Utils/customfonts.dart';
 import 'package:extensionapp/Utils/word_truncate.dart';
+import 'package:extensionapp/views/Presale/presale.dart';
+import 'package:extensionapp/views/home/ExtensionController.dart';
 
 import 'package:extensionapp/views/send/send.dart';
 import 'package:extensionapp/views/home/topbar.dart';
@@ -16,7 +19,9 @@ import 'package:get/get.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../Blockchain/DataExtension/Api.dart';
+import '../Funding/FundHistory.dart';
 import '../Receive/Receive .dart';
+import 'menu1.dart';
 import 'tokenItem.dart';
 
 class MyHomePage extends StatefulWidget {
@@ -52,6 +57,7 @@ class _MyHomePageState extends State<MyHomePage>
   //   cliptext = await SharedPreferencesManager().readString('publickey');
   //   setState(() {});
   // }
+  bool isRefreshing = false;
 
   late TabController _tabController;
   late Map<String, dynamic> bnbData;
@@ -84,6 +90,19 @@ class _MyHomePageState extends State<MyHomePage>
     super.initState();
   }
 
+  refreshfun() async {
+    // Simulate a time-consuming task, like fetching new data
+    await Future.delayed(Duration(seconds: 2));
+
+    // Update the list or fetch new data
+    setState(() {
+      currentlist = changetroken();
+      // List.generate(currentlist.length, (index) => 'Item $index (refreshed)');
+
+      print("Refresh");
+    });
+  }
+
   getbalance(List<Token_Item> network_coin) {
     double balances = 0.0;
     for (int i = 0; i < network_coin.length; i++) {
@@ -108,23 +127,29 @@ class _MyHomePageState extends State<MyHomePage>
     total = double.parse(total.toStringAsFixed(3));
     return total;
   }
-Future<void> transcationdetailsAPI() async {
-  // try {
+
+  Future<void> transcationdetailsAPI() async {
+    // try {
     // BSc transaction
     ConstantClass.currentIndex == 0
-        ? TranscationDetails = await APIClass().fetchcoindata(ConstantClass.transactionBscAPI)
-        : TranscationDetails = await APIClass().fetchcoindata(ConstantClass.transactionTronAPI);
+        ? TranscationDetails =
+            await APIClass().fetchcoindata(ConstantClass.transactionBscAPI)
+        : TranscationDetails =
+            await APIClass().fetchcoindata(ConstantClass.transactionTronAPI);
 
     setState(() {
-      result = ConstantClass.currentIndex == 0 ? TranscationDetails['result'] : TranscationDetails['data'];
+      result = ConstantClass.currentIndex == 0
+          ? TranscationDetails['result']
+          : TranscationDetails['data'];
       // print("Result $result");
 
       for (int i = 0; i < result.length; i++) {
-        double parsedval = ConstantClass.currentIndex == 0
-            ? double.parse(result[i]["value"].toString()) / 1000000000.0
-            : double.parse(result[i]["amount"].toString()) / 100000000.0;
-       double inusd = 10 * parsedval;
-       print("++++++++++ins++++++$inusd");
+
+        double inusd = ConstantClass.currentIndex == 0
+            ? double.parse(result[i]["value"].toString()) 
+            : double.parse(result[i]["amount"].toString()) ;
+        double parsedval=  inusd*0.000000000000001;
+        print("++++++++++ins++++++$parsedval");
 
         if (ConstantClass.currentIndex == 0) {
           Token_Transaction.TransactionBsc.add(Token_Transaction(
@@ -140,22 +165,22 @@ Future<void> transcationdetailsAPI() async {
           Token_Transaction.TransactionTRON.add(Token_Transaction(
             fromAddress: result[i]["ownerAddress"].toString(),
             toAddress: result[i]["toAddress"].toString(),
-            coinname:  result[i]["tokenInfo"]["tokenName"].toString(),
-            coinSymbol:result[i]["tokenInfo"]["tokenAbbr"].toString(),
+            coinname: result[i]["tokenInfo"]["tokenName"].toString(),
+            coinSymbol: result[i]["tokenInfo"]["tokenAbbr"].toString(),
             value: parsedval,
             valUSD: 0.32,
           ));
-          TransactionCurrent
-           = [...Token_Transaction.TransactionTRON];
-          print("Tron Transaction Done     ${TranscationDetails['data'][0]["toAddress"].toString()},  ");
+          TransactionCurrent = [...Token_Transaction.TransactionTRON];
+          print(
+              "Tron Transaction Done     ${TranscationDetails['data'][0]["toAddress"].toString()},  ");
         }
       }
     });
-  // } catch (error) {
-  //   print('Error Transaction code: $error');
-  //   // Handle error appropriately
-  // }
-}
+    // } catch (error) {
+    //   print('Error Transaction code: $error');
+    //   // Handle error appropriately
+    // }
+  }
 
   Future<void> loadaccountinfo() async {
     try {
@@ -170,7 +195,7 @@ Future<void> transcationdetailsAPI() async {
           "https://api-testnet.bscscan.com/api?module=account&action=tokenbalance&contractaddress=${ConstantClass.BscUSDTContractAdd}&address=${ConstantClass.BSCstaticwallet}&tag=latest&apikey=${ConstantClass.BscApikey}");
       setState(() {
         ConstantClass.Tronbalance =
-            double.parse(trxaccinfo["data"][0]["balance"].toString()) / 1000000;
+            double.parse(trxaccinfo["data"][0]["balance"].toString()) / 10000000;
         ConstantClass.TrxUSDbalance = double.parse(trxaccinfo["data"][0]
                     ["trc20"][0]["TY5kVT6aMqStDG81wPzmVmcxikfr8ReUu1"]
                 .toString()) /
@@ -198,17 +223,15 @@ Future<void> transcationdetailsAPI() async {
     }
   }
 
-
-
   Future<void> loadcoinData() async {
     try {
       usdData = (await APIClass()
           .fetchcoindata('https://api.coingecko.com/api/v3/coins/usd'));
 
-      // bnbData = (await APIClass().fetchcoindata(
-      //     'https://api.coingecko.com/api/v3/coins/binance-coin-wormhole'));
-            bnbData = (await APIClass().fetchcoindata(
-          'https://api.coingecko.com/api/v3/coins/usd'));
+      bnbData = (await APIClass().fetchcoindata(
+          'https://api.coingecko.com/api/v3/coins/binance-coin-wormhole'));
+      // bnbData = (await APIClass()
+      //     .fetchcoindata('https://api.coingecko.com/api/v3/coins/usd'));
 
       tronData = (await APIClass()
           .fetchcoindata('https://api.coingecko.com/api/v3/coins/tron'));
@@ -275,7 +298,11 @@ Future<void> transcationdetailsAPI() async {
 
     return Scaffold(
       backgroundColor: Colors.black87,
-      body: SingleChildScrollView(
+      body:
+      
+      
+      
+       SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.start,
@@ -339,13 +366,22 @@ Future<void> transcationdetailsAPI() async {
                   )),
             ),
             SizedBox(
-              height: 20,
+              height: 15,
             ),
-            Text('\$ ${ConstantClass.totalBalance}',
-                style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 32,
-                    fontWeight: FontWeight.w400)),
+
+            ConstantClass.totalBalance == 0
+                ? Text('\$ 0',
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 32,
+                        fontWeight: FontWeight.w400))
+                : Text('\$ ${ConstantClass.totalBalance}',
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 32,
+                        fontWeight: FontWeight.w400)),
+// totalbalance_view()??Text("data"),
+
             SizedBox(
               height: 5,
             ),
@@ -361,8 +397,50 @@ Future<void> transcationdetailsAPI() async {
                 child: CustomFonts.text13(
                     '\ ${ConstantClass.currentBalance} USD ', Colors.white)),
             SizedBox(
-              height: 20,
+              height: 10,
             ),
+
+            Container(
+              margin: EdgeInsets.all(15),
+              height: Get.height / 10,
+              decoration: BoxDecoration(
+                  color: Colors.grey.shade100,
+                  borderRadius: BorderRadius.circular(20),
+                  gradient: LinearGradient(
+                    begin: Alignment.bottomRight,
+                    colors: [
+                      Color.fromARGB(255, 90, 86, 86).withOpacity(0.5),
+                      Color.fromARGB(255, 112, 107, 107).withOpacity(0.5)
+                    ],
+                  )),
+              child: Padding(
+                padding:const EdgeInsets.only(top:5,left:15, right: 15, bottom: 15),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    Menu1(btname: "Funding", amount: ExtensionController().funding.toString(), press: (){Get.to(FundHistory(), arguments: 'Funding');}),
+                    Menu1(btname: "Presale", amount:ExtensionController().presale.toString(), press: (){Get.to(presale(),arguments: "Presale");},),
+                    Menu1(
+                      btname: "Referal",
+                      amount: ExtensionController().referalamount.toString(),
+                      image: "assets/icons/person.png",
+                      colr: Colors.white,press: (){
+
+
+                        js.context.callMethod('customAlertMessage',['Hey this is custom JS code!']);
+                      }
+                    ),
+                    Menu1(btname: "Stake", amount: "0",press: (){}),
+                  ],
+                ),
+              ),
+            ),
+
+            // SizedBox(
+            //   height: 20,
+            // ),
+
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
@@ -446,348 +524,376 @@ Future<void> transcationdetailsAPI() async {
                     Text('Activity'),
                   ]),
             ),
-            Container(
-              height: Get.height / 2.5,
-              child: TabBarView(
-                controller: _tabController,
-                children: [
-                  SingleChildScrollView(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Container(
-                          padding: EdgeInsets.only(bottom: Get.height / 70),
-                          child: currentlist.length == 0 &&
-                                  isDataLoaded == false
-                              ? Center(child: CircularProgressIndicator())
-                              : ListView.builder(
-                                  shrinkWrap: true,
-                                  itemCount: currentlist.length,
-                                  itemBuilder: (context, index) {
-                                    return Container(
-                                      padding:
-                                          EdgeInsets.symmetric(horizontal: 10),
-                                      //   color: Colors.pink,
-                                      margin: EdgeInsets.all(10),
-                                      height: Get.height / 17,
-                                      child: Row(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          CircleAvatar(
-                                            backgroundColor: Colors.transparent,
-                                            child: Image.asset(
-                                              currentlist[index].coinimage,
-                                              height: Get.height / 22,
-                                              fit: BoxFit.contain,
+            RefreshIndicator(
+              onRefresh: () async {
+                setState(() {
+                  isRefreshing = true; // Mark refresh in progress
+                });
+                await refreshfun();
+              },
+              child: Container(
+                height: Get.height / 2.5,
+                child: TabBarView(
+                  controller: _tabController,
+                  children: [
+                    SingleChildScrollView(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Container(
+                            padding: EdgeInsets.only(bottom: Get.height / 70),
+                            child: currentlist.length == 0 &&
+                                    isDataLoaded == false
+                                ? Center(child: CircularProgressIndicator())
+                                : ListView.builder(
+                                    shrinkWrap: true,
+                                    itemCount: currentlist.length,
+                                    itemBuilder: (context, index) {
+                                      return Container(
+                                        padding: EdgeInsets.symmetric(
+                                            horizontal: 10),
+                                        //   color: Colors.pink,
+                                        margin: EdgeInsets.all(10),
+                                        height: Get.height / 17,
+                                        child: Row(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            CircleAvatar(
+                                              backgroundColor:
+                                                  Colors.transparent,
+                                              child: Image.asset(
+                                                currentlist[index].coinimage,
+                                                height: Get.height / 22,
+                                                fit: BoxFit.contain,
+                                              ),
                                             ),
-                                          ),
-                                          SizedBox(
-                                            width: Get.width / 35,
-                                          ),
-                                          Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.center,
-                                            children: [
-                                              Text(
-                                                currentlist[index].coinname,
-                                                style: TextStyle(
-                                                  color: Colors.white,
+                                            SizedBox(
+                                              width: Get.width / 35,
+                                            ),
+                                            Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                              children: [
+                                                Text(
+                                                  currentlist[index].coinname,
+                                                  style: TextStyle(fontSize: 13,fontFamily: 'Poppins',
+                                                    color: Colors.white,
+                                                  ),
                                                 ),
-                                              ),
-                                              SizedBox(
-                                                height: 3,
-                                              ),
-                                              Text(
-                                                  "\$ ${currentlist[index].rate.toString()}",
-                                                  style: TextStyle(
-                                                      color: Colors.white,
-                                                      fontWeight:
-                                                          FontWeight.w100,
-                                                      fontSize: 13)),
-                                            ],
-                                          ),
-                                          Spacer(),
-                                          Text(
-                                              //ConstantClass.usdrate.toString(),
-                                              "${currentlist[index].balance.toString()}",
-                                              style: TextStyle(
-                                                  color: Colors.white,
-                                                  fontWeight: FontWeight.w500,
-                                                  fontSize: 14))
-                                        ],
-                                      ),
-                                    );
-                                  }),
-                        ),
-                        TextButton.icon(
-                            style: ButtonStyle(
-                                padding: MaterialStatePropertyAll(
-                                    EdgeInsets.symmetric(
-                                        horizontal: 30, vertical: 15)),
-                                foregroundColor:
-                                    MaterialStatePropertyAll(Colors.blue)),
-                            onPressed: () {},
-                            icon: Icon(Icons.add),
-                            label: Text(
-                              'Import Token',
-                            )),
-                        SizedBox(
-                          height: Get.height / 70,
-                        ),
-                        TextButton.icon(
-                            style: ButtonStyle(
-                                padding: MaterialStatePropertyAll(
-                                    EdgeInsets.symmetric(
-                                        horizontal: 30, vertical: 15)),
-                                foregroundColor:
-                                    MaterialStatePropertyAll(Colors.blue)),
-                            onPressed: () {
-                              setState(() {
-                                Get.to(() => MyHomePage());
-                              });
-                            },
-                            icon: Icon(Icons.refresh),
-                            label: Text('Refresh list')),
-                        SizedBox(
-                          height: Get.height / 70,
-                        ),
-                        TextButton.icon(
-                            style: ButtonStyle(
-                                padding: MaterialStatePropertyAll(
-                                    EdgeInsets.symmetric(
-                                        horizontal: 30, vertical: 15)),
-                                foregroundColor:
-                                    MaterialStatePropertyAll(Colors.blue)),
-                            onPressed: () {},
-                            icon: Icon(Icons.chat),
-                            label: Text('support'))
-                      ],
-                    ),
-                  ),
-
-                  isdata
-                      ? SingleChildScrollView(
-                          child: Column(
-                            children: [
-                              ListView.builder(
-                                  shrinkWrap: true,
-                                  itemCount: 20,
-                                  itemBuilder: (context, index) {
-                                    return Container(
-                                      height: Get.height / 20,
-                                      child: Row(
-                                        children: [
-                                          Image.asset(
-                                              'assets/images/ethlogo.png')
-                                        ],
-                                      ),
-                                    );
-                                  }),
-                            ],
+                                                SizedBox(
+                                                  height: 3,
+                                                ),
+                                                Text(
+                                                    "\$ ${currentlist[index].rate.toString()}",
+                                                    style: TextStyle(fontSize: 12,fontFamily: 'Poppins',
+                                                        color: Colors.white,
+                                                        fontWeight:
+                                                            FontWeight.w100,
+                                                       )),
+                                              ],
+                                            ),
+                                            Spacer(),
+                                            Text(
+                                                //ConstantClass.usdrate.toString(),
+                                                "${currentlist[index].balance.toString()}",
+                                                style: TextStyle(fontFamily: 'Poppins',
+                                                    color: Colors.white,
+                                                    fontWeight: FontWeight.w500,
+                                                    fontSize: 13))
+                                          ],
+                                        ),
+                                      );
+                                    }),
                           ),
-                        )
-                      : Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Image.asset('assets/images/empty-folder.png'),
-                            SizedBox(
-                              height: Get.height / 30,
-                            ),
-                            Text(
-                              'No NFT Yet',
-                              style: TextStyle(color: Colors.grey),
-                            ),
-                            TextButton(
+                          TextButton.icon(
+                              style: ButtonStyle(
+                                  padding: MaterialStatePropertyAll(
+                                      EdgeInsets.symmetric(
+                                          horizontal: 30, vertical: 15)),
+                                  foregroundColor:
+                                      MaterialStatePropertyAll(Colors.blue)),
+                              onPressed: () {},
+                              icon: Icon(Icons.add),
+                              label: Text(
+                                'Import Token',
+                              )),
+                          SizedBox(
+                            height: Get.height / 70,
+                          ),
+                          TextButton.icon(
+                              style: ButtonStyle(
+                                  padding: MaterialStatePropertyAll(
+                                      EdgeInsets.symmetric(
+                                          horizontal: 30, vertical: 15)),
+                                  foregroundColor:
+                                      MaterialStatePropertyAll(Colors.blue)),
                               onPressed: () {
-                                _launchURL();
-                              },
-                              child: Text(
-                                "Learn More",
-                                style: TextStyle(color: Colors.blue),
-                              ),
-                            )
-                          ],
-                        ),
-
-                 !TransactionCurrent.isEmpty
-                      ? SingleChildScrollView(
-                          child: Column(
-                            children: [
-                              ListView.builder(
-                                  shrinkWrap: true,
-                                  itemCount: result.length,
-                                  itemBuilder: (context, index) {
-                                    return Container(
-                                      padding: EdgeInsets.all(8),
-                                      margin: EdgeInsets.all(5),
-                                      decoration: BoxDecoration(
-                                          // color: Colors.amber,
-                                          ),
-                                      height: Get.height / 14,
-                                      child: Row(
-                                        children: [
-                                          Stack(
-                                            children: [
-                                              if (TransactionCurrent[index]
-                                                          .fromAddress ==
-                                                      ConstantClass
-                                                          .myBSCAddress ||
-                                                  TransactionCurrent[index]
-                                                          .fromAddress ==
-                                                      ConstantClass
-                                                          .myTRXaddress)
-                                                CircleAvatar(
-                                                  backgroundColor:
-                                                      Colors.grey.shade700,
-                                                  child: Image.asset(
-                                                      'assets/icons/arrowup.png',
-                                                      color: Colors.green,
-                                                      height:
-                                                          Get.height * 0.02),
-                                                )
-                                              else
-                                                CircleAvatar(
-                                                  backgroundColor:
-                                                      Colors.grey.shade700,
-                                                  child: Image.asset(
-                                                      'assets/icons/arrowdown.png',
-                                                      color: Colors.green,
-                                                      height:
-                                                          Get.height * 0.02),
-                                                )
-                                            ],
-                                          ),
-                                          SizedBox(width: Get.width * 0.03),
-                                          if (TransactionCurrent[index]
-                                                      .fromAddress ==
-                                                  ConstantClass.myBSCAddress ||
-                                              TransactionCurrent[index]
-                                                      .fromAddress ==
-                                                  ConstantClass.myTRXaddress)
-                                            SizedBox(
-                                              width: Get.width / 4,
-                                              child: CustomFonts.text13(
-                                                  "Send", Colors.white),
-                                            )
-                                          else
-                                            SizedBox(
-                                              width: Get.width / 4,
-                                              child: CustomFonts.text13(
-                                                  "Receive", Colors.white),
-                                            ),
-
-
-
-                                        // For Receive
-                                          if (TransactionCurrent[index]
-                                                      .toAddress ==
-                                                  ConstantClass.myBSCAddress ||
-                                              TransactionCurrent[index]
-                                                      .toAddress ==
-                                                  ConstantClass.myTRXaddress)
-                                            Center(
-                                              child: Text(
-                                                TextFormat.truncateWord(
-                                                    TransactionCurrent[index]
-                                                        .fromAddress
-                                                        .toString()),
-                                                style: TextStyle(
-                                                    color: Colors.grey),
-                                              ),
-                                            )
-
-
-                                            // For Send
-                                          else
-                                            Center(
-                                              child: Text(
-                                                TextFormat.truncateWord(
-                                                    TransactionCurrent[index]
-                                                        .toAddress
-                                                        .toString()),
-                                                style: TextStyle(
-                                                    color: Colors.grey),
-                                              ),
-                                            ),
-                                          Spacer(),
-                                          Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.end,
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              //Amount in coin
-                                              CustomFonts.text13(
-                                                  TransactionCurrent[index]
-                                                          .value
-                                                          .toString() +
-
-                                                          " "+ TransactionCurrent[index]
-                                                          .coinSymbol
-                                                          .toString() ,
-                                               
-                                                  Colors.white),
-
-                                              //Amount in usd
-
-                                              // CustomFonts.text13(
-                                              //     TransactionCurrent[index]
-                                              //             .valUSD
-                                              //             .toString() +
-                                              //         " USD",
-                                              //     Colors.white),
-                                            ],
-                                          )
-                                        ],
-                                      ),
+                                setState(() {
+                                  isRefreshing = true;
+                                  if (isRefreshing)
+                                    Center(
+                                      child: CircularProgressIndicator(),
                                     );
-                                  }),
-                            ],
+
+                                  refreshfun();
+                                });
+                              },
+                              icon: Icon(Icons.refresh),
+                              label: Text('Refresh list')),
+                          SizedBox(
+                            height: Get.height / 70,
                           ),
-                        )
-                      : Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Text(
-                              'You have no transcations',
-                              style: TextStyle(color: Colors.grey),
+                          // TextButton.icon(
+                          //     style: ButtonStyle(
+                          //         padding: MaterialStatePropertyAll(
+                          //             EdgeInsets.symmetric(
+                          //                 horizontal: 30, vertical: 15)),
+                          //         foregroundColor:
+                          //             MaterialStatePropertyAll(Colors.blue)),
+                          //     onPressed: () {
+
+
+                          //      _launchURL() ;
+                          //     },
+                          //     icon: Icon(Icons.chat),
+                          //     label: Text('support'))
+                        ],
+                      ),
+                    ),
+                    isdata
+                        ? SingleChildScrollView(
+                            child: Column(
+                              children: [
+                                ListView.builder(
+                                    shrinkWrap: true,
+                                    itemCount: 20,
+                                    itemBuilder: (context, index) {
+                                      return Container(
+                                        height: Get.height / 20,
+                                        child: Row(
+                                          children: [
+                                            Image.asset(
+                                                'assets/images/ethlogo.png')
+                                          ],
+                                        ),
+                                      );
+                                    }),
+                              ],
                             ),
-                            SizedBox(
-                              height: Get.height / 30,
-                            ),
-                            TextButton.icon(
-                                icon: Icon(Icons.chat),
-                                style: ButtonStyle(
-                                    iconColor:
-                                        MaterialStatePropertyAll(Colors.blue)),
+                          )
+                        : Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Image.asset('assets/images/empty-folder.png', height: Get.height*0.1,),
+                              SizedBox(
+                                height: Get.height / 30,
+                              ),
+                              Text(
+                                'No NFT Yet',
+                                style: TextStyle(color: Colors.grey),
+                              ),
+                              TextButton(
                                 onPressed: () {
                                   _launchURL();
                                 },
-                                label: Text(
-                                  "MetaMask support",
+                                child: Text(
+                                  "Learn More",
                                   style: TextStyle(color: Colors.blue),
-                                )),
-                                SizedBox(
+                                ),
+                              )
+                            ],
+                          ),
+                    !TransactionCurrent.isEmpty
+                        ? SingleChildScrollView(
+                            child: Column(
+                              children: [
+                                ListView.builder(
+                                    shrinkWrap: true,
+                                    itemCount: result.length,
+                                    itemBuilder: (context, index) {
+                                      return Container(
+                                        padding: EdgeInsets.all(8),
+                                        margin: EdgeInsets.all(5),
+                                        decoration: BoxDecoration(
+                                            // color: Colors.amber,
+                                            ),
+                                        height: Get.height / 14,
+                                        child: Row(
+                                          children: [
+                                            Stack(
+                                              children: [
+                                                if (TransactionCurrent[index]
+                                                            .fromAddress ==
+                                                        ConstantClass
+                                                            .myBSCAddress ||
+                                                    TransactionCurrent[index]
+                                                            .fromAddress ==
+                                                        ConstantClass
+                                                            .myTRXaddress)
+                                                  CircleAvatar(
+                                                    backgroundColor:
+                                                        Colors.grey.shade700,
+                                                    child: Image.asset(
+                                                        'assets/icons/arrowup.png',
+                                                        color: Colors.green,
+                                                        height:
+                                                            Get.height * 0.02),
+                                                  )
+                                                else
+                                                  CircleAvatar(
+                                                    backgroundColor:
+                                                        Colors.grey.shade700,
+                                                    child: Image.asset(
+                                                        'assets/icons/arrowdown.png',
+                                                        color: Colors.green,
+                                                        height:
+                                                            Get.height * 0.02),
+                                                  )
+                                              ],
+                                            ),
+                                            SizedBox(width: Get.width * 0.03),
+                                            if (TransactionCurrent[index]
+                                                        .fromAddress ==
+                                                    ConstantClass
+                                                        .myBSCAddress ||
+                                                TransactionCurrent[index]
+                                                        .fromAddress ==
+                                                    ConstantClass.myTRXaddress)
+                                              SizedBox(
+                                                width: Get.width / 4,
+                                                child: CustomFonts.text13(
+                                                    "Send", Colors.white),
+                                              )
+                                            else
+                                              SizedBox(
+                                                width: Get.width / 4,
+                                                child: CustomFonts.text13(
+                                                    "Receive", Colors.white),
+                                              ),
 
+                                            // For Receive
+                                            if (TransactionCurrent[index]
+                                                        .toAddress ==
+                                                    ConstantClass
+                                                        .myBSCAddress ||
+                                                TransactionCurrent[index]
+                                                        .toAddress ==
+                                                    ConstantClass.myTRXaddress)
+                                              Center(
+                                                child: Text(
+                                                  TextFormat.truncateWord(
+                                                      TransactionCurrent[index]
+                                                          .fromAddress
+                                                          .toString()),
+                                                  style: TextStyle(
+                                                      color: Colors.grey),
+                                                ),
+                                              )
 
-                                  height: 20,
-                                )
-                          ],
-                        ),
+                                            // For Send
+                                            else
+                                              Center(
+                                                child: Text(
+                                                  TextFormat.truncateWord(
+                                                      TransactionCurrent[index]
+                                                          .toAddress
+                                                          .toString()),
+                                                  style: TextStyle(
+                                                      color: Colors.grey),
+                                                ),
+                                              ),
+                                            Spacer(),
+                                            Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.end,
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                              children: [
+                                                //Amount in coin
+                                                CustomFonts.text13(
+                                                    TransactionCurrent[index]
+                                                            .value!.toStringAsFixed(3)
+                                                            .toString() +
+                                                        " " +
+                                                        TransactionCurrent[
+                                                                index]
+                                                            .coinSymbol
+                                                            .toString(),
+                                                    Colors.white),
 
-       
-                ],
+                                                //Amount in usd
+
+                                                // CustomFonts.text13(
+                                                //     TransactionCurrent[index]
+                                                //             .valUSD
+                                                //             .toString() +
+                                                //         " USD",
+                                                //     Colors.white),
+                                              ],
+                                            )
+                                          ],
+                                        ),
+                                      );
+                                    }),
+                              ],
+                            ),
+                          )
+                        : Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Text(
+                                'You have no transcations',
+                                style: TextStyle(color: Colors.grey),
+                              ),
+                              SizedBox(
+                                height: Get.height / 30,
+                              ),
+                              TextButton.icon(
+                                  icon: Icon(Icons.chat),
+                                  style: ButtonStyle(
+                                      iconColor: MaterialStatePropertyAll(
+                                          Colors.blue)),
+                                  onPressed: () {
+                                    _launchURL();
+                                  },
+                                  label: Text(
+                                    "MetaMask support",
+                                    style: TextStyle(color: Colors.blue),
+                                  )),
+                              SizedBox(
+                                height: 20,
+                              )
+                            ],
+                          ),
+                  ],
+                ),
               ),
             ),
           ],
         ),
       ),
     );
+  }
+
+  totalbalance_view() {
+    setState(() {
+      ConstantClass.totalBalance == 0
+          ? Text('\$ 0',
+              style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 32,
+                  fontWeight: FontWeight.w400))
+          : Text('\$ ${ConstantClass.totalBalance}',
+              style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 32,
+                  fontWeight: FontWeight.w400));
+    });
   }
 }
 
@@ -860,7 +966,14 @@ class ButtonTabs {
     ButtonTabs(
       img: 'assets/icons/plus-minus.png',
       btntapname: 'Buy & Sell',
-      nav: "",
+      nav: "",Pressed: ()async{
+
+   final Uri url = Uri.parse('https://flutter.dev');
+    if (!await launchUrl(url)) {
+      throw Exception('Could not launch $url');
+    }
+
+    }
     ),
     ButtonTabs(
         img: 'assets/icons/send.png',
@@ -880,7 +993,14 @@ class ButtonTabs {
         Pressed: () {
           Get.to(Receive());
         }),
-    ButtonTabs(img: 'assets/icons/stock.png', btntapname: 'Portfolio'),
+    ButtonTabs(img: 'assets/icons/stock.png', btntapname: 'Vote',Pressed: ()async{
+
+   final Uri url = Uri.parse('https://flutter.dev');
+    if (!await launchUrl(url)) {
+      throw Exception('Could not launch $url');
+    }
+
+    }),
   ];
 }
 

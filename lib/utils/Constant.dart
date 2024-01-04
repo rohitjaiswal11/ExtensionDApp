@@ -69,6 +69,25 @@ class ConstantClass {
   static String transactionTronAPI =
       "https://shastapi.tronscan.org/api/transaction?sort=-timestamp&count=true&limit=1000&start=0&address=$myTRXaddress&type=1";
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   static Future<void> getWallet() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     ConstantClass.walletBsc = prefs.getString('walletBsc');
@@ -85,7 +104,21 @@ class ConstantClass {
     print("Text in " + "${ConstantClass.walletBsc}");
     print("Get Wallet Constanrt class executed");
   }
+
+
+
+   static List<ListItem> accountlist = [ListItem('StaticEntry'),ListItem('StaticEntry'),ListItem('StaticEntry'),ListItem('StaticEntry')];
+
+   
 }
+
+
+class ListItem {
+  String name;
+
+  ListItem(this.name);
+}
+
 
 //
 
@@ -139,7 +172,19 @@ class AppContant {
   static String selectedCurrency = 'usd';
   static int selectedCurrencyindes = 0;
   static String bsc_API_KEY = 'CPZ64TSTGBBDXJZIT1ZI52QVUW1GC54S8X';
+
+
+  static String Baseurl = "unicitizens.com";
+  static String Login = "/api/user";
+  static String Register = "/api/register";
+  static String transactions = "/api/transactions";
+  static String getotp = "/api/get-otp";
+  static String transferfunds = "/api/transfer-funds";
+  static String finduser = "/api/finduser";
+  static String id = 'id';
 }
+
+
 
 late final double TAB_VIEWER_BOTTOM_OFFSET_1;
 // ignore: non_constant_identifier_names
@@ -160,6 +205,9 @@ const double TAB_VIEWER_TOP_SCALE_BOTTOM_OFFSET = 230.0;
 String pvtkey =
     "dbc0b46dcb6ad417876b4f7ca0153a1eb38f9a14245ad38edec1162682855d97";
 String walletadddres = "";
+
+
+
 
 
 //  static String? Network;

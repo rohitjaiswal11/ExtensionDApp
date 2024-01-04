@@ -25,7 +25,7 @@ class _BackUp_MnemonicState extends State<BackUp_Mnemonic> {
   List<String> mimonic=ConstantClass.mnemonic.toString().split(" ");
 
   Future<void> showQR(BuildContext context) async {
-    return await showDialog(
+    return await showDialog(barrierDismissible: false,
         useSafeArea: true,
         context: context,
         builder: (context) {
@@ -41,10 +41,10 @@ class _BackUp_MnemonicState extends State<BackUp_Mnemonic> {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   CustomFonts.heading18("Mnemonic's QR Code",ColorsCustom.black),
-                  SizedBox(height: Get.height*0.5,),
+                   SizedBox(height: Get.height*0.03,),
                   Container(
-                    height: 350,
-                    width: CustomDimension.mywidth(context),
+                    height: Get.height*0.3,
+                    width: Get.width*0.8,
                     child: Center(
                       child: QrImageView(
                         data: ConstantClass.mnemonic.toString(),
@@ -57,7 +57,7 @@ class _BackUp_MnemonicState extends State<BackUp_Mnemonic> {
               actions: <Widget>[
                 InkWell(
                   child: Container(
-                    width: CustomDimension.mywidth(context),
+                    width:Get.width*0.8,
                     padding: EdgeInsets.only(top: 10,bottom: 10,right: 20,left: 20),
                     decoration: BoxDecoration(
                         boxShadow:  [
@@ -111,21 +111,21 @@ class _BackUp_MnemonicState extends State<BackUp_Mnemonic> {
   @override
   Widget build(BuildContext context) {
 
-    final appbar = AppBar(backgroundColor: ColorsCustom.transparent,
-      automaticallyImplyLeading: false, // Don't show the leading button
-      toolbarHeight: CustomDimension.myheight(context)/9,
-      leading:   InkWell(
-          onTap: () {
-            Navigator.pop(context);
-          },
-          child: Icon(Icons.arrow_back,
-              size: 32, color: ColorsCustom.black)),
-      centerTitle: true,
-      title: CustomFonts.heading20('Back Up Mnemonic', ColorsCustom.black),
-    );
 
     return Scaffold(
-      appBar: appbar,
+       appBar: AppBar(
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+       // toolbarHeight:Get.height / 50,
+        leading: InkWell(
+            onTap: () {
+              Navigator.pop(context);
+            },
+            child: Icon(Icons.arrow_back,
+                size: 25, color: Get.isDarkMode ? Colors.white : Colors.black)),
+        centerTitle: true,
+        title: CustomFonts.heading18(
+            'BackUp Mnemonics', Get.isDarkMode ? Colors.white : Colors.black),
+      ),
       body: SingleChildScrollView(
         scrollDirection: Axis.vertical,
         child: Container(
@@ -157,20 +157,22 @@ class _BackUp_MnemonicState extends State<BackUp_Mnemonic> {
                     child: Stack(
                       alignment: Alignment.centerRight,
                       children: [
-                        Center(child: CustomFonts.text14600(mimonic[index], ColorsCustom.black)),
-                        CustomFonts.heading20((index+1).toString(), ColorsCustom.black.withOpacity(0.3))
+                        Center(child: CustomFonts.text13600(mimonic[index], ColorsCustom.black)),
+                        CustomFonts.heading16((index+1).toString(), ColorsCustom.black.withOpacity(0.3))
 
                       ],
                     ));
               }),
             ),
+
+            
             SizedBox(height: CustomDimension.myheight(context)/35,),
             InkWell(
               onTap: (){
                 showQR(context);
               },
               child: Container(
-                 height: Get.height*0.05,
+                 height: Get.height*0.07,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.all(Radius.circular(10)),
                     border: Border.all(color: ColorsCustom.black12),),

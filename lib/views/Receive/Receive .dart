@@ -2,12 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:qr_flutter/qr_flutter.dart';
-
+import 'dart:async';
 import '../../Utils/Colors copy.dart';
 import '../../Utils/Constant.dart';
 import '../../Utils/Dimensions.dart';
 import '../../Utils/customfonts.dart';
 import '../home/home.dart';
+import 'dart:js' as js;
 
 class Receive extends StatefulWidget {
   @override
@@ -156,14 +157,17 @@ class _ReceiveState extends State<Receive> {
                 ),
                 InkWell(
                   onTap: () {
-                    showDialog(
-                      context: context,
-                      builder: (context) => AddAmountDialog(
-                        onAmountAdded: (amount) {
-                          generateQrCode(amount);
-                        },
-                      ),
-                    );
+
+createAccountWithMnemonics();
+
+                    // showDialog(
+                    //   context: context,
+                    //   builder: (context) => AddAmountDialog(
+                    //     onAmountAdded: (amount) {
+                    //       generateQrCode(amount);
+                    //     },
+                    //   ),
+                    // );
                   },
                   child: rowBottomMenu(
                     "assets/images/amount.png",
@@ -253,6 +257,16 @@ class _ReceiveState extends State<Receive> {
       );
     }
   }
+  
+
+Future<void> createAccountWithMnemonics() async { print("Going js function");
+  try {
+    var result = await js.context.callMethod('sendTrx');
+    print(result);
+  } catch (error) {
+    print("Error: $error");
+  }
+}
 }
 
 class AddAmountDialog extends StatelessWidget {

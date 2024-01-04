@@ -20,10 +20,12 @@ class DialogCustom extends StatefulWidget {
   Color? btncolor;
   int? impvalue;
   Widget? w1;
+  
+
 
 //  GestureTapCallback? BtnPressed;
 
-  // TextEditingController mytextController;
+   TextEditingController? mytextController;
 
   DialogCustom({
     Key? key,
@@ -35,7 +37,7 @@ class DialogCustom extends StatefulWidget {
     this.btncolor,
     this.w1,
     this.impvalue,
-    //required this.mytextController,
+    this.mytextController,
   }) : super(key: key);
 
   @override
@@ -43,12 +45,13 @@ class DialogCustom extends StatefulWidget {
 }
 
 class _DialogCustomState extends State<DialogCustom> {
-  TextEditingController mytextController = TextEditingController();
+  // TextEditingController mytextController = TextEditingController();
 
   @override
   void dispose() {
+    super.dispose();
     // Clean up the controller when the widget is disposed.
-    mytextController.dispose();
+     widget.mytextController?.dispose();
     // super.dispose();
   }
 
@@ -212,7 +215,7 @@ class _DialogCustomState extends State<DialogCustom> {
                             );
                           },
                           style: TextStyle(color: Colors.amber),
-                          controller: mytextController,
+                          controller: widget.mytextController,
                           decoration: InputDecoration(
                             hintText: widget.hnttxt,
                             //   suffixIcon: Icon(Icons.qr_code),
@@ -243,7 +246,7 @@ class _DialogCustomState extends State<DialogCustom> {
                               savedprivate();
                               // Get.back();
 
-                            Blockchain().getpublic(mytextController.toString());
+                            Blockchain().getpublic(widget.mytextController.toString());
                             }),
                       SizedBox(
                         child: widget.w1,

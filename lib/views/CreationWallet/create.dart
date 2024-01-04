@@ -14,7 +14,7 @@ import 'package:convert/convert.dart';
 import 'package:hex/hex.dart';
 
 import '../../Utils/Constant.dart';
-import '../../Utils/Dimensions.dart';
+// import '../../Utils/Dimensions.dart';
 import '../../Utils/customfonts.dart';
 
 class Create_Wallet extends StatefulWidget {
@@ -97,41 +97,42 @@ class _Create_WalletState extends State<Create_Wallet> {
       //  backgroundColor: Colors.red,
       appBar: AppBar(
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-        toolbarHeight: CustomDimension.myheight(context) / 9,
+       // toolbarHeight:Get.height / 50,
         leading: InkWell(
             onTap: () {
               Navigator.pop(context);
             },
             child: Icon(Icons.arrow_back,
-                size: 32, color: Get.isDarkMode ? Colors.white : Colors.black)),
+                size: 25, color: Get.isDarkMode ? Colors.white : Colors.black)),
         centerTitle: true,
-        title: CustomFonts.heading20(
+        title: CustomFonts.heading18(
             'Create Wallet', Get.isDarkMode ? Colors.white : Colors.black),
       ),
       body: Padding(
         padding: EdgeInsets.only(
-            left: CustomDimension.mywidth(context) / 20,
-            right: CustomDimension.mywidth(context) / 20),
+            left: Get.width / 20,
+            right: Get.width/ 20),
         child: SingleChildScrollView(
           child: Form(
             key: _formKey,
             child: Container(
-              height: CustomDimension.myheight(context),
+              height: Get.height,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   SizedBox(
-                    height: CustomDimension.myheight(context) / 25,
+                    height:Get.height / 25,
                   ),
-                  CustomFonts.text14(
+                  CustomFonts.text13(
                       "Name", Theme.of(context).textTheme.bodyLarge!.color!),
                   SizedBox(
-                    height: 15,
+                    height: Get.height*0.02,
                   ),
                   Container(
+                    //height: Get.height*0.06,
                       padding: EdgeInsets.only(
-                        // top: CustomDimension.myheight(context) / 120,
-                        left: CustomDimension.myheight(context) / 35,
+                    // bottom:Get.height*0.018,
+                        left:Get.height / 35,
                       ),
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.all(Radius.circular(10)),
@@ -152,30 +153,31 @@ class _Create_WalletState extends State<Create_Wallet> {
                             color: Get.isDarkMode
                                 ? Colors.grey.shade300
                                 : Colors.black12,
-                            fontSize: 14,
+                            fontSize: 12,
                             fontFamily: 'Poppins',
                             fontWeight: FontWeight.w400,
                           ),
                           labelStyle: TextStyle(
                             color: Colors.black,
-                            fontSize: 14,
+                            fontSize: 12,
                             fontFamily: 'Poppins',
                             fontWeight: FontWeight.w500,
                           ),
                         ),
                       )),
                   SizedBox(
-                    height: CustomDimension.myheight(context) / 35,
+                     height:   Get.height*0.04
                   ),
-                  CustomFonts.text14("Set a password",
+                  CustomFonts.text13("Set a password",
                       Get.isDarkMode ? Colors.white : Colors.black),
                   SizedBox(
-                    height: 15,
+               height:   Get.height*0.02
                   ),
                   Container(
+                    //height: Get.height*0.06,
                       padding: EdgeInsets.only(
-                        // top: CustomDimension.myheight(context) / 120,
-                        left: CustomDimension.myheight(context) / 35,
+                        // top:Get.height / 120,
+                        left:Get.height / 35,
                       ),
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.all(Radius.circular(10)),
@@ -194,7 +196,7 @@ class _Create_WalletState extends State<Create_Wallet> {
                               controller: pass_Controller,
                               decoration: InputDecoration(
                                 border: InputBorder.none,
-                                hintText: "Wallet",
+                                hintText: "Password",
                                 hintStyle: TextStyle(
                                   color: Get.isDarkMode
                                       ? Colors.grey.shade300
@@ -228,7 +230,7 @@ class _Create_WalletState extends State<Create_Wallet> {
                         ],
                       )),
                   SizedBox(
-                    height: CustomDimension.myheight(context) / 35,
+                    height:Get.height / 35,
                   ),
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -255,7 +257,7 @@ class _Create_WalletState extends State<Create_Wallet> {
                         ],
                       ),
                       SizedBox(
-                        width: CustomDimension.mywidth(context) / 4.6,
+                        width:Get.width / 4.6,
                       ),
                       Row(
                         children: [
@@ -280,7 +282,7 @@ class _Create_WalletState extends State<Create_Wallet> {
                     ],
                   ),
                   SizedBox(
-                    height: CustomDimension.myheight(context) / 35,
+                    height:Get.height / 35,
                   ),
                   Row(
                     children: [
@@ -305,7 +307,7 @@ class _Create_WalletState extends State<Create_Wallet> {
                         ],
                       ),
                       SizedBox(
-                        width: CustomDimension.mywidth(context) / 4,
+                        width: Get.width/ 4,
                       ),
                       Row(
                         children: [
@@ -330,7 +332,7 @@ class _Create_WalletState extends State<Create_Wallet> {
                     ],
                   ),
                   SizedBox(
-                    height: CustomDimension.myheight(context) / 35,
+                    height:Get.height / 35,
                   ),
                   CustomFonts.text14("Reenter Password",
                       Get.isDarkMode ? Colors.white : Colors.black),
@@ -338,10 +340,11 @@ class _Create_WalletState extends State<Create_Wallet> {
                     height: 15,
                   ),
                   Container(
-                      // height: CustomDimension.myheight(context) / 15,
-                      width: CustomDimension.myheight(context),
-                      padding: EdgeInsets.only(
-                        left: CustomDimension.myheight(context) / 35,
+                  //   height: Get.height*0.06,
+                      // width:Get.height,
+                      padding: EdgeInsets.only(   
+                          //bottom:Get.height*0.018,
+                        left:Get.height / 35,
                       ),
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.all(Radius.circular(10)),
@@ -359,14 +362,14 @@ class _Create_WalletState extends State<Create_Wallet> {
                         decoration: InputDecoration(
                           border: InputBorder.none,
                           hintText: "Enter the Password Again",
-                          hintStyle: TextStyle(
-                            color: Get.isDarkMode
-                                ? Colors.grey.shade200
-                                : Colors.grey.shade300,
-                            fontSize: 14,
-                            fontFamily: 'Poppins',
-                            fontWeight: FontWeight.w400,
-                          ),
+                               hintStyle: TextStyle(
+                                  color: Get.isDarkMode
+                                      ? Colors.grey.shade300
+                                      : Colors.black12,
+                                  fontSize: 12,
+                                  fontFamily: 'Poppins',
+                                  fontWeight: FontWeight.w400,
+                                ),
                           labelStyle: TextStyle(
                             color: Get.isDarkMode
                                 ? Colors.grey.shade200
@@ -421,8 +424,8 @@ class _Create_WalletState extends State<Create_Wallet> {
             }
           },
           child: Container(
-            height: CustomDimension.myheight(context) / 15,
-            width: CustomDimension.myheight(context),
+            height:Get.height / 15,
+            width:Get.height,
             padding: EdgeInsets.only(left: 10),
             decoration: BoxDecoration(
               color: Get.isDarkMode ? Colors.white : Colors.black,

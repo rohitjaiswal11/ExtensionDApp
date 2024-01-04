@@ -1,10 +1,12 @@
 import 'package:extensionapp/Blockchain/blockchain%20.dart';
 import 'package:extensionapp/Utils/common.dart';
-import 'package:extensionapp/Utils/common_Acc.dart';
+
 import 'package:extensionapp/Utils/customfonts.dart';
 import 'package:extensionapp/Utils/sharedpref.dart';
+import 'package:extensionapp/views/AccountDetails.dart/account_detail.dart';
 import 'package:extensionapp/views/home/home.dart';
 import 'package:extensionapp/views/send/send.dart';
+import 'package:extensionapp/views/testing.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get_core/src/get_main.dart';
@@ -15,6 +17,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../Utils/Constant.dart';
 import '../../Utils/dialogwidget.dart';
+import 'Account/allacount.dart';
+import 'common_Acc.dart';
 
 class Topbar extends StatefulWidget {
   const Topbar({super.key});
@@ -107,6 +111,102 @@ class _TopbarState extends State<Topbar> {
 
   bool isdata = false;
   var selectedItem = '';
+
+  // void _addItem() {
+  //   showDialog(
+  //     context: context,
+  //     builder: (BuildContext context) {
+  //       String itemName = '';
+  //       return AlertDialog(
+  //         title: Text('Add Item'),
+  //         content: TextField(
+  //           onChanged: (value) {
+  //             itemName = value;
+  //           },
+  //           decoration: InputDecoration(labelText: 'Item Name'),
+  //         ),
+  //         actions: [
+  //           TextButton(
+  //             onPressed: () {
+  //               Navigator.of(context).pop();
+  //             },
+  //             child: Text('Cancel'),
+  //           ),
+  //           TextButton(
+  //             onPressed: () {
+  //               if (itemName.isNotEmpty) {
+  //                 setState(() {
+  //                   ConstantClass.accountlist.add(ListItem(itemName));
+  //                 });
+  //                 _saveData();
+  //                 Navigator.of(context).pop();
+  //               }
+  //             },
+  //             child: Text('Add'),
+  //           ),
+  //         ],
+  //       );
+  //     },
+  //   );
+  // }
+  // // _loadData() async {
+  // //   SharedPreferences prefs = await SharedPreferences.getInstance();
+  // //   List<String>? savedItems = prefs.getStringList('items');
+  // //   if (savedItems != null) {
+  // //     setState(() {
+  // //      ConstantClass. accountlist = savedItems.map((itemName) => ListItem(itemName)).toList();
+  // //     });
+  // //   }
+  // // }
+
+  // _saveData() async {
+  //   SharedPreferences prefs = await SharedPreferences.getInstance();
+  //   List<String> itemNames = ConstantClass.accountlist.map((item) => item.name).toList();
+  //   prefs.setStringList('items', itemNames);
+  // }
+
+  // // void _showEditDialog(int index) {
+  // //   showDialog(
+  // //     context: context,
+  // //     builder: (BuildContext context) {
+  // //       String newName = ConstantClass.accountlist[index].name;
+  // //       return AlertDialog(
+  // //         title: Text('Edit Item Name'),
+  // //         content: TextField(
+  // //           onChanged: (value) {
+  // //             newName = value;
+  // //           },
+  // //           decoration: InputDecoration(labelText: 'New Name'),
+  // //         ),
+  // //         actions: [
+  // //           TextButton(
+  // //             onPressed: () {
+  // //               Navigator.of(context).pop();
+  // //             },
+  // //             child: Text('Cancel'),
+  // //           ),
+  // //           TextButton(
+  // //             onPressed: () {
+  // //               setState(() {
+  // //                ConstantClass. accountlist[index].name = newName;
+  // //               });
+  // //               _saveData();
+  // //               Navigator.of(context).pop();
+  // //             },
+  // //             child: Text('Save'),
+  // //           ),
+  // //         ],
+  // //       );
+  // //     },
+  // //   );
+  // // }
+
+  // // void _deleteItem(int index) {
+  // //   setState(() {
+  // //     ConstantClass.accountlist.removeAt(index);
+  // //   });
+  // //   _saveData();
+  // // }
 
   @override
   Widget build(BuildContext context) {
@@ -329,7 +429,7 @@ class _TopbarState extends State<Topbar> {
                   setState(() {});
                 }).whenComplete(() {
                   setState(() {
-                    print("Executindfkgndindfkynjdlg");
+                    print("Network Chnaged EXecuted");
                   });
                 });
               },
@@ -401,7 +501,14 @@ class _TopbarState extends State<Topbar> {
                                                 )
                                               ],
                                             ),
+
+//List of Account
+
                                             Account(context),
+
+                                            // TotalAccount(context),
+
+                                            //  Accpage(context,),
                                             SizedBox(
                                               height: Get.height / 40,
                                             ),
@@ -523,7 +630,8 @@ class _TopbarState extends State<Topbar> {
                       // Handle the item selection here
                       switch (value) {
                         case 0:
-                          _launchURL();
+                          Get.to(AccountDetails());
+                          // _launchURL();
                           break;
                         case 1:
                           _launchURL();
@@ -552,15 +660,18 @@ class _TopbarState extends State<Topbar> {
                       for (int i = 0; i < 5; i++)
                         PopupMenuItem(
                           //padding: EdgeInsets.all(100),
-                         height: Get.height * 0.045,
-                          textStyle: const TextStyle(fontSize: 13, fontFamily: 'popins'),
+                          height: Get.height * 0.045,
+                          textStyle: const TextStyle(
+                              fontSize: 13, fontFamily: 'popins'),
 
                           value: i,
                           // row has two child icon and text
                           child: Row(
                             children: [
-                              Transform.scale(child:    menuicon[i],scale: 0.8,),
-                           
+                              Transform.scale(
+                                child: menuicon[i],
+                                scale: 0.8,
+                              ),
 
                               //  Icon(Icons.settings, color: Colors.white),
                               SizedBox(
@@ -650,130 +761,158 @@ class _TopbarState extends State<Topbar> {
                                               builder: (context, set) {
                                             ToastContext().init(context);
 
+                                            final acountnamecontroller =
+                                                TextEditingController();
                                             return DialogCustom(
+                                              mytextController:
+                                                  acountnamecontroller,
                                               hnttxt: 'Account',
                                               txtfieldname: 'Account',
-                                              w1: !isLoad
-                                                  //   ?
+                                              w1:
 
-                                                  // InkWell(child:   Text("data",style: TextStyle(color: Colors.red),) ,onTap: (){
-                                                  // print("isLoad "+isLoad.toString());
-                                                  //     set((){
-                                                  //        isLoad =true;
-                                                  //     });
-                                                  //       print("isLoad 2"+isLoad.toString());
-                                                  //       Future.delayed(Duration(seconds: 10)).then((value) {
+                                                  // // !isLoad
+                                                  //     //   ?
 
-                                                  //         setState(() {
-                                                  //                 isLoad=false;
-                                                  //         });
-                                                  //   });
+                                                  //     // InkWell(child:   Text("data",style: TextStyle(color: Colors.red),) ,onTap: (){
+                                                  //     // print("isLoad "+isLoad.toString());
+                                                  //     //     set((){
+                                                  //     //        isLoad =true;
+                                                  //     //     });
+                                                  //     //       print("isLoad 2"+isLoad.toString());
+                                                  //     //       Future.delayed(Duration(seconds: 10)).then((value) {
 
-                                                  //     print("set state   ++ ${isLoad.toString()}");
+                                                  //     //         setState(() {
+                                                  //     //                 isLoad=false;
+                                                  //     //         });
+                                                  //     //   });
 
-                                                  //   },)
+                                                  //     //     print("set state   ++ ${isLoad.toString()}");
 
-                                                  ? Row(
-                                                      mainAxisAlignment:
-                                                          MainAxisAlignment
-                                                              .spaceAround,
-                                                      children: [
-                                                        btncustom(
-                                                            btncolor:
-                                                                Colors.white,
-                                                            btntxt: 'Cancel',
-                                                            btntxtclr:
-                                                                Colors.blue,
-                                                            BtnPressed: () {
-                                                              Get.back();
-                                                            }),
+                                                  //     //   },)
 
-                                                        InkWell(
-                                                          onTap: () {
-                                                            print("00");
-                                                            set(() {
-                                                              print("01");
-                                                              isLoad = true;
-                                                              print("fffffffffffffff" +
-                                                                  isLoad
-                                                                      .toString());
-                                                            });
-                                                            call();
+                                                  //     ?
 
-                                                            saveaccount();
-                                                            print("4");
-                                                          },
-                                                          child: Container(
-                                                              // padding: EdgeInsets.only(top: 7),
-                                                              height:
-                                                                  Get.height /
-                                                                      20,
-                                                              width:
-                                                                  Get.width / 4,
-                                                              decoration: BoxDecoration(
-                                                                  color: Colors
-                                                                      .blue,
-                                                                  border: Border.all(
-                                                                      color: Colors
-                                                                          .blue),
-                                                                  borderRadius:
-                                                                      BorderRadius.all(
-                                                                          Radius.circular(
-                                                                              25))),
-                                                              child: Center(
-                                                                child: Text(
-                                                                  "Create",
-                                                                  style: TextStyle(
-                                                                      color: Colors
-                                                                          .white),
-                                                                  textAlign:
-                                                                      TextAlign
-                                                                          .center,
-                                                                ),
-                                                              )),
-                                                        ),
+                                                  Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceAround,
+                                                children: [
+                                                  btncustom(
+                                                      btncolor: Colors.white,
+                                                      btntxt: 'Cancel',
+                                                      btntxtclr: Colors.blue,
+                                                      BtnPressed: () {
+                                                        Get.back();
+                                                      }),
 
-                                                        // btncustom(
-                                                        //     btncolor: Colors.blue,
-                                                        //     btntxt: 'create',
-                                                        //     BtnPressed: () {
+                                                  InkWell(
+                                                    onTap: () {
 
-                                                        //       print("object    Circular progress Indicator" +
-                                                        //           isLoad.toString());
-                                                        //       //   isLoad = true;
-                                                        //       set(() {
-                                                        //         isLoad = true;
-                                                        //       });
 
-                                                        //       print("-----================>  " + isLoad.toString());
 
-                                                        //       String mnemonicsfetched = Wallet().generateMnemonic();
-                                                        //       Wallet().walletaddress(mnemonicsfetched);
-                                                        //       saveaccount();
-                                                        //       print("-----================>1  " + isLoad.toString());
-                                                        //       Get.to(MyHomePage());
 
-                                                        //       // bool check =dfafda
 
-                                                        //       // txtaccountglobal
-                                                        //       if (Common().isDuplicate(Common.txtaccountglobal!,
-                                                        //               Common.accountsCreated) ==
-                                                        //           true) {
-                                                        //         Common().showToast("Duplicate",
-                                                        //             gravity: Toast.center, duration: Toast.lengthLong);
-                                                        //       } else {
-                                                        //         Common().showToast("Added",
-                                                        //             gravity: Toast.center, duration: Toast.lengthLong);
-                                                        //       }
+                                                      print(
+                                                          "Textcontroller account text    ${acountnamecontroller.text.trim()}");
+                                                      if (acountnamecontroller
+                                                          .toString()
+                                                          .isNotEmpty) {
+                                                        setState(() {
+                                                          ConstantClass
+                                                              .accountlist
+                                                              .add(ListItem(
+                                                                  acountnamecontroller
+                                                                      .text
+                                                                      .trim()));
+                                                        });
+                                                        _saveData();
+                                                    Get.to(MyHomePage());
+                                                      }
 
-                                                        //       // isLoad = false;
+                                                      print("00");
+                                                      set(() {
+                                                        print("01");
+                                                        isLoad = true;
+                                                        print("fffffffffffffff" +
+                                                            isLoad.toString());
+                                                      });
+                                                      call();
 
-                                                        //       print("Load end $isLoad");
-                                                        //       //    Get.to(const MyHomePage());
-                                                        //     }),
-                                                      ],
-                                                    )
-                                                  : CircularProgressIndicator(),
+                                                      print("4");
+                                                    },
+                                                    child: Container(
+                                                        // padding: EdgeInsets.only(top: 7),
+                                                        height: Get.height / 20,
+                                                        width: Get.width / 4,
+                                                        decoration: BoxDecoration(
+                                                            color: Colors.blue,
+                                                            border: Border.all(
+                                                                color: Colors
+                                                                    .blue),
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .all(Radius
+                                                                        .circular(
+                                                                            25))),
+                                                        child: Center(
+                                                          child: Text(
+                                                            "Create",
+                                                            style: TextStyle(
+                                                                color: const Color
+                                                                    .fromARGB(
+                                                                    255,
+                                                                    133,
+                                                                    104,
+                                                                    104)),
+                                                            textAlign: TextAlign
+                                                                .center,
+                                                          ),
+                                                        )),
+                                                  ),
+
+                                                  // btncustom(
+                                                  //     btncolor: Colors.blue,
+                                                  //     btntxt: 'create',
+                                                  //     BtnPressed: () {
+
+                                                  //       print("object    Circular progress Indicator" +
+                                                  //           isLoad.toString());
+                                                  //       //   isLoad = true;
+                                                  //       set(() {
+                                                  //         isLoad = true;
+                                                  //       });
+
+                                                  //       print("-----================>  " + isLoad.toString());
+
+                                                  //       String mnemonicsfetched = Wallet().generateMnemonic();
+                                                  //       Wallet().walletaddress(mnemonicsfetched);
+                                                  //       saveaccount();
+                                                  //       print("-----================>1  " + isLoad.toString());
+                                                  //       Get.to(MyHomePage());
+
+                                                  //       // bool check =dfafda
+
+                                                  //       // txtaccountglobal
+                                                  //       if (Common().isDuplicate(Common.txtaccountglobal!,
+                                                  //               Common.accountsCreated) ==
+                                                  //           true) {
+                                                  //         Common().showToast("Duplicate",
+                                                  //             gravity: Toast.center, duration: Toast.lengthLong);
+                                                  //       } else {
+                                                  //         Common().showToast("Added",
+                                                  //             gravity: Toast.center, duration: Toast.lengthLong);
+                                                  //       }
+
+                                                  //       // isLoad = false;
+
+                                                  //       print("Load end $isLoad");
+                                                  //       //    Get.to(const MyHomePage());
+                                                  //     }),
+                                                ],
+                                              )
+                                              // :
+                                              //   CircularProgressIndicator(),
+                                              ,
                                               titletxt: "Add account",
                                               cheight: Get.height * 0.4,
                                               cwidth: null,
@@ -821,19 +960,22 @@ class _TopbarState extends State<Topbar> {
         });
   }
 
-  saveaccount() async {
-    SharedPreferencesManager()
-        .writeString('account', Common.txtaccountglobal.toString());
 
-    print('printing write string  ${Common.txtaccountglobal}');
+
+  _saveData() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    List<String> itemNames =
+        ConstantClass.accountlist.map((item) => item.name).toList();
+    prefs.setStringList('items', itemNames);
   }
 }
 
 call() async {
-  String mnemonicsfetched = await Blockchain().generateMnemonic();
- Blockchain().walletaddresstron(mnemonicsfetched);
+  String mnemonicsfetched = ConstantClass.mnemonic.toString();
+  print("mnemonicsfetched  ${mnemonicsfetched.toString()}");
+  Blockchain().walletaddresstron(mnemonicsfetched);
 
- Blockchain().walletaddressBSc(mnemonicsfetched);
+  Blockchain().walletaddressBSc(mnemonicsfetched);
 }
 
 class icon_txt_btnSecond extends StatelessWidget {

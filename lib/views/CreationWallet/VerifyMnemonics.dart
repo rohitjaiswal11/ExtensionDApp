@@ -2,8 +2,10 @@
 
 import 'package:extensionapp/Utils/Constant.dart';
 import 'package:extensionapp/Utils/Dimensions.dart';
+import 'package:extensionapp/Utils/snackbar.dart';
 import 'package:extensionapp/export.dart';
 import 'package:flutter/material.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../Blockchain/blockchain .dart';
 import '../../Utils/Colors copy.dart';
@@ -42,6 +44,7 @@ class _Verify_MnemonicState extends State<Verify_Mnemonic> {
   bool complete31 = false;
   bool complete32 = false;
   bool complete33 = false;
+  bool? load = false;
   List<mylist_data> mylist = [];
   List other = ConstantClass.mnemonic.split(" ");
 
@@ -117,38 +120,37 @@ print('password'+ ConstantClass.password.toString());
 
   @override
   Widget build(BuildContext context) {
-    final appbar = AppBar(
-      automaticallyImplyLeading: false,
-      toolbarHeight: CustomDimension.myheight(context) / 10,
-      leading: InkWell(
-          onTap: () {
-            Navigator.pop(context);
-          },
-          child: Icon(Icons.arrow_back, size: 32, color: ColorsCustom.black)),
-      actions: [
+
+    bool  loading =false;
+    return Scaffold(
+        appBar: AppBar(
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+       // toolbarHeight:Get.height / 50,
+        leading: InkWell(
+            onTap: () {
+              Navigator.pop(context);
+            },
+            child: Icon(Icons.arrow_back,
+                size: 25, color: Get.isDarkMode ? Colors.white : Colors.black)),
+          actions: [
         InkWell(
           onTap: () {
             Navigator.pop(context);
           },
           child: Padding(
             padding:
-                EdgeInsets.only(right: CustomDimension.myheight(context) / 35),
+                EdgeInsets.only(right: Get.height / 35),
             child: CustomFonts.text13('Revist', ColorsCustom.orangelight),
           ),
         ),
-      ],
-      centerTitle: true,
-      title: CustomFonts.heading20('Verify Mnemonic', ColorsCustom.black),
-    );
-    final statusbatheight = MediaQuery.of(context).padding.top;
-    final appbarheight = appbar.preferredSize.height;
-
-    return Scaffold(
-      appBar: appbar,
+      ],  centerTitle: true,
+        title: CustomFonts.heading18(
+            'Verify Mnemonic', Get.isDarkMode ? Colors.white : Colors.black),
+      ),
       body: SingleChildScrollView(
         scrollDirection: Axis.vertical,
         child: Container(
-          height: (CustomDimension.myheight(context)),
+          height: Get.height,
           padding: EdgeInsets.only(
               left: CustomDimension.mywidth(context) / 20,
               right: CustomDimension.mywidth(context) / 20),
@@ -157,34 +159,34 @@ print('password'+ ConstantClass.password.toString());
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               SizedBox(
-                height: CustomDimension.myheight(context) / 35,
+                height: Get.height / 35,
               ),
               CustomFonts.text12(
                   "Please Write down the following words in the correct order.",
                   ColorsCustom.black54),
               SizedBox(
-                height: CustomDimension.myheight(context) / 35,
+                height: Get.height / 35,
               ),
               GridView.count(
                 crossAxisCount: 3,
                 mainAxisSpacing: 15,
                 crossAxisSpacing: 15,
-                childAspectRatio: (1 / .4),
+                childAspectRatio: (1 / .35),
                 shrinkWrap: true,
                 children: List.generate(12, (index) {
                   // print(selectedIndices[index].toString()+" ---------"+index.toString());
-                  // print(selectedIndices[index].toString()==(index).toString()?"helloooowowow ":" shweta   ");
+                  // print(selectedIndices[index].toString()==(index).toString()?"helloooowowow ":" Shersaah   ");
                   // for (int i = 0; i < 12; i++)
 
-                  return Container(
-                      height: 15,
-                      padding: EdgeInsets.all(5),
+                  return Container(height: 5,
+                  // height: Get.height*0.009,
+                      padding: const EdgeInsets.only(top:3,bottom: 7,left: 3,right: 3),
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.all(Radius.circular(10)),
                         border: Border.all(color: ColorsCustom.black12),
                       ),
                       child: Center(
-                          child: CustomFonts.heading18(
+                          child: CustomFonts.heading16(
                               mylist[index].mimonic_id.toString(),
                               mylist[index].minomic_bool == true
                                   ? Colors.black
@@ -192,7 +194,7 @@ print('password'+ ConstantClass.password.toString());
                 }),
               ),
               SizedBox(
-                height: CustomDimension.myheight(context) / 35,
+                height: Get.height / 35,
               ),
               Visibility(
                   visible: visibilitycol1,
@@ -202,11 +204,13 @@ print('password'+ ConstantClass.password.toString());
 
 //   trailing: CustomFonts.Text12("1/3", Colors.black.withOpacity(0.4)),
 // ),
-                      CustomFonts.text14(
-                          "Choose the ${selectedIndices[0].toString()} No. word",
-                          ColorsCustom.black),
+                      Align(alignment: Alignment.centerLeft,
+                        child: CustomFonts.text14w600(
+                            "Choose the ${selectedIndices[0].toString()} No. word",
+                            ColorsCustom.black),
+                      ),
                       SizedBox(
-                        height: CustomDimension.myheight(context) / 55,
+                        height: Get.height / 55,
                       ),
                       Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -222,7 +226,7 @@ print('password'+ ConstantClass.password.toString());
                               });
                             },
                             child: Container(
-                                height: CustomDimension.myheight(context) / 20,
+                                height: Get.height / 20,
                                 width: CustomDimension.mywidth(context) / 3.5,
                                 padding: EdgeInsets.all(5),
                                 decoration: BoxDecoration(
@@ -254,7 +258,7 @@ print('password'+ ConstantClass.password.toString());
                               });
                             },
                             child: Container(
-                                height: CustomDimension.myheight(context) / 20,
+                                height: Get.height / 20,
                                 width: CustomDimension.mywidth(context) / 4,
                                 padding: EdgeInsets.all(5),
                                 decoration: BoxDecoration(
@@ -283,7 +287,7 @@ print('password'+ ConstantClass.password.toString());
                               });
                             },
                             child: Container(
-                                height: CustomDimension.myheight(context) / 20,
+                                height: Get.height / 20,
                                 width: CustomDimension.mywidth(context) / 4,
                                 padding: EdgeInsets.all(5),
                                 decoration: BoxDecoration(
@@ -307,17 +311,19 @@ print('password'+ ConstantClass.password.toString());
                     ],
                   )),
               SizedBox(
-                height: CustomDimension.myheight(context) / 35,
+                height: Get.height / 35,
               ),
               Visibility(
                   visible: visibilitycol2,
                   child: Column(
                     children: [
-                      CustomFonts.text14(
-                          "Choose the ${selectedIndices[1].toString()} No. word",
-                          ColorsCustom.black),
+                    Align(alignment: Alignment.centerLeft,
+                        child: CustomFonts.text14w600(
+                            "Choose the ${selectedIndices[1].toString()} No. word",
+                            ColorsCustom.black),
+                      ),
                       SizedBox(
-                        height: CustomDimension.myheight(context) / 55,
+                        height: Get.height / 55,
                       ),
                       Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -333,7 +339,7 @@ print('password'+ ConstantClass.password.toString());
                               });
                             },
                             child: Container(
-                                height: CustomDimension.myheight(context) / 20,
+                                height: Get.height / 20,
                                 width: CustomDimension.mywidth(context) / 4,
                                 padding: EdgeInsets.all(5),
                                 decoration: BoxDecoration(
@@ -362,7 +368,7 @@ print('password'+ ConstantClass.password.toString());
                               });
                             },
                             child: Container(
-                                height: CustomDimension.myheight(context) / 20,
+                                height: Get.height / 20,
                                 width: CustomDimension.mywidth(context) / 4,
                                 padding: EdgeInsets.all(5),
                                 decoration: BoxDecoration(
@@ -393,7 +399,7 @@ print('password'+ ConstantClass.password.toString());
                               });
                             },
                             child: Container(
-                                height: CustomDimension.myheight(context) / 20,
+                                height: Get.height / 20,
                                 width: CustomDimension.mywidth(context) / 4,
                                 padding: EdgeInsets.all(5),
                                 decoration: BoxDecoration(
@@ -417,17 +423,19 @@ print('password'+ ConstantClass.password.toString());
                     ],
                   )),
               SizedBox(
-                height: CustomDimension.myheight(context) / 35,
+                height: Get.height / 35,
               ),
               Visibility(
                   visible: visibilitycol3,
                   child: Column(
                     children: [
-                      CustomFonts.text14(
-                          "Choose the ${selectedIndices[2].toString()} No. word",
-                          ColorsCustom.black),
+                   Align(alignment: Alignment.centerLeft,
+                        child: CustomFonts.text14w600(
+                            "Choose the ${selectedIndices[2].toString()} No. word",
+                            ColorsCustom.black),
+                      ),
                       SizedBox(
-                        height: CustomDimension.myheight(context) / 55,
+                        height: Get.height / 55,
                       ),
                       Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -443,7 +451,7 @@ print('password'+ ConstantClass.password.toString());
                               });
                             },
                             child: Container(
-                                height: CustomDimension.myheight(context) / 20,
+                                height: Get.height / 20,
                                 width: CustomDimension.mywidth(context) / 4,
                                 padding: EdgeInsets.all(5),
                                 decoration: BoxDecoration(
@@ -472,7 +480,7 @@ print('password'+ ConstantClass.password.toString());
                               });
                             },
                             child: Container(
-                                height: CustomDimension.myheight(context) / 20,
+                                height: Get.height / 20,
                                 width: CustomDimension.mywidth(context) / 4,
                                 padding: EdgeInsets.all(5),
                                 decoration: BoxDecoration(
@@ -501,7 +509,7 @@ print('password'+ ConstantClass.password.toString());
                               });
                             },
                             child: Container(
-                                height: CustomDimension.myheight(context) / 20,
+                                height: Get.height / 20,
                                 width: CustomDimension.mywidth(context) / 4,
                                 decoration: BoxDecoration(
                                   color: complete33 == true
@@ -526,58 +534,98 @@ print('password'+ ConstantClass.password.toString());
                     ],
                   )),
               SizedBox(
-                height: CustomDimension.myheight(context) / 35,
+                height: Get.height / 35,
               ),
             ],
           ),
         ),
       ),
-      bottomSheet: Container(
-        color: Theme.of(context).scaffoldBackgroundColor,
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-        child: InkWell(
-          onTap: () async {
-            print("????????????    " +
-                completea.toString() +
-                "    " +
-                completeb.toString() +
-                "     " +
-                completec.toString());
+      bottomSheet:
+      
+      
+      
+      
+      
+      
+       Container(
+  color: Theme.of(context).scaffoldBackgroundColor,
+  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+  child: InkWell(
+    onTap: () async {
+      print("????????????    " +
+          completea.toString() +
+          "    " +
+          completeb.toString() +
+          "     " +
+          completec.toString());
 
-            if (completea == true && completeb == true && completec == true) {
-              bool isWalletCreated = await CreateWallet();
-              if (isWalletCreated == true) {
-                await savedata();
-              }
-              Get.to(MyHomePage());
-              // Navigator.of(context).push(MaterialPageRoute(builder: (context) => BottomNavigation(index: 0,)));
-              //  Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) => BottomNavigation(index: 0)),(Route route) => false);
-            } else {
-              showInformationDialog(context);
-            }
-            // print("??????????????????????????????????????????????????????????????????");
-          },
-          child: Container(
-            height: CustomDimension.myheight(context) / 15,
-            width: CustomDimension.myheight(context),
-            padding: EdgeInsets.all(5),
-            decoration: const BoxDecoration(
-              borderRadius: BorderRadius.all(Radius.circular(10)),
-              gradient: LinearGradient(
-                colors: [
-                  Colors.black,
-                  Colors.black,
-                ],
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-              ),
-            ),
-            child: Center(
-                child: CustomFonts.text15("Complete", ColorsCustom.white)),
-          ),
+      if (completea == true && completeb == true && completec == true) {
+        // Change the state to indicate loading
+        setState(() {
+          loading = true;
+        });
+
+        bool isWalletCreated = await CreateWallet();
+        if (isWalletCreated == true) {
+          await savedata();
+        }
+
+        // Change the state to indicate loading completion
+        setState(() {
+          loading = false;
+        });
+
+        Get.to(MyHomePage());
+      } else {
+        showInformationDialog(context);
+      }
+    },
+    child: Container(
+      height: Get.height / 15,
+      width: Get.height,
+      padding: EdgeInsets.all(5),
+      decoration: const BoxDecoration(
+        borderRadius: BorderRadius.all(Radius.circular(10)),
+        gradient: LinearGradient(
+          colors: [
+            Colors.black,
+            Colors.black,
+          ],
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
         ),
       ),
-    );
+//       child: Center(
+//         child: loading
+//             ? CircularProgressIndicator(
+//                 valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+//               )
+//             : CustomFonts.text15("Complete", ColorsCustom.white),
+//       ),
+//     ),
+//   ),
+// ),
+
+
+
+//     );
+//   }
+
+ child: load == true
+                ? LoadingAnimationWidget.threeRotatingDots(
+              color: ColorsCustom.white,
+              size: 30,
+            )
+                :  Center(
+                child: CustomFonts.text15(
+                    "Create Wallet", ColorsCustom.white)),
+          ),
+    ),
+  ));
+
+
+
+  
   }
 
   Future<void> showInformationDialog(BuildContext context) async {
