@@ -1,4 +1,5 @@
-import TronWeb from 'tronweb';
+import tronWeb from './TronWeb';
+
 
 
 const privateKey = 'bbdfcf6d796105ad9ac4e8363e31d38cbf09c28181742cb4602f337460966d90';

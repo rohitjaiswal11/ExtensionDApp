@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:extensionapp/Blockchain/blockchain%20.dart';
 import 'package:extensionapp/Utils/common.dart';
 
@@ -9,12 +11,14 @@ import 'package:extensionapp/views/send/send.dart';
 import 'package:extensionapp/views/testing.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_navigation/get_navigation.dart';
 import 'package:toast/toast.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../Blockchain/generate.dart';
 import '../../Utils/Constant.dart';
 import '../../Utils/dialogwidget.dart';
 import 'Account/allacount.dart';
@@ -136,7 +140,7 @@ class _TopbarState extends State<Topbar> {
   //             onPressed: () {
   //               if (itemName.isNotEmpty) {
   //                 setState(() {
-  //                   ConstantClass.accountlist.add(ListItem(itemName));
+  //                   ConstantClass.accountlist.add(AccountItem(itemName));
   //                 });
   //                 _saveData();
   //                 Navigator.of(context).pop();
@@ -154,7 +158,7 @@ class _TopbarState extends State<Topbar> {
   // //   List<String>? savedItems = prefs.getStringList('items');
   // //   if (savedItems != null) {
   // //     setState(() {
-  // //      ConstantClass. accountlist = savedItems.map((itemName) => ListItem(itemName)).toList();
+  // //      ConstantClass. accountlist = savedItems.map((itemName) => AccountItem(itemName)).toList();
   // //     });
   // //   }
   // // }
@@ -807,11 +811,6 @@ class _TopbarState extends State<Topbar> {
 
                                                   InkWell(
                                                     onTap: () {
-
-
-
-
-
                                                       print(
                                                           "Textcontroller account text    ${acountnamecontroller.text.trim()}");
                                                       if (acountnamecontroller
@@ -819,14 +818,23 @@ class _TopbarState extends State<Topbar> {
                                                           .isNotEmpty) {
                                                         setState(() {
                                                           ConstantClass
-                                                              .accountlist
-                                                              .add(ListItem(
-                                                                  acountnamecontroller
-                                                                      .text
-                                                                      .trim()));
+                                                                  .genName =
+                                                              acountnamecontroller
+                                                                  .text
+                                                                  .toString();
+
+                                                          // BlockchainGenerate().importfunctionaddwallet(
+                                                          //                                 ConstantClass.mnemonic.toString()).then((value) => addAccountitem()).then((value) =>_saveDataAccount());
+
+                                                          // ConstantClass
+                                                          //     .accountlist
+                                                          //     .add(AccountItem(name:
+                                                          //         acountnamecontroller
+                                                          //             .text
+                                                          //             .trim()));
                                                         });
                                                         _saveData();
-                                                    Get.to(MyHomePage());
+                                                        Get.to(MyHomePage());
                                                       }
 
                                                       print("00");
@@ -835,10 +843,9 @@ class _TopbarState extends State<Topbar> {
                                                         isLoad = true;
                                                         print("fffffffffffffff" +
                                                             isLoad.toString());
-                                                      });
-                                                      call();
 
-                                                      print("4");
+                                                        call();
+                                                      });
                                                     },
                                                     child: Container(
                                                         // padding: EdgeInsets.only(top: 7),
@@ -857,15 +864,11 @@ class _TopbarState extends State<Topbar> {
                                                         child: Center(
                                                           child: Text(
                                                             "Create",
-                                                            style: TextStyle(
-                                                                color: const Color
-                                                                    .fromARGB(
-                                                                    255,
-                                                                    133,
-                                                                    104,
-                                                                    104)),
                                                             textAlign: TextAlign
                                                                 .center,
+                                                            style: TextStyle(
+                                                                color: Colors
+                                                                    .white),
                                                           ),
                                                         )),
                                                   ),
@@ -929,14 +932,38 @@ class _TopbarState extends State<Topbar> {
                                     showDialog(
                                         context: context,
                                         builder: (BuildContext context) {
+                                          final importprivkeycontroller =
+                                              TextEditingController();
+                                          void _getClipboardText() async {
+                                            final clipboardData =
+                                                await Clipboard.getData(
+                                                    Clipboard.kTextPlain);
+
+                                            if (clipboardData != null &&
+                                                clipboardData.text != null) {
+                                              setState(() {
+                                                importprivkeycontroller.text =
+                                                    clipboardData.text!;
+                                              });
+                                            }
+                                          }
+
                                           return DialogCustom(
+                                            mytextController:
+                                                importprivkeycontroller,
+                                            suffixwidget: IconButton(
+                                              onPressed: () {
+                                                _getClipboardText();
+                                              },
+                                              icon: Icon(Icons.paste),
+                                            ),
                                             impvalue: 1,
                                             titletxt: "Import Account",
                                             cheight: Get.height * 0.4,
                                             cwidth: null,
                                             txtfieldname:
-                                                "Enter your private key string here:",
-                                            hnttxt: 'Enter Private key',
+                                                "Enter your mnemonics string here:",
+                                            hnttxt: 'Enter Mnemonics',
                                           );
                                         });
                                   },
@@ -948,7 +975,7 @@ class _TopbarState extends State<Topbar> {
                                 ),
                                 icon_txt_btnSecond(
                                   ontap: () {
-                                    _launchURL();
+                                    // _launchURL();
                                     print("gggggggg");
                                   },
                                   btn_icon: Icons.badge_rounded,
@@ -960,22 +987,66 @@ class _TopbarState extends State<Topbar> {
         });
   }
 
-
-
   _saveData() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    List<String> itemNames =
-        ConstantClass.accountlist.map((item) => item.name).toList();
+
+    // Use where to filter out null values
+    List<String> itemNames = ConstantClass.accountlist
+        .map((item) => item.name)
+        .where((name) => name != null)
+        .cast<String>() // Cast the list to List<String>
+        .toList();
+
     prefs.setStringList('items', itemNames);
   }
 }
 
 call() async {
-  String mnemonicsfetched = ConstantClass.mnemonic.toString();
-  print("mnemonicsfetched  ${mnemonicsfetched.toString()}");
-  Blockchain().walletaddresstron(mnemonicsfetched);
+  String mnemonicsStored = ConstantClass.mnemonic.toString();
+  print("mnemonicsfetched  ${mnemonicsStored.toString()}");
+  // Blockchain().walletaddresstron(mnemonicsStored);
 
-  Blockchain().walletaddressBSc(mnemonicsfetched);
+  // Blockchain().walletaddressBSc(mnemonicsStored);
+
+  BlockchainGenerate()
+      .importfunctionaddwallet(mnemonicsStored.toString())
+      .then((value) => addAccountitemtolist())
+      .then((value) => _saveDataAccount());
+}
+
+Future<void> addAccountitemtolist() async {
+  ConstantClass.accountlist.add(AccountItem(
+      mnemonics: "",
+      name: ConstantClass.genName ?? "Wallet",
+      privatekeyBsc: ConstantClass.genPrivateBsc,
+      privatekeyTron: ConstantClass.genprivateTron,
+      publicKeyBsc: ConstantClass.genPublicTron,
+      publicKeyTron: ConstantClass.genPublicTron,
+      wallet_addressBsc: ConstantClass.genwalletBsc,
+      wallet_addressTron: ConstantClass.genWalletTron));
+  print("Data Added to List");
+}
+
+_saveDataAccount() async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+
+  // Map each AccountItem to a Map<String, dynamic>
+  List<Map<String, dynamic>> itemList = ConstantClass.accountlist.map((item) {
+    print('publicKeyTron from _savedData  ' + item.publicKeyTron.toString());
+    return {
+      'name': item.name,
+      'publicKeyBsc': item.publicKeyBsc,
+      'privatekeyBsc': item.privatekeyBsc,
+      'wallet_addressBsc': item.wallet_addressBsc,
+      'publicKeyTron': item.publicKeyTron,
+      'privatekeyTron': item.privatekeyTron,
+      'wallet_addressTron': item.wallet_addressTron,
+      'mnemonics': item.mnemonics,
+    };
+  }).toList();
+
+  // Save the list of Maps to SharedPreferences
+  prefs.setStringList('items', itemList.map((map) => jsonEncode(map)).toList());
 }
 
 class icon_txt_btnSecond extends StatelessWidget {

@@ -1,14 +1,20 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 
+import 'dart:async';
+import 'dart:convert';
 import 'dart:js_interop_unsafe';
 
 import 'package:extensionapp/Blockchain/blockchain%20.dart';
+import 'package:extensionapp/Utils/Constant.dart';
 import 'package:extensionapp/Utils/common.dart';
 import 'package:extensionapp/Utils/sharedpref.dart';
 import 'package:flutter/material.dart';
 
 import 'package:extensionapp/export.dart';
+import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import '../Blockchain/generate.dart';
 
 // ignore: must_be_immutable
 class DialogCustom extends StatefulWidget {
@@ -20,12 +26,11 @@ class DialogCustom extends StatefulWidget {
   Color? btncolor;
   int? impvalue;
   Widget? w1;
-  
-
+  Widget? suffixwidget;
 
 //  GestureTapCallback? BtnPressed;
 
-   TextEditingController? mytextController;
+  TextEditingController? mytextController;
 
   DialogCustom({
     Key? key,
@@ -36,6 +41,7 @@ class DialogCustom extends StatefulWidget {
     this.txtfieldname,
     this.btncolor,
     this.w1,
+    this.suffixwidget,
     this.impvalue,
     this.mytextController,
   }) : super(key: key);
@@ -51,12 +57,12 @@ class _DialogCustomState extends State<DialogCustom> {
   void dispose() {
     super.dispose();
     // Clean up the controller when the widget is disposed.
-     widget.mytextController?.dispose();
+    widget.mytextController?.dispose();
     // super.dispose();
   }
 
-  var items = ["Private key", "Json File"];
-  String dropdownvalue = "Private key";
+  // var items = ["Private key", "Json File"];
+  // String dropdownvalue = "Private key";
 
   @override
   Widget build(BuildContext context) {
@@ -123,54 +129,52 @@ class _DialogCustomState extends State<DialogCustom> {
                             SizedBox(
                               height: Get.height / 20,
                             ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(
-                                  'Select Type',
-                                  style: TextStyle(
-                                      color: Colors.white, fontSize: 15),
-                                ),
-                                //   Spacer(),
-                                Container(
-                                  width: Get.width / 4,
-                                  decoration: BoxDecoration(
-                                      border: Border.all(color: Colors.white),
-                                      borderRadius: BorderRadius.circular(10)),
-                                  child:
-                                  
-                                  
-                                  
-                                  
-                                   DropdownButton(
-                                    // Initial Value
-                                    value: dropdownvalue,
-                           // Down Arrow Icon
-                                    icon: const Icon(Icons.keyboard_arrow_down),
 
-                                    // Array list of items
-                                    items: items.map((String items) {
-                                 
-                                      return DropdownMenuItem(
-                                        value: items,
-                                        child: Text(items),
-                                      );
+                            //   Row(
+                            //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            //     children: [
+                            //       Text(
+                            //         'Select Type',
+                            //         style: TextStyle(
+                            //             color: Colors.white, fontSize: 15),
+                            //       ),
+                            //       //   Spacer(),
+                            //       Container(
+                            //         width: Get.width / 4,
+                            //         decoration: BoxDecoration(
+                            //             border: Border.all(color: Colors.white),
+                            //             borderRadius: BorderRadius.circular(10)),
+                            //         child:
 
-                                    }).toList(),
+                            //          DropdownButton(
+                            //           // Initial Value
+                            //           value: dropdownvalue,
+                            //  // Down Arrow Icon
+                            //           icon: const Icon(Icons.keyboard_arrow_down),
 
-                                    
-                                    // After selecting the desired option,it will
-                                    // change button value to selected value
-                                    onChanged: (String? newValue) {
-                                      setState(() {
-                                        dropdownvalue = newValue!;
-                                      });
-                                    },
-                                  ),
+                            //           // Array list of items
+                            //           items: items.map((String items) {
 
-                                )
-                              ],
-                            ),
+                            //             return DropdownMenuItem(
+                            //               value: items,
+                            //               child: Text(items),
+                            //             );
+
+                            //           }).toList(),
+
+                            //           // After selecting the desired option,it will
+                            //           // change button value to selected value
+                            //           onChanged: (String? newValue) {
+                            //             setState(() {
+                            //               dropdownvalue = newValue!;
+                            //             });
+                            //           },
+                            //         ),
+
+                            //       )
+                            //     ],
+                            //   ),
+
                             // Sizeconst dBox(
                             //   height: Get.height / 20,
                             // ),
@@ -214,12 +218,23 @@ class _DialogCustomState extends State<DialogCustom> {
                               },
                             );
                           },
-                          style: TextStyle(color: Colors.amber),
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 14,
+                              fontFamily: 'Poppins'),
                           controller: widget.mytextController,
                           decoration: InputDecoration(
+                            suffixIcon: widget.suffixwidget,
+                            //                suffixIcon: IconButton(
+                            //   onPressed: () {
+                            //     _getClipboardText();
+                            //   },
+                            //   icon: Icon(Icons.paste),
+                            // ),
+                            suffixIconColor: Colors.blue,
                             hintText: widget.hnttxt,
                             //   suffixIcon: Icon(Icons.qr_code),
-                            suffixIconColor: Colors.blue,
+
                             hintStyle: TextStyle(
                                 fontSize: 14, color: Colors.grey.shade400),
                             enabledBorder: OutlineInputBorder(
@@ -242,11 +257,24 @@ class _DialogCustomState extends State<DialogCustom> {
                         btncustom(
                             btntxt: "Add Wallet",
                             btncolor: Colors.blue,
-                            BtnPressed: () {
-                              savedprivate();
-                              // Get.back();
+                            BtnPressed: ()  {
+                              ConstantClass.last_accountlist =
+                                  ConstantClass.last_accountlist + 1;
 
-                            Blockchain().getpublic(widget.mytextController.toString());
+                              BlockchainGenerate().importfunctionaddwallet(
+                                  widget.mytextController!.text.toString()).then((value) => addAccountitem()).then((value) =>_saveDataAccount());
+
+
+
+                              print(
+                                  "=====================================================");
+                        
+
+          
+                        
+
+                              // Get.to(MyHomePage());
+
                             }),
                       SizedBox(
                         child: widget.w1,
@@ -255,13 +283,56 @@ class _DialogCustomState extends State<DialogCustom> {
                   )))));
     });
   }
+
+  void _getClipboardText() async {
+    final clipboardData = await Clipboard.getData(Clipboard.kTextPlain);
+
+    if (clipboardData != null && clipboardData.text != null) {
+      setState(() {
+        widget.mytextController!.text = clipboardData.text!;
+      });
+    }
+  }
+
+
+  Future<void> addAccountitem() async {
+    ConstantClass.accountlist.add(AccountItem(
+        mnemonics: "",
+        name: "Wallet",
+        privatekeyBsc: ConstantClass.genPrivateBsc,
+        privatekeyTron: ConstantClass.genprivateTron,
+        publicKeyBsc: ConstantClass.genPublicTron,
+        publicKeyTron: ConstantClass.genPublicTron,
+        wallet_addressBsc: ConstantClass.genwalletBsc,
+        wallet_addressTron: ConstantClass.genWalletTron));
+    print("Data Added to List");
+  }
+  
+_saveDataAccount() async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+
+  // Map each AccountItem to a Map<String, dynamic>
+  List<Map<String, dynamic>> itemList = ConstantClass.accountlist.map((item) {
+
+
+     print(  'publicKeyTron from _savedData  '+ item.publicKeyTron.toString());
+    return {
+      'name': item.name,
+      'publicKeyBsc': item.publicKeyBsc,
+      'privatekeyBsc': item.privatekeyBsc,
+      'wallet_addressBsc': item.wallet_addressBsc,
+      'publicKeyTron': item.publicKeyTron,
+      'privatekeyTron': item.privatekeyTron,
+      'wallet_addressTron': item.wallet_addressTron,
+      'mnemonics': item.mnemonics,
+    };
+  }).toList();
+
+  // Save the list of Maps to SharedPreferences
+  prefs.setStringList('items', itemList.map((map) => jsonEncode(map)).toList());
 }
 
-void savedprivate() {
-  SharedPreferencesManager()
-      .writeString('importprivate', Common.privatekeytxt.toString());
 
-  print('printing private writestring  ${Common.privatekeytxt}');
 }
 
 InkWell btncustom({

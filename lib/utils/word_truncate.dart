@@ -11,4 +11,14 @@ class TextFormat{
     return word.substring(0, 4) + '...' + word.substring(word.length - 5);
   }
 }
+
+
+
+
+
+
+
+
+
+
 }

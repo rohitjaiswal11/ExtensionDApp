@@ -8,7 +8,6 @@ import 'package:hd_wallet/hd_wallet.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import "package:hex/hex.dart";
 import 'package:wallet/wallet.dart' as wallet;
-import 'package:wallet/wallet.dart';
 import 'package:web3dart/credentials.dart';
 
 import '../Utils/Constant.dart';
@@ -16,74 +15,54 @@ import '../Utils/logger.dart';
 
 class Blockchain {
   String mnemonic = "";
-  generateMnemonic() async {
-    // Generate a random BIP-39 mnemonic phrase with 12 words.
+
+  Future<String> generateMnemonic() async {
     mnemonic = bip39.generateMnemonic();
     print('Generated mnemonic phrase: $mnemonic');
-
-    // ConstantClass.mnemonic = mnemonic;
-
-    // print( ConstantClass.mnemonic);
-
-    // final SharedPreferences prefs = await SharedPreferences.getInstance();
-
-    // await prefs.setString('seedPhrase', ConstantClass.mnemonic.toString());
     return mnemonic;
   }
 
   Future<void> walletaddressBSc(String mnemonic) async {
-    final seed = bip39.mnemonicToSeedHex(mnemonic);
+    try {
+      final seed = bip39.mnemonicToSeedHex(mnemonic);
+      List<int> seedBytes = hex.decode(seed.toString());
+      KeyData master = await ED25519_HD_KEY.getMasterKeyFromSeed(seedBytes);
+      String privateKey = HEX.encode(master.key);
 
-    List<int> seedBytes = hex.decode(seed.toString());
-    KeyData master = await ED25519_HD_KEY.getMasterKeyFromSeed(seedBytes);
+      print('private   BSc: $privateKey');
+      print(" Master BSC-----" + hex.encode(master.key));
+      print(hex.encode(master.chainCode));
 
-    // final master = await ED25519_HD_KEY.getMasterKeyFromSeed(HEX.decode(seed),
-    //     masterSecret: 'Bitcoin seed');
-    String privateKey = HEX.encode(master.key);
+      KeyData data = await ED25519_HD_KEY.derivePath("m/0'/2147483647'", seedBytes);
+      print(hex.encode(data.key));
+      print(hex.encode(data.chainCode));
 
-    print('private   BSc: $privateKey');
+      var pb = await ED25519_HD_KEY.getPublicKey(data.key);
+      print("Public BSc-------------" + hex.encode(pb));
 
-    print(" Master BSC-----" + hex.encode(master.key));
-    print(hex.encode(master.chainCode));
+      ConstantClass.privateKeyBsc = hex.encode(data.key);
+      String? pub = hex.encode(pb).toString();
+      ConstantClass.publicKeyBsc = pub;
+      print("PblcBSC  $pub");
 
-    KeyData data =
-        await ED25519_HD_KEY.derivePath("m/0'/2147483647'", seedBytes);
-    print(hex.encode(data.key));
-    print(hex.encode(data.chainCode));
-
-    var pb = await ED25519_HD_KEY.getPublicKey(data.key);
-    print("Public BSc-------------" + hex.encode(pb));
-
-    ConstantClass.privateKeyBsc = hex.encode(data.key);
-    String? pub = hex.encode(pb).toString();
-    ConstantClass.publicKeyBsc = pub;
-    print("PblcBSC  $pub");
-   
-    
-    
-    getPublicAddress(privateKey);
-
-
+      await getPublicAddress(privateKey);
+    } catch (e) {
+      print('Error in walletaddressBSc: $e');
+    }
   }
 
-  walletaddresstron(String mnemonicsprovided) async {
+  Future<void> walletaddresstron(String mnemonicsprovided) async {
     final passphrase = '';
     try {
-      final seed = await wallet.mnemonicToSeed(mnemonicsprovided.split(" "),
-          passphrase: passphrase);
+      final seed = await wallet.mnemonicToSeed(mnemonicsprovided.split(" "), passphrase: passphrase);
       final master = await wallet.ExtendedPrivateKey.master(seed, wallet.xprv);
       final root = await master.forPath("m/44'/195'/0'/0/0");
 
-      final privateKey =
-          wallet.PrivateKey((root as wallet.ExtendedPrivateKey).key);
+      final privateKey = wallet.PrivateKey((root as wallet.ExtendedPrivateKey).key);
       final publicKey = wallet.tron.createPublicKey(privateKey);
       final address = wallet.tron.createAddress(publicKey);
 
       final encodepublicKey = await HEX.encode(publicKey.value);
-      //  privateKey.value;
-
-      ///BSC
-      ///
 
       final isValid = await wallet.isValidTronAddress(address);
 
@@ -93,73 +72,71 @@ class Blockchain {
 
       ConstantClass.walletTron = address;
       ConstantClass.publicKeyTron = encodepublicKey;
-      ConstantClass.privateKeyTron = {privateKey.value}.toString();
+      ConstantClass.privateKeyTron = privateKey.value.toString();
 
       print("ADDress  $address");
       print('Wallet Address ${ConstantClass.walletTron}');
       print('private key ${ConstantClass.privateKeyTron}');
       print('Public Key ${ConstantClass.publicKeyTron}=');
     } catch (e) {
-      print(e);
+      print('Error in walletaddresstron: $e');
     }
   }
 
   void getpublic(String privkey) {
-    privkey = SharedPreferencesManager().readString('importprivate').toString();
+    try {
+      privkey = SharedPreferencesManager().readString('importprivate').toString();
+      BigInt bigIntpriv = BigInt.parse(privkey, radix: 16);
+      print("Big Int $bigIntpriv");
 
-    BigInt bigIntpriv = BigInt.parse(privkey, radix: 16);
-    print("Big Int $bigIntpriv");
-    // var importprivate=  SharedPreferencesManager().readString('importprivate');
+      final genPublic = wallet.tron.createPublicKey(wallet.PrivateKey(bigIntpriv));
+      ConstantClass.walletimport = wallet.tron.createAddress(genPublic);
+      print("||||||||||||||||||  ${ConstantClass.walletimport}");
 
-    final genPublic = wallet.tron.createPublicKey(PrivateKey(bigIntpriv));
-    ConstantClass.walletimport = wallet.tron.createAddress(genPublic);
-    print("||||||||||||||||||  ${ConstantClass.walletimport}");
+      final encodegenPublic = HEX.encode(genPublic.value);
+      print(" Generated Public  ${encodegenPublic} ");
 
-    final encodegenPublic = HEX.encode(genPublic.value);
-    print(" Generated Public  ${encodegenPublic} ");
-
-    Common.publicgenerated = encodegenPublic;
-
-    // return encodegenPublic;
-  }
-
-  Future getPublicAddress(String privateKey) async {
-    final private = EthPrivateKey.fromHex(privateKey);
-    final address = await private.extractAddress();
-
-    String BscAddress = address.toString();
-     ConstantClass.walletBsc =BscAddress;
-    print('addressBSc: $BscAddress');
-    
-    return BscAddress;
-  }
-
-
-
-
-  String genartepvtkey(List<String> phase) {
-    final passphrase = '';
-    final seed = wallet.mnemonicToSeed(phase, passphrase: passphrase);
-    final master = wallet.ExtendedPrivateKey.master(seed, wallet.xprv);
-    final root = master.forPath("m/44'/195'/0'/0/0");
-    print("keyBIh ${(root as wallet.ExtendedPrivateKey).key}");
-    final privateKey =
-        wallet.PrivateKey((root as wallet.ExtendedPrivateKey).key);
-    final publicKey = wallet.tron.createPublicKey(privateKey);
-    final address = wallet.tron.createAddress(publicKey);
-    String hexString =
-        BigInt.parse(privateKey.value.toString()).toRadixString(16);
-
-    if (hexString.length < 64) {
-      hexString = hexString.padLeft(64, '0');
+      Common.publicgenerated = encodegenPublic;
+    } catch (e) {
+      print('Error in getpublic: $e');
     }
-    Logger.logprint("key ${hexString.toUpperCase()}");
-    // TRON private keys are typically in uppercase
-
-    return hexString.toUpperCase();
   }
 
+  Future<void> getPublicAddress(String privateKey) async {
+    try {
+      final private = EthPrivateKey.fromHex(privateKey);
+      final address = await private.extractAddress();
 
+      String BscAddress = address.toString();
+      ConstantClass.walletBsc = BscAddress;
+      print('addressBSc: $BscAddress');
+    } catch (e) {
+      print('Error in getPublicAddress: $e');
+    }
+  }
 
+  String generatePrivateKey(List<String> phase) {
+    try {
+      final passphrase = '';
+      final seed = wallet.mnemonicToSeed(phase, passphrase: passphrase);
+      final master = wallet.ExtendedPrivateKey.master(seed, wallet.xprv);
+      final root = master.forPath("m/44'/195'/0'/0/0");
+      print("keyBIh ${(root as wallet.ExtendedPrivateKey).key}");
+      final privateKey = wallet.PrivateKey((root as wallet.ExtendedPrivateKey).key);
+      final publicKey = wallet.tron.createPublicKey(privateKey);
+      final address = wallet.tron.createAddress(publicKey);
+      String hexString = BigInt.parse(privateKey.value.toString()).toRadixString(16);
 
+      if (hexString.length < 64) {
+        hexString = hexString.padLeft(64, '0');
+      }
+      Logger.logprint("key ${hexString.toUpperCase()}");
+      // TRON private keys are typically in uppercase
+
+      return hexString.toUpperCase();
+    } catch (e) {
+      print('Error in generatePrivateKey: $e');
+      return ''; // Or handle the error accordingly
+    }
+  }
 }

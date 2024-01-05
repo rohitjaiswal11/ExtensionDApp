@@ -1,5 +1,3 @@
-
-
 import 'dart:convert';
 import 'dart:math';
 
@@ -32,13 +30,12 @@ class Send extends StatefulWidget {
 bool backbool = false;
 bool click = false;
 
- Token_Item? _coindata;
+Token_Item? _coindata;
 TextEditingController address = TextEditingController();
 TextEditingController amount = TextEditingController();
 
 class _SendState extends State<Send> {
   String transistionfee = "0.000";
-
 
   bool isValidEthereumAddress(String address) {
     final pattern = r'^0x[a-fA-F0-9]{40}$';
@@ -65,15 +62,13 @@ class _SendState extends State<Send> {
   }
 
   getFee() async {
-   getGasFee(AppContant.RpcBsctestnet).then((value) {
+    getGasFee(AppContant.RpcBsctestnet).then((value) {
       transistionfee = value;
       setState(() {});
     });
   }
 
-
-
-    Future<String> getGasFee(String url) async {
+  Future<String> getGasFee(String url) async {
     var httpClient = Client();
     final client = Web3Client(
       url,
@@ -90,15 +85,13 @@ class _SendState extends State<Send> {
     print("Gas Fee$gasFee");
     return gasFee;
   }
+
   static BigInt ConvertToUnit256(num amount) {
     // var amt=BigInt.from(10).pow(18)*BigInt.from(double.parse(amount.toString()));
     var amt = BigInt.from(double.parse(amount.toString()) * pow(10, 18));
     return amt;
   }
- 
- 
- 
- 
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -244,58 +237,53 @@ class _SendState extends State<Send> {
               btntxt: "Send",
               BtnPressed: () {
                 // Get.to(MyHomePage());
-               // sendcoin();
-                      // return;
-                      if (address.text.isEmpty || amount.text.isEmpty) {
-                        showCustomSnackBar(
-                            message:
-                                "Please fill ${address.text.isEmpty ? "Address" : "Amount"} fields");
-                        return;
-                      }
-                      if (ConstantClass.currentIndex == 0) {
-                        if (isValidEthereumAddress(address.text) == false) {
-                          showCustomSnackBar(
-                              message: "Invalid Receiver address",
-                              isError: true);
-                          return;
-                        }
-                        if (double.parse(transistionfee) >
-                            double.parse(
-                               Token_Item.Bsclist[0].balance.toString())) {
-                          showCustomSnackBar(
-                              message: "Insufficent gas fee.", isError: true);
-                          return;
-                        }
-                        print( Token_Item.Tronlist[0].balance);
-                        print(amount.text);
-                        if (double.parse(amount.text) >
-                            double.parse( Token_Item.Bsclist[0].balance
-                                .toString())) {
-                          showCustomSnackBar(
-                              message: "Insufficent Balance.", isError: true);
-                          return;
-                        }
-                        click = true;
-                        setState(() {});
-                        sendcoin();
-                      } else {
-                        if (isValidTronAddress(address.text) == false) {
-                          showCustomSnackBar(
-                              message: "Invalid Receiver address",
-                              isError: true);
-                          return;
-                        }
-                        if (double.parse(amount.text) >
-                            double.parse( Token_Item.Tronlist[0].balance
-                                .toString())) {
-                          showCustomSnackBar(
-                              message: "Insufficent Balance.", isError: true);
-                          return;
-                        }
-                        click = true;
-                        setState(() {});
-                      sendcoin();
-                      }
+                // sendcoin();
+                // return;
+                if (address.text.isEmpty || amount.text.isEmpty) {
+                  showCustomSnackBar(
+                      message:
+                          "Please fill ${address.text.isEmpty ? "Address" : "Amount"} fields");
+                  return;
+                }
+                if (ConstantClass.currentIndex == 0) {
+                  if (isValidEthereumAddress(address.text) == false) {
+                    showCustomSnackBar(
+                        message: "Invalid Receiver address", isError: true);
+                    return;
+                  }
+                  if (double.parse(transistionfee) >
+                      double.parse(Token_Item.Bsclist[0].balance.toString())) {
+                    showCustomSnackBar(
+                        message: "Insufficent gas fee.", isError: true);
+                    return;
+                  }
+                  print(Token_Item.Tronlist[0].balance);
+                  print(amount.text);
+                  if (double.parse(amount.text) >
+                      double.parse(Token_Item.Bsclist[0].balance.toString())) {
+                    showCustomSnackBar(
+                        message: "Insufficent Balance.", isError: true);
+                    return;
+                  }
+                  click = true;
+                  setState(() {});
+                  sendcoin();
+                } else {
+                  if (isValidTronAddress(address.text) == false) {
+                    showCustomSnackBar(
+                        message: "Invalid Receiver address", isError: true);
+                    return;
+                  }
+                  if (double.parse(amount.text) >
+                      double.parse(Token_Item.Tronlist[0].balance.toString())) {
+                    showCustomSnackBar(
+                        message: "Insufficent Balance.", isError: true);
+                    return;
+                  }
+                  click = true;
+                  setState(() {});
+                  sendcoin();
+                }
               },
             ),
             SizedBox(
@@ -327,20 +315,18 @@ class _SendState extends State<Send> {
         ),
       ),
     );
-    
   }
 
-
-
   Future<void> sendcoin() async {
-    String pvtkey =
-        await SharedPreferenceClass.GetSharedData(ConstantClass.currentIndex==0?ConstantClass.privateKeyBsc.toString():ConstantClass.privateKeyTron.toString());
-    String seedphared =
-        await SharedPreferenceClass.GetSharedData("seedPhrase");
+    String pvtkey = await SharedPreferenceClass.GetSharedData(
+        ConstantClass.currentIndex == 0
+            ? ConstantClass.privateKeyBsc.toString()
+            : ConstantClass.privateKeyTron.toString());
+    String seedphared = await SharedPreferenceClass.GetSharedData("seedPhrase");
 
     if (ConstantClass.currentIndex == 0) {
       if (_coindata!.coinAbi == null) {
-     Send_NavtiveCoin(
+        Send_NavtiveCoin(
                 privatekey: pvtkey,
                 receiveraddress: address.text.toString(),
                 amount: amount.text,
@@ -356,7 +342,7 @@ class _SendState extends State<Send> {
           setState(() {});
         });
       } else {
-      SendCoin_WithContrcact(
+        SendCoin_WithContrcact(
                 Contractfile: _coindata!.coinAbi!,
                 funcationname: 'transfer',
                 Contactaddress: _coindata!.contractAddress.toString(),
@@ -375,13 +361,11 @@ class _SendState extends State<Send> {
           setState(() {});
         });
       }
-    }
-    
-    else {
+    } else {
       String seedphared =
-          await SharedPreferenceClass.GetSharedData("seedPhrase") ??
-              "";
-      String pvtkey = await Blockchain().genartepvtkey(seedphared.split(" "));
+          await SharedPreferenceClass.GetSharedData("seedPhrase") ?? "";
+
+      String pvtkey = Blockchain().generatePrivateKey(seedphared.split(" "));
       String walladdress = await SharedPreferenceClass.GetSharedData(
           AppContant.WalletaddresTron);
 
@@ -407,8 +391,7 @@ class _SendState extends State<Send> {
         String seedphared =
             await SharedPreferenceClass.GetSharedData(AppContant.WalletSeed) ??
                 "";
-        String pvtkey =
-            await Blockchain().genartepvtkey(seedphared.split(" "));
+        String pvtkey = await Blockchain().generatePrivateKey(seedphared.split(" "));
         String walladdress = await SharedPreferenceClass.GetSharedData(
             AppContant.WalletaddresTron);
         // AddressTron()
@@ -438,15 +421,12 @@ class _SendState extends State<Send> {
     }
   }
 
-
-
 // BSC Sebnding
   Future<dynamic> Send_NavtiveCoin(
       {required String privatekey,
       required String receiveraddress,
       required String amount,
-      required String url}) 
-      async {
+      required String url}) async {
     //user address
     var credentials = EthPrivateKey.fromHex(privatekey);
     var walletaddress = await credentials.extractAddress();
@@ -479,13 +459,11 @@ class _SendState extends State<Send> {
       return paramDic;
     } catch (e) {
       print("error" + e.toString());
-    //  showCustomSnackBar(message: e.toString().toString(), isError: true);
+      //  showCustomSnackBar(message: e.toString().toString(), isError: true);
       paramDic = {"status": "error", "message": "${e.toString()}"};
       return paramDic;
     }
   }
-
-
 
   Future<dynamic> SendCoin_WithContrcact(
       {required Object Contractfile,
@@ -538,17 +516,14 @@ class _SendState extends State<Send> {
       paramDic = {"status": "Done", "message": "$sendcoin"};
     } catch (e) {
       print("error" + e.toString());
-     // showCustomSnackBar(message: e.toString().toString(), isError: true);
+      // showCustomSnackBar(message: e.toString().toString(), isError: true);
       paramDic = {"status": "error", "message": "${e.toString()}"};
       return paramDic;
     }
     return paramDic;
   }
 
-
 // Tron Sending
-
-
 
   // Future<bool> trc20Transfer(
   //     {required String address,
@@ -624,12 +599,6 @@ class _SendState extends State<Send> {
   //   }
   // }
 
-
-
-
-
-
-
   void _getClipboardText() async {
     final clipboardData = await Clipboard.getData(Clipboard.kTextPlain);
 
@@ -639,14 +608,6 @@ class _SendState extends State<Send> {
       });
     }
   }
-
-
-
-
-
-
-
-  
 }
 
 class icon_txt_btn extends StatelessWidget {
@@ -682,21 +643,4 @@ class icon_txt_btn extends StatelessWidget {
       ),
     );
   }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  
 }

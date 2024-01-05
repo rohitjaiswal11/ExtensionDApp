@@ -1,8 +1,10 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:core';
 
-import 'package:extensionapp/views/home/tokenItem.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import 'package:extensionapp/views/home/tokenItem.dart';
 
 class ConstantClass {
   static String? Name;
@@ -69,24 +71,7 @@ class ConstantClass {
   static String transactionTronAPI =
       "https://shastapi.tronscan.org/api/transaction?sort=-timestamp&count=true&limit=1000&start=0&address=$myTRXaddress&type=1";
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+ 
 
   static Future<void> getWallet() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -105,20 +90,46 @@ class ConstantClass {
     print("Get Wallet Constanrt class executed");
   }
 
+  static List<AccountItem> accountlist = [
+    AccountItem(name: "StaticEntry1", privatekeyBsc: "pvtbsc1"),
+    AccountItem(name: "StaticEntry2"),
+    AccountItem(name: "StaticEntry3")
+  ];
 
+  static int last_accountlist = accountlist.length;
 
-   static List<ListItem> accountlist = [ListItem('StaticEntry'),ListItem('StaticEntry'),ListItem('StaticEntry'),ListItem('StaticEntry')];
+  //Temp variable for import
+static String? genName;
+static String? genwalletBsc;
+static String? genWalletTron;
+static String ?genPublicBsc;
+static String? genPublicTron;
+static String? genPrivateBsc;
+static String? genprivateTron;
 
-   
 }
 
+class AccountItem {
+  String? name;
+  String? publicKeyBsc;
+  String? privatekeyBsc;
+  String? wallet_addressBsc;
+  String? publicKeyTron;
+  String? privatekeyTron;
+  String? wallet_addressTron;
+  String? mnemonics;
 
-class ListItem {
-  String name;
-
-  ListItem(this.name);
+  AccountItem({
+    this.name,
+    this.publicKeyBsc,
+    this.privatekeyBsc,
+    this.wallet_addressBsc,
+    this.publicKeyTron,
+    this.privatekeyTron,
+    this.wallet_addressTron,
+    this.mnemonics,
+  });
 }
-
 
 //
 
@@ -173,7 +184,6 @@ class AppContant {
   static int selectedCurrencyindes = 0;
   static String bsc_API_KEY = 'CPZ64TSTGBBDXJZIT1ZI52QVUW1GC54S8X';
 
-
   static String Baseurl = "unicitizens.com";
   static String Login = "/api/user";
   static String Register = "/api/register";
@@ -183,8 +193,6 @@ class AppContant {
   static String finduser = "/api/finduser";
   static String id = 'id';
 }
-
-
 
 late final double TAB_VIEWER_BOTTOM_OFFSET_1;
 // ignore: non_constant_identifier_names
@@ -205,7 +213,6 @@ const double TAB_VIEWER_TOP_SCALE_BOTTOM_OFFSET = 230.0;
 String pvtkey =
     "dbc0b46dcb6ad417876b4f7ca0153a1eb38f9a14245ad38edec1162682855d97";
 String walletadddres = "";
-
 
 
 
