@@ -270,99 +270,114 @@ class _AccountDetailsState extends State<AccountDetails> {
                       borderRadius: BorderRadius.circular(10)),
                 ),
                 onTap: () {
+                 
                   showDialog(
                       context: context,
                       builder: (context) {
-                        return SizedBox(
-                          //   height: Get.height * 0.5,
-                          child: Dialog(
-                            alignment: Alignment.center,
-                            shadowColor: Colors.transparent,
-                            backgroundColor: Colors.transparent,
-                            child: Container(
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(10),
-                                  border: Border.all(color: Colors.grey),
-                                  color: Colors.black87,
-                                ),
-                                height: Get.height * 0.6,
-                                child: Padding(
-                                    padding: const EdgeInsets.all(20.0),
-                                    child: Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.start,
-                                      children: [
-                                        CustomFonts.heading16(
-                                            "Mnemoinics", Colors.white),
-                                        SizedBox(
-                                          height: Get.height * 0.04,
-                                        ),
-                                        GridView.count(
-                                          crossAxisCount: 3,
-                                          mainAxisSpacing: 15,
-                                          crossAxisSpacing: 15,
-                                          childAspectRatio: (1 / .4),
-                                          shrinkWrap: true,
-                                          children: List.generate(
-                                              mimonic.length, (index) {
-                                            return Container(
-                                                height: Get.height * 0.01,
-                                                padding: EdgeInsets.all(8),
-                                                decoration: BoxDecoration(
-                                                  borderRadius:
-                                                      BorderRadius.all(
-                                                          Radius.circular(10)),
-                                                  border: Border.all(
-                                                      color: Colors.grey),
-                                                ),
-                                                child: Stack(
-                                                  alignment:
-                                                      Alignment.centerRight,
-                                                  children: [
-                                                    Center(
-                                                        child: CustomFonts
-                                                            .text14600(
-                                                                mimonic[index],
-                                                                Colors.white)),
-                                                    CustomFonts.heading20(
-                                                        (index + 1).toString(),
-                                                        Colors.grey)
-                                                  ],
-                                                ));
-                                          }),
-                                        ),
-                                        SizedBox(
-                                          height: Get.height * 0.03,
-                                        ),
-                                        InkWell(
-                                          onTap: () { Clipboard.setData(ClipboardData(text: cliptext));
-                                            showCustomSnackBar(
-                                                message: "Mnemonics Copied");
-                        
-                        
-                                          },
-                                          child: Container(
-                                            padding: EdgeInsets.all(10),
-                                            decoration: BoxDecoration(
-                                                color: Colors.grey.shade800,
-                                                border: Border.all(
-                                                    color: Colors.grey),
-                                                borderRadius:
-                                                    BorderRadius.circular(10)),
-                                            child: Text(
-                                              "Copy",
-                                              style: TextStyle(
-                                                  fontSize: 15,
-                                                  fontFamily: 'Poppins',
-                                                  color: Colors.white),
-                                            ),
+                        return BackdropFilter(filter: ImageFilter.blur(sigmaX: 3.0,sigmaY: 3.0),
+                          child: Scaffold(backgroundColor: Colors.transparent,
+                            body: Dialog(
+                             alignment: Alignment.center,
+                             shadowColor: Colors.transparent,
+                             backgroundColor: Colors.transparent,
+                             child: Container(
+                                 decoration: BoxDecoration(
+                                   borderRadius: BorderRadius.circular(10),
+                                   border: Border.all(color: Colors.grey),
+                                   color: Colors.black87,
+                                 ),
+                                 height: Get.height * 0.6,
+                                 child: Padding(
+                                     padding: const EdgeInsets.all(20.0),
+                                     child: Column(
+                                       mainAxisAlignment:
+                                           MainAxisAlignment.start,
+                                       children: [
+                                         Stack(children: [
+                                          Center(
+                                            child: CustomFonts.heading16(
+                                                 "Mnemoinics", Colors.white),
                                           ),
-                                        )
-                                      ],
-                                    ))),
+
+                                              Align(alignment: Alignment.topRight,
+                                                child: IconButton(
+                                                  onPressed: () {
+                                                    Get.back();
+                                                  },
+                                                  icon: Icon(Icons.close,color: Colors.white,)),
+                                              ),
+                                        ] ),
+                                         SizedBox(
+                                           height: Get.height * 0.04,
+                                         ),
+                                         GridView.count(
+                                           crossAxisCount: 3,
+                                           mainAxisSpacing: 15,
+                                           crossAxisSpacing: 15,
+                                           childAspectRatio: (1 / .4),
+                                           shrinkWrap: true,
+                                           children: List.generate(
+                                               mimonic.length, (index) {
+                                             return Container(
+                                                 height: Get.height * 0.01,
+                                                 padding: EdgeInsets.all(8),
+                                                 decoration: BoxDecoration(
+                                                   borderRadius:
+                                                       BorderRadius.all(
+                                                           Radius.circular(10)),
+                                                   border: Border.all(
+                                                       color: Colors.grey),
+                                                 ),
+                                                 child: Stack(
+                                                   alignment:
+                                                       Alignment.centerRight,
+                                                   children: [
+                                                     Center(
+                                                         child: CustomFonts
+                                                             .text14600(
+                                                                 mimonic[index],
+                                                                 Colors.white)),
+                                                     CustomFonts.heading20(
+                                                         (index + 1).toString(),
+                                                         Colors.grey)
+                                                   ],
+                                                 ));
+                                           }),
+                                         ),
+                                         SizedBox(
+                                           height: Get.height * 0.04,
+                                         ),
+                                         InkWell(
+                                           onTap: () { Clipboard.setData(ClipboardData(text: cliptext));
+                                             showCustomSnackBar(
+                                                 message: "Mnemonics Copied");
+                                                 
+                                                 
+                                           },
+                                           child: Container(
+                                             padding: EdgeInsets.all(10),
+                                             decoration: BoxDecoration(
+                                                 color: Colors.grey.shade800,
+                                                 border: Border.all(
+                                                     color: Colors.grey),
+                                                 borderRadius:
+                                                     BorderRadius.circular(10)),
+                                             child: Text(
+                                               "Copy",
+                                               style: TextStyle(
+                                                   fontSize: 15,
+                                                   fontFamily: 'Poppins',
+                                                   color: Colors.white),
+                                             ),
+                                           ),
+                                         )
+                                       ],
+                                     ))),
+                                ),
                           ),
                         );
                       });
+             
                 },
               ),
             )

@@ -5,6 +5,7 @@ import 'package:extensionapp/Utils/common.dart';
 
 import 'package:extensionapp/Utils/customfonts.dart';
 import 'package:extensionapp/Utils/sharedpref.dart';
+import 'package:extensionapp/Utils/snackbar.dart';
 import 'package:extensionapp/views/AccountDetails.dart/account_detail.dart';
 import 'package:extensionapp/views/home/home.dart';
 import 'package:extensionapp/views/send/send.dart';
@@ -211,6 +212,23 @@ class _TopbarState extends State<Topbar> {
   // //   });
   // //   _saveData();
   // // }
+
+  @override
+  void initState() {
+// _loadData();
+    super.initState();
+  }
+
+  _loadData() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    List<String>? savedItems = prefs.getStringList('items');
+    if (savedItems != null) {
+      setState(() {
+        ConstantClass.accountlist =
+            savedItems.map((itemName) => AccountItem(name: itemName)).toList();
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -556,8 +574,8 @@ class _TopbarState extends State<Topbar> {
                       'assets/images/pie.png',
                       height: 20,
                     ),
-                    const Text(
-                      " Account 1 ",
+                    Text(
+                      ConstantClass.accountlist[0].name ?? "Account ",
                       style: TextStyle(
                           fontWeight: FontWeight.w500, color: Colors.white),
                     ),
@@ -767,158 +785,201 @@ class _TopbarState extends State<Topbar> {
 
                                             final acountnamecontroller =
                                                 TextEditingController();
-                                            return DialogCustom(
-                                              mytextController:
-                                                  acountnamecontroller,
-                                              hnttxt: 'Account',
-                                              txtfieldname: 'Account',
-                                              w1:
+                                            return Scaffold(
+                                              backgroundColor:
+                                                  Colors.transparent,
+                                              body: DialogCustom(
+                                                mytextController:
+                                                    acountnamecontroller,
+                                                hnttxt: 'Account',
+                                                txtfieldname: 'Account',
+                                                w1:
 
-                                                  // // !isLoad
-                                                  //     //   ?
+                                                    // // !isLoad
+                                                    //     //   ?
 
-                                                  //     // InkWell(child:   Text("data",style: TextStyle(color: Colors.red),) ,onTap: (){
-                                                  //     // print("isLoad "+isLoad.toString());
-                                                  //     //     set((){
-                                                  //     //        isLoad =true;
-                                                  //     //     });
-                                                  //     //       print("isLoad 2"+isLoad.toString());
-                                                  //     //       Future.delayed(Duration(seconds: 10)).then((value) {
+                                                    //     // InkWell(child:   Text("data",style: TextStyle(color: Colors.red),) ,onTap: (){
+                                                    //     // print("isLoad "+isLoad.toString());
+                                                    //     //     set((){
+                                                    //     //        isLoad =true;
+                                                    //     //     });
+                                                    //     //       print("isLoad 2"+isLoad.toString());
+                                                    //     //       Future.delayed(Duration(seconds: 10)).then((value) {
 
-                                                  //     //         setState(() {
-                                                  //     //                 isLoad=false;
-                                                  //     //         });
-                                                  //     //   });
+                                                    //     //         setState(() {
+                                                    //     //                 isLoad=false;
+                                                    //     //         });
+                                                    //     //   });
 
-                                                  //     //     print("set state   ++ ${isLoad.toString()}");
+                                                    //     //     print("set state   ++ ${isLoad.toString()}");
 
-                                                  //     //   },)
+                                                    //     //   },)
 
-                                                  //     ?
+                                                    //     ?
 
-                                                  Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .spaceAround,
-                                                children: [
-                                                  btncustom(
-                                                      btncolor: Colors.white,
-                                                      btntxt: 'Cancel',
-                                                      btntxtclr: Colors.blue,
-                                                      BtnPressed: () {
-                                                        Get.back();
-                                                      }),
+                                                    Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment
+                                                          .spaceAround,
+                                                  children: [
+                                                    btncustom(
+                                                        btncolor: Colors.white,
+                                                        btntxt: 'Cancel',
+                                                        btntxtclr: Colors.blue,
+                                                        BtnPressed: () {
+                                                          Get.back();
+                                                        }),
 
-                                                  InkWell(
-                                                    onTap: () {
-                                                      print(
-                                                          "Textcontroller account text    ${acountnamecontroller.text.trim()}");
-                                                      if (acountnamecontroller
-                                                          .toString()
-                                                          .isNotEmpty) {
-                                                        setState(() {
-                                                          ConstantClass
-                                                                  .genName =
-                                                              acountnamecontroller
-                                                                  .text
-                                                                  .toString();
+                                                    InkWell(
+                                                      onTap: () {
+                                                        print(
+                                                            "Textcontroller account text    ${acountnamecontroller.text.trim()}");
+                                                        if (acountnamecontroller
+                                                                .text
+                                                                .isNotEmpty ||
+                                                            acountnamecontroller
+                                                                    .text
+                                                                    .toString() !=
+                                                                "") {
+                                                          setState(() {
+                                                            ConstantClass
+                                                                    .genName =
+                                                                acountnamecontroller
+                                                                    .text
+                                                                    .toString();
 
-                                                          // BlockchainGenerate().importfunctionaddwallet(
-                                                          //                                 ConstantClass.mnemonic.toString()).then((value) => addAccountitem()).then((value) =>_saveDataAccount());
+                                                            String
+                                                                mnemonicsStored =
+                                                                ConstantClass
+                                                                    .mnemonic
+                                                                    .toString();
+                                                            print(
+                                                                "mnemonicsfetched  ${mnemonicsStored.toString()}");
+                                                            // Blockchain().walletaddresstron(mnemonicsStored);
 
-                                                          // ConstantClass
-                                                          //     .accountlist
-                                                          //     .add(AccountItem(name:
-                                                          //         acountnamecontroller
-                                                          //             .text
-                                                          //             .trim()));
+                                                            // Blockchain().walletaddressBSc(mnemonicsStored);
+
+                                                            // BlockchainGenerate()
+                                                            //     .importfunctionaddwallet(
+                                                            //         mnemonicsStored
+                                                            //             .toString())
+                                                            //     .then((value) =>
+                                                            //         addAccountitemtolist())
+                                                            //     .then((value) =>
+                                                            //         _saveDataAccount());
+
+                                                            //  _saveDataAccount();
+                                                            //  addAccountitemtolist();
+
+                                                            BlockchainGenerate()
+                                                                .importfunctionaddwallet(
+                                                                    mnemonicsStored
+                                                                        .toString())
+                                                                .whenComplete(() =>
+                                                                    addAccountitemtolist())
+                                                                .whenComplete(() =>
+                                                                    _saveDataAccount()).then((value) => Get.to(MyHomePage()));
+
+                                                            // Get.to(
+                                                            //     MyHomePage());
+                                                            // BlockchainGenerate().importfunctionaddwallet(
+                                                            //                                 ConstantClass.mnemonic.toString()).then((value) => addAccountitem()).then((value) =>_saveDataAccount());
+
+                                                            // ConstantClass
+                                                            //     .accountlist
+                                                            //     .add(AccountItem(name:
+                                                            //         acountnamecontroller
+                                                            //             .text
+                                                            //             .trim()));
+                                                          });
+                                                        } else
+                                                          showCustomSnackBar(
+                                                              message:
+                                                                  "Empty field");
+                                                        print("00");
+                                                        set(() {
+                                                          print("01");
+                                                          isLoad = true;
+                                                          print("Empty" +
+                                                              isLoad
+                                                                  .toString());
                                                         });
-                                                        _saveData();
-                                                        Get.to(MyHomePage());
-                                                      }
+                                                      },
+                                                      child: Container(
+                                                          // padding: EdgeInsets.only(top: 7),
+                                                          height: Get.height /
+                                                              20,
+                                                          width: Get.width / 4,
+                                                          decoration: BoxDecoration(
+                                                              color:
+                                                                  Colors.blue,
+                                                              border: Border.all(
+                                                                  color: Colors
+                                                                      .blue),
+                                                              borderRadius: BorderRadius
+                                                                  .all(Radius
+                                                                      .circular(
+                                                                          25))),
+                                                          child: Center(
+                                                            child: Text(
+                                                              "Create",
+                                                              textAlign:
+                                                                  TextAlign
+                                                                      .center,
+                                                              style: TextStyle(
+                                                                  color: Colors
+                                                                      .white),
+                                                            ),
+                                                          )),
+                                                    ),
 
-                                                      print("00");
-                                                      set(() {
-                                                        print("01");
-                                                        isLoad = true;
-                                                        print("fffffffffffffff" +
-                                                            isLoad.toString());
+                                                    // btncustom(
+                                                    //     btncolor: Colors.blue,
+                                                    //     btntxt: 'create',
+                                                    //     BtnPressed: () {
 
-                                                        call();
-                                                      });
-                                                    },
-                                                    child: Container(
-                                                        // padding: EdgeInsets.only(top: 7),
-                                                        height: Get.height / 20,
-                                                        width: Get.width / 4,
-                                                        decoration: BoxDecoration(
-                                                            color: Colors.blue,
-                                                            border: Border.all(
-                                                                color: Colors
-                                                                    .blue),
-                                                            borderRadius:
-                                                                BorderRadius
-                                                                    .all(Radius
-                                                                        .circular(
-                                                                            25))),
-                                                        child: Center(
-                                                          child: Text(
-                                                            "Create",
-                                                            textAlign: TextAlign
-                                                                .center,
-                                                            style: TextStyle(
-                                                                color: Colors
-                                                                    .white),
-                                                          ),
-                                                        )),
-                                                  ),
+                                                    //       print("object    Circular progress Indicator" +
+                                                    //           isLoad.toString());
+                                                    //       //   isLoad = true;
+                                                    //       set(() {
+                                                    //         isLoad = true;
+                                                    //       });
 
-                                                  // btncustom(
-                                                  //     btncolor: Colors.blue,
-                                                  //     btntxt: 'create',
-                                                  //     BtnPressed: () {
+                                                    //       print("-----================>  " + isLoad.toString());
 
-                                                  //       print("object    Circular progress Indicator" +
-                                                  //           isLoad.toString());
-                                                  //       //   isLoad = true;
-                                                  //       set(() {
-                                                  //         isLoad = true;
-                                                  //       });
+                                                    //       String mnemonicsfetched = Wallet().generateMnemonic();
+                                                    //       Wallet().walletaddress(mnemonicsfetched);
+                                                    //       saveaccount();
+                                                    //       print("-----================>1  " + isLoad.toString());
+                                                    //       Get.to(MyHomePage());
 
-                                                  //       print("-----================>  " + isLoad.toString());
+                                                    //       // bool check =dfafda
 
-                                                  //       String mnemonicsfetched = Wallet().generateMnemonic();
-                                                  //       Wallet().walletaddress(mnemonicsfetched);
-                                                  //       saveaccount();
-                                                  //       print("-----================>1  " + isLoad.toString());
-                                                  //       Get.to(MyHomePage());
+                                                    //       // txtaccountglobal
+                                                    //       if (Common().isDuplicate(Common.txtaccountglobal!,
+                                                    //               Common.accountsCreated) ==
+                                                    //           true) {
+                                                    //         Common().showToast("Duplicate",
+                                                    //             gravity: Toast.center, duration: Toast.lengthLong);
+                                                    //       } else {
+                                                    //         Common().showToast("Added",
+                                                    //             gravity: Toast.center, duration: Toast.lengthLong);
+                                                    //       }
 
-                                                  //       // bool check =dfafda
+                                                    //       // isLoad = false;
 
-                                                  //       // txtaccountglobal
-                                                  //       if (Common().isDuplicate(Common.txtaccountglobal!,
-                                                  //               Common.accountsCreated) ==
-                                                  //           true) {
-                                                  //         Common().showToast("Duplicate",
-                                                  //             gravity: Toast.center, duration: Toast.lengthLong);
-                                                  //       } else {
-                                                  //         Common().showToast("Added",
-                                                  //             gravity: Toast.center, duration: Toast.lengthLong);
-                                                  //       }
-
-                                                  //       // isLoad = false;
-
-                                                  //       print("Load end $isLoad");
-                                                  //       //    Get.to(const MyHomePage());
-                                                  //     }),
-                                                ],
-                                              )
-                                              // :
-                                              //   CircularProgressIndicator(),
-                                              ,
-                                              titletxt: "Add account",
-                                              cheight: Get.height * 0.4,
-                                              cwidth: null,
+                                                    //       print("Load end $isLoad");
+                                                    //       //    Get.to(const MyHomePage());
+                                                    //     }),
+                                                  ],
+                                                )
+                                                // :
+                                                //   CircularProgressIndicator(),
+                                                ,
+                                                titletxt: "Add account",
+                                                cheight: Get.height * 0.4,
+                                                cwidth: null,
+                                              ),
                                             );
                                           });
                                         });
@@ -1001,19 +1062,6 @@ class _TopbarState extends State<Topbar> {
   }
 }
 
-call() async {
-  String mnemonicsStored = ConstantClass.mnemonic.toString();
-  print("mnemonicsfetched  ${mnemonicsStored.toString()}");
-  // Blockchain().walletaddresstron(mnemonicsStored);
-
-  // Blockchain().walletaddressBSc(mnemonicsStored);
-
-  BlockchainGenerate()
-      .importfunctionaddwallet(mnemonicsStored.toString())
-      .then((value) => addAccountitemtolist())
-      .then((value) => _saveDataAccount());
-}
-
 Future<void> addAccountitemtolist() async {
   ConstantClass.accountlist.add(AccountItem(
       mnemonics: "",
@@ -1024,7 +1072,9 @@ Future<void> addAccountitemtolist() async {
       publicKeyTron: ConstantClass.genPublicTron,
       wallet_addressBsc: ConstantClass.genwalletBsc,
       wallet_addressTron: ConstantClass.genWalletTron));
-  print("Data Added to List");
+
+      print(ConstantClass.genWalletTron);
+  print(" Wallet Data Added to List");
 }
 
 _saveDataAccount() async {

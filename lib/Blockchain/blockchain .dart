@@ -105,9 +105,9 @@ class Blockchain {
   Future<void> getPublicAddress(String privateKey) async {
     try {
       final private = EthPrivateKey.fromHex(privateKey);
-      final address = await private.extractAddress();
+      final addressbsc =  private.address;
 
-      String BscAddress = address.toString();
+      String BscAddress = addressbsc.toString();
       ConstantClass.walletBsc = BscAddress;
       print('addressBSc: $BscAddress');
     } catch (e) {

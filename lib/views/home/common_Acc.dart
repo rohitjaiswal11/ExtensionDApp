@@ -11,6 +11,7 @@ import 'package:extensionapp/export.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../Utils/Constant.dart';
+import '../../Utils/snackbar.dart';
 
 class Account extends StatefulWidget {
   const Account(BuildContext context, {super.key});
@@ -28,34 +29,33 @@ class _AccountState extends State<Account> {
     //   addEntry();
   }
 
-_loadDataAccount() async {
-  SharedPreferences prefs = await SharedPreferences.getInstance();
-  List<String>? savedItems = prefs.getStringList('items');
+  _loadDataAccount() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    List<String>? savedItems = prefs.getStringList('items');
 
-  if (savedItems != null) {
-    setState(() {
-      ConstantClass.accountlist = savedItems
-          .map((jsonString) => jsonDecode(jsonString))
-          .map((map) => AccountItem(
-                name: map['name'],
-                publicKeyBsc: map['publicKeyBsc'],
-                privatekeyBsc: map['privatekeyBsc'],
-                wallet_addressBsc: map['wallet_addressBsc'],
-                publicKeyTron: map['publicKeyTron'],
-                privatekeyTron: map['privatekeyTron'],
-                wallet_addressTron: map['wallet_addressTron'],
-                mnemonics: map['mnemonics'],
-              ))
-          .toList();
-    });
+    if (savedItems != null) {
+      setState(() {
+        ConstantClass.accountlist = savedItems
+            .map((jsonString) => jsonDecode(jsonString))
+            .map((map) => AccountItem(
+                  name: map['name'],
+                  publicKeyBsc: map['publicKeyBsc'],
+                  privatekeyBsc: map['privatekeyBsc'],
+                  wallet_addressBsc: map['wallet_addressBsc'],
+                  publicKeyTron: map['publicKeyTron'],
+                  privatekeyTron: map['privatekeyTron'],
+                  wallet_addressTron: map['wallet_addressTron'],
+                  mnemonics: map['mnemonics'],
+                ))
+            .toList();
+      });
+    }
   }
-}
 // _saveData() async {
 //   SharedPreferences prefs = await SharedPreferences.getInstance();
 
 //   // Map each AccountItem to a Map<String, dynamic>
 //   List<Map<String, dynamic>> itemList = ConstantClass.accountlist.map((item) {
-
 
 //     print(  'publicKeyBsc from s  '+ item.name.toString());
 //     return {
@@ -74,10 +74,6 @@ _loadDataAccount() async {
 //   prefs.setStringList('items', itemList.map((map) => jsonEncode(map)).toList());
 // }
 
-
-
-
-
   // _loadData() async {
   //   SharedPreferences prefs = await SharedPreferences.getInstance();
   //   List<String>? savedItems = prefs.getStringList('items');
@@ -91,8 +87,10 @@ _loadDataAccount() async {
 
   _saveData() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    List<String> itemNames =
-        ConstantClass.accountlist.map((item) => item.name).cast<String>().toList();
+    List<String> itemNames = ConstantClass.accountlist
+        .map((item) => item.name)
+        .cast<String>()
+        .toList();
     prefs.setStringList('items', itemNames);
   }
 
@@ -170,7 +168,9 @@ _loadDataAccount() async {
                             SizedBox(
                               width: Get.width / 5,
                               child: Text(
-                                "   ${ConstantClass.accountlist[index].wallet_addressBsc}",
+                                ConstantClass.currentIndex == 0
+                                    ? " ${ConstantClass.accountlist[index].wallet_addressBsc}"
+                                    : " ${ConstantClass.accountlist[index].wallet_addressTron}",
                                 textAlign: TextAlign.left,
                                 style: TextStyle(
                                     fontSize: 12,
@@ -186,9 +186,16 @@ _loadDataAccount() async {
                       SingleChildScrollView(
                         child: Column(
                           children: [
-                            CustomFonts.text12("0.0", Colors.white),
+                            //  CustomFonts.text12("0.0", Colors.white),
                             Text(
-                              '\$ 0.00 USD',
+                           //   '\$${ConstantClass.totalBalance! == 0 ? ConstantClass.accountlist[index].total.toString() + ' USD' : "0.0"}',
+
+                              //    '\$   ${ConstantClass.totalBalance == 0}'?'${ConstantClass.accountlist[index].total.toString()} USD':"0.0",
+
+                              ConstantClass.accountlist[index].total
+                                      .toString() +
+                                  " USD",
+
                               style:
                                   TextStyle(fontSize: 13, color: Colors.grey),
                             )
@@ -217,7 +224,12 @@ _loadDataAccount() async {
                           if (value == 'edit') {
                             _showEditDialog(index);
                           } else if (value == 'delete') {
-                            _showDeleteDialog(index);
+                            if( ConstantClass.accountlist.length>1)
+                            {_showDeleteDialog(index);}
+                            else   showCustomSnackBar(
+                                                message: "Only 1 account");
+                        
+
                           }
                         },
                       ),

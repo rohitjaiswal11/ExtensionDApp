@@ -1,6 +1,7 @@
 import 'dart:js_interop_unsafe';
-import 'dart:js'as js;
+import 'dart:js' as js;
 import 'dart:math';
+import 'package:extensionapp/views/home/importtoken.dart';
 import 'package:js/js.dart';
 import 'package:extensionapp/Utils/Constant.dart';
 import 'package:extensionapp/Utils/customfonts.dart';
@@ -144,11 +145,10 @@ class _MyHomePageState extends State<MyHomePage>
       // print("Result $result");
 
       for (int i = 0; i < result.length; i++) {
-
         double inusd = ConstantClass.currentIndex == 0
-            ? double.parse(result[i]["value"].toString()) 
-            : double.parse(result[i]["amount"].toString()) ;
-        double parsedval=  inusd*0.000000000000001;
+            ? double.parse(result[i]["value"].toString())
+            : double.parse(result[i]["amount"].toString());
+        double parsedval = inusd * 0.000000000000001;
         print("++++++++++ins++++++$parsedval");
 
         if (ConstantClass.currentIndex == 0) {
@@ -195,7 +195,8 @@ class _MyHomePageState extends State<MyHomePage>
           "https://api-testnet.bscscan.com/api?module=account&action=tokenbalance&contractaddress=${ConstantClass.BscUSDTContractAdd}&address=${ConstantClass.BSCstaticwallet}&tag=latest&apikey=${ConstantClass.BscApikey}");
       setState(() {
         ConstantClass.Tronbalance =
-            double.parse(trxaccinfo["data"][0]["balance"].toString()) / 10000000;
+            double.parse(trxaccinfo["data"][0]["balance"].toString()) /
+                10000000;
         ConstantClass.TrxUSDbalance = double.parse(trxaccinfo["data"][0]
                     ["trc20"][0]["TY5kVT6aMqStDG81wPzmVmcxikfr8ReUu1"]
                 .toString()) /
@@ -298,11 +299,7 @@ class _MyHomePageState extends State<MyHomePage>
 
     return Scaffold(
       backgroundColor: Colors.black87,
-      body:
-      
-      
-      
-       SingleChildScrollView(
+      body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.start,
@@ -414,24 +411,35 @@ class _MyHomePageState extends State<MyHomePage>
                     ],
                   )),
               child: Padding(
-                padding:const EdgeInsets.only(top:5,left:15, right: 15, bottom: 15),
+                padding: const EdgeInsets.only(
+                    top: 5, left: 15, right: 15, bottom: 15),
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
-                    Menu1(btname: "Funding", amount: ExtensionController().funding.toString(), press: (){Get.to(FundHistory(), arguments: 'Funding');}),
-                    Menu1(btname: "Presale", amount:ExtensionController().presale.toString(), press: (){Get.to(presale(),arguments: "Presale");},),
                     Menu1(
-                      btname: "Referal",
-                      amount: ExtensionController().referalamount.toString(),
-                      image: "assets/icons/person.png",
-                      colr: Colors.white,press: (){
-
-
-                        js.context.callMethod('customAlertMessage',['Hey this is custom JS code!']);
-                      }
+                        btname: "Funding",
+                        amount: ExtensionController().funding.toString(),
+                        press: () {
+                          Get.to(FundHistory(), arguments: 'Funding');
+                        }),
+                    Menu1(
+                      btname: "Presale",
+                      amount: ExtensionController().presale.toString(),
+                      press: () {
+                        Get.to(presale(), arguments: "Presale");
+                      },
                     ),
-                    Menu1(btname: "Stake", amount: "0",press: (){}),
+                    Menu1(
+                        btname: "Referal",
+                        amount: ExtensionController().referalamount.toString(),
+                        image: "assets/icons/person.png",
+                        colr: Colors.white,
+                        press: () {
+                          js.context.callMethod('customAlertMessage',
+                              ['Hey this is custom JS code!']);
+                        }),
+                    Menu1(btname: "Stake", amount: "0", press: () {}),
                   ],
                 ),
               ),
@@ -579,7 +587,9 @@ class _MyHomePageState extends State<MyHomePage>
                                               children: [
                                                 Text(
                                                   currentlist[index].coinname,
-                                                  style: TextStyle(fontSize: 13,fontFamily: 'Poppins',
+                                                  style: TextStyle(
+                                                    fontSize: 13,
+                                                    fontFamily: 'Poppins',
                                                     color: Colors.white,
                                                   ),
                                                 ),
@@ -588,18 +598,21 @@ class _MyHomePageState extends State<MyHomePage>
                                                 ),
                                                 Text(
                                                     "\$ ${currentlist[index].rate.toString()}",
-                                                    style: TextStyle(fontSize: 12,fontFamily: 'Poppins',
-                                                        color: Colors.white,
-                                                        fontWeight:
-                                                            FontWeight.w100,
-                                                       )),
+                                                    style: TextStyle(
+                                                      fontSize: 12,
+                                                      fontFamily: 'Poppins',
+                                                      color: Colors.white,
+                                                      fontWeight:
+                                                          FontWeight.w100,
+                                                    )),
                                               ],
                                             ),
                                             Spacer(),
                                             Text(
                                                 //ConstantClass.usdrate.toString(),
                                                 "${currentlist[index].balance.toString()}",
-                                                style: TextStyle(fontFamily: 'Poppins',
+                                                style: TextStyle(
+                                                    fontFamily: 'Poppins',
                                                     color: Colors.white,
                                                     fontWeight: FontWeight.w500,
                                                     fontSize: 13))
@@ -615,7 +628,15 @@ class _MyHomePageState extends State<MyHomePage>
                                           horizontal: 30, vertical: 15)),
                                   foregroundColor:
                                       MaterialStatePropertyAll(Colors.blue)),
-                              onPressed: () {},
+                              onPressed: () {
+                            
+                                showDialog(
+                                  context: context,
+                                  builder: (context) {
+                                    return ImportToken();
+                                  },
+                                );
+                              },
                               icon: Icon(Icons.add),
                               label: Text(
                                 'Import Token',
@@ -655,7 +676,6 @@ class _MyHomePageState extends State<MyHomePage>
                           //             MaterialStatePropertyAll(Colors.blue)),
                           //     onPressed: () {
 
-
                           //      _launchURL() ;
                           //     },
                           //     icon: Icon(Icons.chat),
@@ -688,7 +708,10 @@ class _MyHomePageState extends State<MyHomePage>
                             mainAxisAlignment: MainAxisAlignment.center,
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
-                              Image.asset('assets/images/empty-folder.png', height: Get.height*0.1,),
+                              Image.asset(
+                                'assets/images/empty-folder.png',
+                                height: Get.height * 0.1,
+                              ),
                               SizedBox(
                                 height: Get.height / 30,
                               ),
@@ -816,7 +839,8 @@ class _MyHomePageState extends State<MyHomePage>
                                                 //Amount in coin
                                                 CustomFonts.text13(
                                                     TransactionCurrent[index]
-                                                            .value!.toStringAsFixed(3)
+                                                            .value!
+                                                            .toStringAsFixed(3)
                                                             .toString() +
                                                         " " +
                                                         TransactionCurrent[
@@ -897,6 +921,8 @@ class _MyHomePageState extends State<MyHomePage>
   }
 }
 
+
+
 class MainNet {
   final int networkindex;
   final String coinname;
@@ -964,17 +990,15 @@ class ButtonTabs {
 
   static List<ButtonTabs> btntaps = [
     ButtonTabs(
-      img: 'assets/icons/plus-minus.png',
-      btntapname: 'Buy & Sell',
-      nav: "",Pressed: ()async{
-
-   final Uri url = Uri.parse('https://flutter.dev');
-    if (!await launchUrl(url)) {
-      throw Exception('Could not launch $url');
-    }
-
-    }
-    ),
+        img: 'assets/icons/plus-minus.png',
+        btntapname: 'Buy & Sell',
+        nav: "",
+        Pressed: () async {
+          final Uri url = Uri.parse('https://flutter.dev');
+          if (!await launchUrl(url)) {
+            throw Exception('Could not launch $url');
+          }
+        }),
     ButtonTabs(
         img: 'assets/icons/send.png',
         btntapname: 'Send',
@@ -993,14 +1017,15 @@ class ButtonTabs {
         Pressed: () {
           Get.to(Receive());
         }),
-    ButtonTabs(img: 'assets/icons/stock.png', btntapname: 'Vote',Pressed: ()async{
-
-   final Uri url = Uri.parse('https://flutter.dev');
-    if (!await launchUrl(url)) {
-      throw Exception('Could not launch $url');
-    }
-
-    }),
+    ButtonTabs(
+        img: 'assets/icons/stock.png',
+        btntapname: 'Vote',
+        Pressed: () async {
+          final Uri url = Uri.parse('https://flutter.dev');
+          if (!await launchUrl(url)) {
+            throw Exception('Could not launch $url');
+          }
+        }),
   ];
 }
 

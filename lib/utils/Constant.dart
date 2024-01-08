@@ -71,8 +71,6 @@ class ConstantClass {
   static String transactionTronAPI =
       "https://shastapi.tronscan.org/api/transaction?sort=-timestamp&count=true&limit=1000&start=0&address=$myTRXaddress&type=1";
 
- 
-
   static Future<void> getWallet() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     ConstantClass.walletBsc = prefs.getString('walletBsc');
@@ -91,22 +89,29 @@ class ConstantClass {
   }
 
   static List<AccountItem> accountlist = [
-    AccountItem(name: "StaticEntry1", privatekeyBsc: "pvtbsc1"),
-    AccountItem(name: "StaticEntry2"),
-    AccountItem(name: "StaticEntry3")
+    AccountItem(
+        name: "Account 1",
+        privatekeyTron: ConstantClass.privateKeyTron.toString(),
+        privatekeyBsc: ConstantClass.privateKeyBsc.toString(),
+        total: ConstantClass.totalBalance,
+        publicKeyBsc: ConstantClass.publicKeyBsc.toString(),
+        publicKeyTron: ConstantClass.publicKeyTron.toString(),
+        wallet_addressBsc: ConstantClass.walletBsc.toString(),
+        wallet_addressTron: ConstantClass.walletTron.toString()),
+     AccountItem(name: "StaticEntry2"),
+    // AccountItem(name: "StaticEntry3")
   ];
 
   static int last_accountlist = accountlist.length;
 
   //Temp variable for import
-static String? genName;
-static String? genwalletBsc;
-static String? genWalletTron;
-static String ?genPublicBsc;
-static String? genPublicTron;
-static String? genPrivateBsc;
-static String? genprivateTron;
-
+  static String? genName;
+  static String? genwalletBsc;
+  static String? genWalletTron;
+  static String? genPublicBsc;
+  static String? genPublicTron;
+  static String? genPrivateBsc;
+  static String? genprivateTron;
 }
 
 class AccountItem {
@@ -118,7 +123,7 @@ class AccountItem {
   String? privatekeyTron;
   String? wallet_addressTron;
   String? mnemonics;
-
+  double? total;
   AccountItem({
     this.name,
     this.publicKeyBsc,
@@ -128,7 +133,10 @@ class AccountItem {
     this.privatekeyTron,
     this.wallet_addressTron,
     this.mnemonics,
+    this.total,
   });
+
+
 }
 
 //
